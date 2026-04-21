@@ -34,7 +34,7 @@
 
     <!-- SIDEBAR -->
     <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-64 bg-gray-900 text-white flex flex-col transition-transform duration-300 z-50 shrink-0">
-        <!-- Logo Header -->
+        <!-- Logo Header (Clickable to Dashboard) -->
         <div class="p-5 flex items-center justify-between border-b border-gray-800">
             <div class="flex items-center gap-2 cursor-pointer hover:text-brand transition-colors" onclick="switchTab('dashboard')" title="Go to Dashboard">
                 <i class="fa-solid fa-fire-burner text-brand text-xl"></i>
@@ -75,7 +75,7 @@
             <div id="tab-dashboard" class="tab-content active">
                 <div class="flex justify-between items-center mb-6"><h2 class="text-xl md:text-2xl font-bold text-gray-800">Overview</h2><button onclick="fetchDashboardData()" class="bg-white border shadow-sm px-3 py-1.5 rounded-md text-xs font-bold hover:bg-gray-50 text-gray-700"><i class="fa-solid fa-rotate-right mr-1"></i> Reload</button></div>
                 
-                <!-- Advanced Stats (Updated with Today's Orders) -->
+                <!-- Advanced Stats -->
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                     <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-indigo-500"><p class="text-gray-500 text-[11px] font-bold mb-1 uppercase">Today's Orders</p><h3 id="stat-orders-today-count" class="text-xl md:text-2xl font-bold text-gray-800">0</h3></div>
                     <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-brand"><p class="text-gray-500 text-[11px] font-bold mb-1 uppercase">Today's Sales</p><h3 id="stat-sales-today" class="text-xl md:text-2xl font-bold text-gray-800">৳ 0</h3></div>
@@ -90,7 +90,7 @@
                     <div class="flex-1"><p class="text-[10px] text-gray-500 font-bold mb-1 uppercase"><i class="fa-solid fa-arrow-trend-down text-red-500 mr-1"></i> Least Selling Item</p><p id="stat-worst-item" class="text-sm font-bold text-gray-800">-</p></div>
                 </div>
 
-                <!-- Custom Date Report Tool (New Idea 3) -->
+                <!-- Custom Date Report Tool -->
                 <div class="bg-white p-4 rounded-xl shadow-sm border mb-6">
                     <h3 class="text-sm font-bold mb-3 text-gray-800"><i class="fa-solid fa-calendar-check text-brand mr-1"></i> Custom Date Report</h3>
                     <div class="flex flex-wrap gap-3 items-end">
@@ -116,7 +116,7 @@
                     <button onclick="exportOrdersCSV()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs font-bold shadow transition-colors"><i class="fa-solid fa-file-excel mr-1"></i> Export CSV</button>
                 </div>
                 
-                <!-- Modern Search & Filter UI (Fixed) -->
+                <!-- Modern Search & Filter UI -->
                 <div class="bg-white p-4 rounded-xl border shadow-sm mb-6 transition-all duration-300">
                     <div class="flex gap-2">
                         <div class="relative flex-1">
@@ -204,10 +204,30 @@
             <!-- TAB: SETTINGS -->
             <div id="tab-settings" class="tab-content">
                 <h2 class="text-xl font-bold text-gray-800 mb-6">System Settings</h2>
-                <div class="bg-white p-6 rounded-xl shadow-sm border max-w-lg space-y-5">
-                    <div><label class="block text-xs font-bold text-gray-700 mb-1">Admin Calling Number</label><div class="flex gap-2"><input type="tel" id="set-admin-phone" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('AdminPhone', 'set-admin-phone')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
-                    <div><label class="block text-xs font-bold text-gray-700 mb-1">Top Announcement Marquee</label><div class="flex gap-2"><input type="text" id="set-promo-text" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('PromoText', 'set-promo-text')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
-                    <div><label class="block text-xs font-bold text-gray-700 mb-1">Free Delivery Target Amount (৳)</label><div class="flex gap-2"><input type="number" id="set-free-del" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('FreeDeliveryThreshold', 'set-free-del')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-6">
+                    <!-- Contact Settings -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border space-y-5">
+                        <h3 class="font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-address-book text-brand mr-2"></i>Contact Numbers</h3>
+                        <div><label class="block text-xs font-bold text-gray-700 mb-1">Calling Number</label><div class="flex gap-2"><input type="tel" id="set-admin-phone" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('AdminPhone', 'set-admin-phone')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
+                        <div><label class="block text-xs font-bold text-gray-700 mb-1">WhatsApp Number</label><div class="flex gap-2"><input type="tel" id="set-whatsapp" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('WhatsAppNumber', 'set-whatsapp')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
+                    </div>
+                    
+                    <!-- Payment Account Settings -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border space-y-5">
+                        <h3 class="font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-money-bill-transfer text-brand mr-2"></i>Payment Accounts</h3>
+                        <div><label class="block text-xs font-bold text-gray-700 mb-1">bKash Number (Personal)</label><div class="flex gap-2"><input type="tel" id="set-bkash" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('BkashNumber', 'set-bkash')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
+                        <div><label class="block text-xs font-bold text-gray-700 mb-1">Nagad Number (Personal)</label><div class="flex gap-2"><input type="tel" id="set-nagad" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('NagadNumber', 'set-nagad')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
+                        <div><label class="block text-xs font-bold text-gray-700 mb-1">Rocket Number (Personal)</label><div class="flex gap-2"><input type="tel" id="set-rocket" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('RocketNumber', 'set-rocket')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
+                    </div>
+
+                    <!-- General Settings -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border lg:col-span-2 space-y-5">
+                        <h3 class="font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-gear text-brand mr-2"></i>General Settings</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><label class="block text-xs font-bold text-gray-700 mb-1">Top Announcement Marquee</label><div class="flex gap-2"><input type="text" id="set-promo-text" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('PromoText', 'set-promo-text')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
+                            <div><label class="block text-xs font-bold text-gray-700 mb-1">Free Delivery Target Amount (৳)</label><div class="flex gap-2"><input type="number" id="set-free-del" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('FreeDeliveryThreshold', 'set-free-del')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -467,6 +487,7 @@
                     storeData = data.data; 
                     if(!storeData.carousel) storeData.carousel = [];
                     if(!storeData.tags) storeData.tags = {};
+                    if(!storeData.settings) storeData.settings = {};
                     renderMenuAdmin(); renderAreasAdmin(); renderSettings(); renderCarouselAdmin(); populateAreaFilter();
                 } 
             } catch(e){} 
@@ -548,7 +569,6 @@
                         showToast("🔔 নতুন অর্ডার এসেছে!", false); 
                         try { new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play(); } catch(e) {} 
                     }
-                    // Silent Update without blocking UI
                     allOrders = freshOrders; 
                     processCustomers(); 
                     cleanOldViewedOrders();
@@ -590,8 +610,9 @@
                     return `
                     <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row justify-between md:items-center gap-3 hover:border-brand/30 transition-colors">
                         <div class="flex-1">
-                            <div class="flex gap-2 items-center mb-1"><span class="font-bold text-sm text-gray-800">${o.id}</span><span class="text-[10px] text-gray-400 bg-gray-100 px-1.5 rounded">${formatEnglishDate(o.time)}</span></div>
-                            <p class="text-xs text-gray-600 font-bold flex items-center">${o.name} ${tagHtml} <a href="tel:${o.phone}" class="text-blue-500 hover:text-blue-700 ml-2 border-l pl-2 border-gray-300"><i class="fa-solid fa-phone"></i> ${o.phone}</a></p>
+                            <div class="flex gap-2 items-center mb-1.5 border-b border-gray-50 pb-1.5"><span class="font-bold text-sm text-gray-800">${o.id}</span><span class="text-[10px] text-gray-400 bg-gray-100 px-1.5 rounded">${formatEnglishDate(o.time)}</span></div>
+                            <p class="text-xs text-gray-700 font-bold flex items-center mb-1.5">${o.name} ${tagHtml} <a href="tel:${o.phone}" class="text-blue-500 hover:text-blue-700 ml-2 border-l pl-2 border-gray-300"><i class="fa-solid fa-phone"></i> ${o.phone}</a></p>
+                            <p class="text-[10px] text-gray-600 bg-orange-50/40 p-2 rounded-lg border border-orange-100 line-clamp-2" title="${o.details}"><span class="font-bold text-gray-400 uppercase tracking-wide mr-1 text-[9px]">Items:</span> ${o.details}</p>
                         </div>
                         <div class="text-left md:text-right shrink-0 w-full md:w-48 bg-gray-50 md:bg-transparent p-2 md:p-0 rounded">
                             <p class="text-brand font-bold text-sm">৳ ${o.total}</p>
@@ -780,7 +801,7 @@
             try {
                 await fetchPost({ action: 'saveCustomerTag', phone: currentViewedPhone, tag: tag });
                 customerMap[currentViewedPhone].tag = tag; storeData.tags[currentViewedPhone] = tag;
-                renderCustomers(); renderDashboard(); showToast("ট্যাগ সেভ হয়েছে!");
+                renderCustomers(); renderDashboard(); renderOrders(); showToast("ট্যাগ সেভ হয়েছে!");
             } catch(e){} showLoading(false);
         }
 
@@ -932,9 +953,17 @@
         async function deleteNotification(id) { if(!confirm("Are you sure?")) return; showLoading(true); try { await fetchPost({ action: 'deleteNotification', id }); showToast("Deleted!"); fetchAdminNotifs(); } catch(e){} showLoading(false); }
 
         // --- SETTINGS ---
-        function renderSettings() { document.getElementById('set-admin-phone').value=storeData.settings.AdminPhone||''; document.getElementById('set-promo-text').value=storeData.settings.PromoText||''; document.getElementById('set-free-del').value=storeData.settings.FreeDeliveryThreshold||''; }
+        function renderSettings() { 
+            document.getElementById('set-admin-phone').value=storeData.settings.AdminPhone||''; 
+            document.getElementById('set-whatsapp').value=storeData.settings.WhatsAppNumber||''; 
+            document.getElementById('set-bkash').value=storeData.settings.BkashNumber||''; 
+            document.getElementById('set-nagad').value=storeData.settings.NagadNumber||''; 
+            document.getElementById('set-rocket').value=storeData.settings.RocketNumber||''; 
+            document.getElementById('set-promo-text').value=storeData.settings.PromoText||''; 
+            document.getElementById('set-free-del').value=storeData.settings.FreeDeliveryThreshold||''; 
+        }
         async function saveSetting(k, id) { const v=document.getElementById(id).value; showLoading(true); try{ await fetchPost({action:'saveSettings', key:k, value:v}); storeData.settings[k]=v; showToast("Saved!");}catch(e){} showLoading(false); }
 
     </script>
 </body>
-</html>
+                                                                                                                                                                                                                                                                               </html>
