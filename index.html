@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
@@ -345,25 +345,32 @@
         function renderMenu() {
             const container = document.getElementById('menu-container');
             if(menuItems.length === 0) { container.innerHTML = `<div class="col-span-full text-center text-gray-500 py-10"><p>মেনুতে কোনো খাবার নেই!</p></div>`; return; }
-            container.innerHTML = menuItems.map(item => `
-                <div class="bg-white rounded-xl shadow-sm border overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-                    <div class="relative cursor-pointer group bg-gray-50 h-52 flex justify-center items-center overflow-hidden" onclick="openFoodDetails('${item.id}')">
-                        <img src="${item.image}" onerror="this.src='https://placehold.co/500x500?text=No+Image'" class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform">
+            container.innerHTML = menuItems.map(item => {
+                const isAvail = item.available !== false;
+                return `
+                <div class="bg-white rounded-xl shadow-sm border overflow-hidden flex flex-col hover:shadow-md transition-shadow relative ${isAvail ? '' : 'opacity-70'}">
+                    ${isAvail ? '' : '<span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow z-10">স্টক আউট</span>'}
+                    <div class="relative ${isAvail ? 'cursor-pointer' : ''} group bg-gray-50 h-52 flex justify-center items-center overflow-hidden" ${isAvail ? `onclick="openFoodDetails('${item.id}')"` : ''}>
+                        <img src="${item.image}" onerror="this.src='https://placehold.co/500x500?text=No+Image'" class="w-full h-full object-contain p-2 ${isAvail ? 'group-hover:scale-105' : 'grayscale'} transition-transform">
                     </div>
                     <div class="p-4 flex-1 flex flex-col border-t">
-                        <h4 class="text-base font-bold text-gray-800 cursor-pointer line-clamp-1 hover:text-brand" onclick="openFoodDetails('${item.id}')">${item.name}</h4>
+                        <h4 class="text-base font-bold text-gray-800 ${isAvail ? 'cursor-pointer hover:text-brand' : ''} line-clamp-1" ${isAvail ? `onclick="openFoodDetails('${item.id}')"` : ''}>${item.name}</h4>
                         <p class="text-brand font-bold text-lg my-2 mt-auto">৳ ${item.price}</p>
-                        <button onclick="addToCart('${item.id}')" class="w-full bg-gray-900 hover:bg-black text-white py-2 rounded text-sm font-medium transition-colors"><i class="fa-solid fa-cart-plus mr-1"></i> কার্টে যোগ</button>
+                        ${isAvail 
+                            ? `<button onclick="addToCart('${item.id}')" class="w-full bg-gray-900 hover:bg-black text-white py-2 rounded text-sm font-medium transition-colors"><i class="fa-solid fa-cart-plus mr-1"></i> কার্টে যোগ</button>` 
+                            : `<button disabled class="w-full bg-gray-300 text-gray-500 cursor-not-allowed py-2 rounded text-sm font-bold"><i class="fa-solid fa-ban mr-1"></i> স্টক নেই</button>`}
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
 
         function openFoodDetails(id) {
             const item = menuItems.find(i => i.id === id); const modal = document.getElementById('food-details-modal');
+            const isAvail = item.available !== false;
             modal.innerHTML = `
                 <div class="relative h-64 w-full bg-gray-50 p-2 border-b">
-                    <img src="${item.image}" onerror="this.src='https://placehold.co/500x500?text=No+Image'" class="w-full h-full object-contain">
+                    <img src="${item.image}" onerror="this.src='https://placehold.co/500x500?text=No+Image'" class="w-full h-full object-contain ${isAvail ? '' : 'grayscale'}">
+                    ${isAvail ? '' : '<span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow z-10">স্টক আউট</span>'}
                     <button onclick="closeFoodDetails()" class="absolute top-3 right-3 bg-white hover:bg-red-50 text-gray-800 hover:text-red-500 rounded-full w-8 h-8 shadow border flex items-center justify-center transition-colors"><i class="fa-solid fa-times"></i></button>
                 </div>
                 <div class="p-5 overflow-y-auto cart-scroll">
@@ -373,7 +380,9 @@
                     <h4 class="font-bold text-gray-700 mb-1 text-sm">বিস্তারিত:</h4>
                     <p class="text-gray-600 text-xs mb-5 leading-relaxed">${item.ingredients}</p>
                     <div class="grid grid-cols-2 gap-2">
-                        <button onclick="addToCart('${item.id}'); closeFoodDetails();" class="bg-gray-900 hover:bg-black text-white font-bold py-2.5 rounded-md text-xs transition-colors shadow"><i class="fa-solid fa-cart-plus"></i> কার্টে যোগ</button>
+                        ${isAvail 
+                            ? `<button onclick="addToCart('${item.id}'); closeFoodDetails();" class="bg-gray-900 hover:bg-black text-white font-bold py-2.5 rounded-md text-xs transition-colors shadow"><i class="fa-solid fa-cart-plus"></i> কার্টে যোগ</button>`
+                            : `<button disabled class="bg-gray-300 text-gray-500 cursor-not-allowed font-bold py-2.5 rounded-md text-xs shadow"><i class="fa-solid fa-ban"></i> স্টক নেই</button>`}
                         <a href="tel:${storeSettings.AdminPhone}" target="_blank" class="bg-brand hover:bg-brand-dark text-white font-bold py-2.5 rounded-md text-xs text-center flex items-center justify-center transition-colors shadow"><i class="fa-solid fa-phone mr-1"></i> কল করে জানুন</a>
                     </div>
                 </div>
@@ -593,7 +602,6 @@
             try {
                 await fetch(scriptURL, { method:'POST', body:JSON.stringify({ action:'order', orderId:'ORD-'+Math.floor(100000+Math.random()*900000), name, phone, address:`[${area.options[area.selectedIndex].text.split(' (')[0]}] ${document.getElementById('cust-address').value}`, orderDetails:cart.map(i=>`${i.name}(${i.qty})`).join(', '), totalBill, paymentDetails:pDetails, status:'পেন্ডিং' }) });
                 cart=[]; localStorage.removeItem('cloudKitchenCart'); updateCartUI(); toggleCart(); document.getElementById('checkout-form').reset();
-                // Long toast for Order success
                 showToast("আপনার অর্ডার সফল হয়েছে!", "ধন্যবাদ, আমরা আপনাকে কল দিয়ে অর্ডার কনফার্ম করবো।", "success", 6000);
             } catch(e) { showToast("ত্রুটি", "ইন্টারনেট সমস্যা", "error"); } finally { btn.disabled=false; btn.innerHTML='অর্ডার কনফার্ম করুন'; }
         }
