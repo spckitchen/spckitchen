@@ -273,6 +273,8 @@
         let cart = JSON.parse(localStorage.getItem('cloudKitchenCart')) || [];
         let deliveryCharge = 0; 
         let currentUser = JSON.parse(localStorage.getItem('cloudKitchenUser')); 
+        let guestPhone = localStorage.getItem('cloudKitchenGuestPhone') || '';
+        let knownOrderStatuses = JSON.parse(localStorage.getItem('cloudKitchenOrderStatuses')) || {};
         
         let menuItems = []; let areaList = []; let carouselList = []; 
         let storeSettings = { AdminPhone: "01316411006", FreeDeliveryThreshold: 1000, PromoText: "" };
@@ -280,7 +282,7 @@
 
         let unreadNotifCount = 0; 
         let readNotifIds = JSON.parse(localStorage.getItem('readNotifs')) || []; 
-        let hasShownNotifToast = false;
+        let alertedNotifs = JSON.parse(localStorage.getItem('alertedNotifs')) || [];
         let currentSlide = 0; let slideInterval;
 
         window.onload = async () => {
@@ -290,6 +292,59 @@
             else document.getElementById('landing-page').classList.remove('hidden');
             updateCartUI();
         };
+
+        // Alert Sound Function
+        function playAlertSound() {
+            try { new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play(); } catch(e) {}
+        }
+
+        function getUserPhone() {
+            return currentUser ? currentUser.phone : (guestPhone ? guestPhone : 'guest');
+        }
+
+        // BACKGROUND SYNC (Every 60 Seconds)
+        setInterval(async () => {
+            if(document.getElementById('landing-page').style.display !== 'none') return;
+
+            // 1. Sync Store Data (Menu, Stock, Promo)
+            try {
+                const res = await fetch(`${scriptURL}?action=getStoreData`); const data = await res.json();
+                if(data.result === 'success') {
+                    menuItems = data.data.menu || []; areaList = data.data.areas || [];
+                    storeSettings = { ...storeSettings, ...data.data.settings };
+                    applyDynamicSettings(); renderMenu(); // silently update menu stock
+                }
+            } catch(e) {}
+
+            // 2. Sync Notifications
+            fetchNotifications(true);
+
+            // 3. Sync Order Statuses
+            const phoneToCheck = getUserPhone();
+            if(phoneToCheck !== 'guest') {
+                try {
+                    const res = await fetch(`${scriptURL}?action=track&phone=${phoneToCheck}`);
+                    const data = await res.json();
+                    if(data.result === 'success' && data.data) {
+                        let statusChanged = false;
+                        data.data.forEach(o => {
+                            if(knownOrderStatuses[o.id] && knownOrderStatuses[o.id] !== o.status) {
+                                showToast("অর্ডার আপডেট!", `আপনার অর্ডার (${o.id}) এখন: ${o.status}`, "success", 8000);
+                                statusChanged = true;
+                            }
+                            knownOrderStatuses[o.id] = o.status;
+                        });
+                        if(statusChanged) {
+                            playAlertSound();
+                            localStorage.setItem('cloudKitchenOrderStatuses', JSON.stringify(knownOrderStatuses));
+                            if(!document.getElementById('tracking-modal').classList.contains('hidden')) {
+                                executeSearch(phoneToCheck); // update tracking ui if open
+                            }
+                        }
+                    }
+                } catch(e) {}
+            }
+        }, 60000);
 
         async function loadDynamicData() {
             try {
@@ -308,12 +363,19 @@
             if(storeSettings.PromoText) { 
                 promoBar.textContent = storeSettings.PromoText; 
                 promoContainer.classList.remove('hidden'); 
+            } else {
+                promoContainer.classList.add('hidden');
             }
             const phone = storeSettings.AdminPhone;
             document.getElementById('hero-call-btn').href = `tel:${phone}`; 
             document.getElementById('float-call-btn').href = `tel:${phone}`; 
             document.getElementById('checkout-call-btn').href = `tel:${phone}`;
-            document.getElementById('delivery-area').innerHTML = '<option value="">-- এরিয়া সিলেক্ট করুন --</option>' + areaList.map(a => `<option value="${a.charge}">${a.name} (৳ ${a.charge})</option>`).join('');
+            
+            // Retain selected area if already chosen
+            const areaSelect = document.getElementById('delivery-area');
+            const currentVal = areaSelect.value;
+            areaSelect.innerHTML = '<option value="">-- এরিয়া সিলেক্ট করুন --</option>' + areaList.map(a => `<option value="${a.charge}">${a.name} (৳ ${a.charge})</option>`).join('');
+            if(currentVal) areaSelect.value = currentVal;
         }
 
         function renderCarousel() {
@@ -329,7 +391,7 @@
                 </div>
             `).join('');
 
-            if(carouselList.length > 1) slideInterval = setInterval(() => moveSlide(1), 3000); // Auto slide 3s
+            if(carouselList.length > 1) slideInterval = setInterval(() => moveSlide(1), 3000); 
         }
 
         function moveSlide(dir) {
@@ -436,8 +498,9 @@
                 document.getElementById('cust-name').readOnly=true; document.getElementById('cust-phone').readOnly=true;
             } else {
                 document.getElementById('nav-user-icon').className="fa-solid fa-user-secret text-brand"; document.getElementById('nav-user-text').textContent="অর্ডার";
+                if(guestPhone) document.getElementById('cust-phone').value = guestPhone;
             }
-            if(!hasShownNotifToast) fetchNotifications(true);
+            fetchNotifications(true);
         }
 
         // --- NOTIFICATIONS ---
@@ -452,20 +515,31 @@
         }
 
         async function fetchNotifications(isBackgroundCheck = false) {
-            const phone = currentUser ? currentUser.phone : 'guest';
+            const phone = getUserPhone();
             try { 
                 const res = await fetch(`${scriptURL}?action=notifications&phone=${phone}`); const data=await res.json();
                 if(data.result==='success' && data.data && data.data.length>0) { 
-                    unreadNotifCount = 0; let latestUnread = null;
-                    data.data.forEach(n => { if(!readNotifIds.includes(String(n.id))) { unreadNotifCount++; if(!latestUnread) latestUnread = n; } });
+                    unreadNotifCount = 0; let latestUnread = null; let newAlertFound = false;
+                    
+                    data.data.forEach(n => { 
+                        if(!readNotifIds.includes(String(n.id))) { 
+                            unreadNotifCount++; 
+                            if(!latestUnread) latestUnread = n; 
+                            if(!alertedNotifs.includes(String(n.id))) {
+                                newAlertFound = true;
+                                alertedNotifs.push(String(n.id));
+                            }
+                        } 
+                    });
                     
                     const badge = document.getElementById('notif-badge');
                     if(unreadNotifCount > 0) { badge.textContent = unreadNotifCount; badge.classList.remove('hidden'); badge.style.display = 'flex'; } 
                     else { badge.classList.add('hidden'); badge.style.display = 'none'; }
 
-                    if(isBackgroundCheck && latestUnread && !hasShownNotifToast) {
-                        hasShownNotifToast = true;
-                        setTimeout(() => { showToast("নতুন মেসেজ: " + latestUnread.title, "বেল আইকনে ক্লিক করে বিস্তারিত দেখুন", "success"); }, 1500);
+                    if(isBackgroundCheck && newAlertFound && latestUnread) {
+                        playAlertSound();
+                        showToast("নতুন মেসেজ: " + latestUnread.title, "বেল আইকনে ক্লিক করে বিস্তারিত দেখুন", "success", 8000);
+                        localStorage.setItem('alertedNotifs', JSON.stringify(alertedNotifs));
                     }
 
                     if(!isBackgroundCheck) {
@@ -486,7 +560,16 @@
         }
 
         // --- TRACKING ---
-        function handleTrackingClick() { toggleTracking(); if(currentUser){ document.getElementById('tracking-form-container').classList.add('hidden'); executeSearch(currentUser.phone); } else { document.getElementById('tracking-form-container').classList.remove('hidden'); } }
+        function handleTrackingClick() { 
+            toggleTracking(); 
+            const phoneToTrack = getUserPhone();
+            if(phoneToTrack !== 'guest') { 
+                document.getElementById('tracking-form-container').classList.add('hidden'); 
+                executeSearch(phoneToTrack); 
+            } else { 
+                document.getElementById('tracking-form-container').classList.remove('hidden'); 
+            } 
+        }
         function toggleTracking() { document.getElementById('tracking-modal').classList.toggle('hidden'); document.getElementById('tracking-overlay').classList.toggle('hidden'); setTimeout(()=>document.getElementById('tracking-modal').classList.toggle('opacity-0'),10); }
         async function searchOrder(e) { e.preventDefault(); executeSearch(document.getElementById('search-phone').value); }
         
@@ -598,9 +681,19 @@
             const name = document.getElementById('cust-name').value; const phone = document.getElementById('cust-phone').value;
             const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             const totalBill = subtotal + ((subtotal >= Number(storeSettings.FreeDeliveryThreshold)) ? 0 : parseInt(area.value)); 
+            const orderId = 'ORD-'+Math.floor(100000+Math.random()*900000);
             
             try {
-                await fetch(scriptURL, { method:'POST', body:JSON.stringify({ action:'order', orderId:'ORD-'+Math.floor(100000+Math.random()*900000), name, phone, address:`[${area.options[area.selectedIndex].text.split(' (')[0]}] ${document.getElementById('cust-address').value}`, orderDetails:cart.map(i=>`${i.name}(${i.qty})`).join(', '), totalBill, paymentDetails:pDetails, status:'পেন্ডিং' }) });
+                await fetch(scriptURL, { method:'POST', body:JSON.stringify({ action:'order', orderId:orderId, name, phone, address:`[${area.options[area.selectedIndex].text.split(' (')[0]}] ${document.getElementById('cust-address').value}`, orderDetails:cart.map(i=>`${i.name}(${i.qty})`).join(', '), totalBill, paymentDetails:pDetails, status:'পেন্ডিং' }) });
+                
+                // Track Guest Phone & Order Status
+                if(!currentUser) {
+                    guestPhone = phone;
+                    localStorage.setItem('cloudKitchenGuestPhone', guestPhone);
+                }
+                knownOrderStatuses[orderId] = 'পেন্ডিং';
+                localStorage.setItem('cloudKitchenOrderStatuses', JSON.stringify(knownOrderStatuses));
+
                 cart=[]; localStorage.removeItem('cloudKitchenCart'); updateCartUI(); toggleCart(); document.getElementById('checkout-form').reset();
                 showToast("আপনার অর্ডার সফল হয়েছে!", "ধন্যবাদ, আমরা আপনাকে কল দিয়ে অর্ডার কনফার্ম করবো।", "success", 6000);
             } catch(e) { showToast("ত্রুটি", "ইন্টারনেট সমস্যা", "error"); } finally { btn.disabled=false; btn.innerHTML='অর্ডার কনফার্ম করুন'; }
