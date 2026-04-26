@@ -2,739 +2,793 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>শেরপুর ক্লাউড কিচেন</title>
+    <!-- Viewport adjusted for proper mobile scaling without zoom issues -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Sherpur Cloud Kitchen</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Primary Font & Pacifico for Stylish Loading Text -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f9fafb; scroll-behavior: smooth; overflow-x: hidden; }
-        .cart-scroll::-webkit-scrollbar { width: 5px; } .cart-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
-        #toast, #cart-toast { pointer-events: none; }
-        .slide-up { animation: slideUp 0.4s ease-out forwards; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .marquee-container { overflow: hidden; white-space: nowrap; width: 100%; display: flex; align-items: center; }
-        .marquee-content { display: inline-block; padding-left: 100%; animation: marquee 15s linear infinite; }
-        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
-        .carousel-item { transition: opacity 0.5s ease-in-out; }
-        .active-slide { opacity: 1; z-index: 10; } .inactive-slide { opacity: 0; z-index: 0; }
-        @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
-        .animate-pulse-soft { animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
+        
+        /* Hide Scrollbar */
+        .custom-scroll::-webkit-scrollbar { display: none; }
+        .custom-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .card { background: white; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; transition: transform 0.2s; }
+        .card:active { transform: scale(0.98); }
+        
+        .input { border-radius: 14px; background: #ffffff; border: 1px solid #e2e8f0; padding: 14px 16px; width: 100%; outline: none; font-weight: 600; transition: all 0.2s; color: #0f172a;}
+        .input:focus { border-color: #ea580c; background: #fff; box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1); }
+        
+        .btn-primary { background: #ea580c; color: white; border-radius: 14px; padding: 14px; font-weight: 700; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25); display: inline-flex; align-items: center; justify-content: center; width: 100%; transition: all 0.2s; cursor: pointer; }
+        .btn-primary:active:not(:disabled) { transform: scale(0.96); box-shadow: 0 2px 6px rgba(234, 88, 12, 0.2); }
+        .btn-primary:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; transform: none; }
+        
+        .btn-dark { background: #0f172a; color: white; border-radius: 14px; padding: 14px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; width: 100%; cursor: pointer; transition: all 0.2s;}
+        .btn-dark:active { transform: scale(0.96); }
+        
+        .nav-item.active { color: #ea580c; }
+        .nav-item.active i { transform: translateY(-3px) scale(1.1); transition: all 0.3s; }
+
+        .slide-up { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .fade-in { animation: fadeIn 0.2s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .pop { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        .progress-step.active .step-icon { background-color: #ea580c; color: white; border-color: #ea580c; }
+        .hide-item { display: none !important; }
+        
+        .wallet-radio:checked + div { border-color: #ea580c; background-color: #ffedd5; }
+        .wallet-radio:checked + div i { color: #ea580c; }
+
+        /* App Container Wrapper - perfect sizing */
+        .app-container { max-width: 100%; height: 100dvh; }
+        @media (min-width: 768px) {
+            .app-container { max-width: 480px; margin: 0 auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; position: relative;}
+            .desktop-modal { top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 24px; bottom: auto; max-height: 85vh; width: 450px !important; }
+            .desktop-modal.translate-y-full { transform: translate(-50%, 100%); opacity: 0; }
+        }
+        
+        .stylish-font { font-family: 'Pacifico', cursive; letter-spacing: 1px; text-shadow: 1px 1px 3px rgba(234, 88, 12, 0.2); }
     </style>
     <script>tailwind.config = { theme: { extend: { colors: { brand: { light: '#ffedd5', DEFAULT: '#ea580c', dark: '#c2410c' } } } } }</script>
 </head>
-<body class="relative pb-24 h-screen flex flex-col">
+<body class="relative h-[100dvh] flex flex-col items-center justify-center bg-slate-200">
 
-    <!-- INITIAL LOADING SCREEN -->
-    <div id="initial-loading" class="fixed inset-0 bg-white z-[3000] flex flex-col items-center justify-center">
-        <i class="fa-solid fa-fire-burner fa-bounce text-brand text-5xl mb-4"></i>
-        <p class="text-gray-600 font-bold animate-pulse">Loading menu...</p>
-    </div>
-
-    <!-- LANDING PAGE (LOGIN / REGISTER) -->
-    <div id="landing-page" class="fixed inset-0 bg-white z-[2000] flex flex-col overflow-y-auto transition-all duration-500 hidden">
-        <div class="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-md mx-auto">
-            <div class="text-center mb-8 slide-up">
-                <div class="w-20 h-20 bg-brand-light rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
-                    <i class="fa-solid fa-fire-burner text-brand text-4xl"></i>
-                </div>
-                <h1 class="text-3xl font-bold text-gray-800 tracking-tight mb-2">শেরপুর <span class="text-brand">ক্লাউড কিচেন</span></h1>
-                <p class="text-gray-600 text-sm font-medium">খাঁটি দেশি স্বাদের দুনিয়ায় প্রবেশ করুন।</p>
-            </div>
-
-            <!-- LOGIN -->
-            <div id="login-section" class="w-full slide-up" style="animation-delay: 0.1s;">
-                <form onsubmit="handleLogin(event)" class="space-y-4">
-                    <div><input type="tel" id="login-phone" required placeholder="ফোন নাম্বার দিন" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand outline-none"></div>
-                    <div><input type="password" id="login-pass" required placeholder="আপনার পাসওয়ার্ড দিন" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand outline-none"></div>
-                    <button type="submit" id="login-btn" class="w-full bg-brand text-white font-bold py-3.5 rounded-lg shadow mt-2">লগিন করুন</button>
-                </form>
-                <div class="text-center mt-4 text-sm text-gray-600">একাউন্ট নেই? <button onclick="toggleAuth('register')" class="text-brand font-bold">নতুন একাউন্ট খুলুন</button></div>
-            </div>
-
-            <!-- REGISTER -->
-            <div id="register-section" class="w-full hidden slide-up">
-                <form onsubmit="handleRegister(event)" class="space-y-4">
-                    <input type="text" id="reg-name" required placeholder="আপনার পুরো নাম লিখুন" class="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-brand">
-                    <input type="tel" id="reg-phone" required placeholder="ফোন নাম্বার" class="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-brand">
-                    <input type="password" id="reg-pass" required placeholder="6 সংখ্যার পাসওয়ার্ড দিন" minlength="6" class="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-brand">
-                    <button type="submit" id="reg-btn" class="w-full bg-gray-900 text-white font-bold py-3.5 rounded-lg shadow mt-2">রেজিস্ট্রেশন করুন</button>
-                </form>
-                <div class="text-center mt-4 text-sm text-gray-600">ইতিমধ্যে একাউন্ট খুলা আছে? <button onclick="toggleAuth('login')" class="text-brand font-bold">লগিন</button></div>
-            </div>
-
-            <div class="w-full flex items-center justify-between my-5 slide-up" style="animation-delay: 0.2s;">
-                <hr class="w-full border-gray-300"><span class="p-2 text-gray-400 text-xs">OR</span><hr class="w-full border-gray-300">
-            </div>
-            
-            <button onclick="continueAsGuest()" class="w-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-bold py-3 rounded-lg shadow-sm flex items-center justify-center gap-2 slide-up" style="animation-delay: 0.3s;">
-                <i class="fa-solid fa-user-secret"></i>একাউন্ট ছাড়াই অর্ডার দিন
-            </button>
-        </div>
-    </div>
-
-    <!-- MAIN APP SECTION -->
-    <div id="main-app" class="flex-1 hidden">
-
-        <!-- Navigation Bar -->
-        <nav class="bg-white shadow-md sticky top-0 z-40 w-full">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
-                <div class="flex items-center gap-2 cursor-pointer" onclick="closeAllModals(); window.scrollTo(0,0)">
-                    <i class="fa-solid fa-fire-burner text-brand text-xl"></i>
-                    <h1 class="text-lg md:text-xl font-bold tracking-tight">শেরপুর <span class="text-brand">ক্লাউড কিচেন</span></h1>
-                </div>
-                <div class="flex items-center gap-3 md:gap-5">
-                    <!-- Notification Bell -->
-                    <button onclick="toggleNotifications()" class="relative p-2 text-gray-600 hover:text-brand outline-none">
-                        <i class="fa-solid fa-bell text-lg"></i>
-                        <span id="notif-badge" class="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full hidden items-center justify-center border border-white">0</span>
-                    </button>
-                    <!-- User Profile / Track -->
-                    <div class="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
-                        <button onclick="handleTrackingClick()" class="text-gray-600 hover:text-brand font-medium flex items-center gap-1.5 outline-none text-xs md:text-sm">
-                            <i id="nav-user-icon" class="fa-solid fa-route text-brand"></i>
-                            <span id="nav-user-text" class="hidden sm:inline">Track</span>
-                        </button>
-                        <button id="nav-logout-btn" onclick="logout()" class="hidden ml-1 border-l pl-2 border-gray-300 text-red-500 hover:text-red-700"><i class="fa-solid fa-right-from-bracket"></i></button>
-                    </div>
-                    <!-- Cart -->
-                    <button onclick="toggleCart()" class="relative p-2 text-gray-600 hover:text-brand outline-none">
-                        <i class="fa-solid fa-cart-shopping text-xl"></i>
-                        <span id="cart-badge" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-[10px] font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-500 rounded-full hidden">0</span>
-                    </button>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Hero Section -->
-        <header class="bg-brand-light py-8 px-4 text-center">
-            <div class="max-w-2xl mx-auto">
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2 leading-tight">খাঁটি দেশি স্বাদ,<br>এখন আপনার দরজায়!</h2>
-                <p class="text-gray-600 text-xs md:text-sm mb-5">গরম গরম মজাদার খাবার অর্ডার করুন আর উপভোগ করুন বাসায় বসেই।</p>
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <a href="#menu-section" class="bg-brand hover:bg-brand-dark text-white font-bold py-2 px-6 rounded-full shadow transition-transform hover:scale-105 w-full sm:w-auto text-sm">মেনু দেখুন <i class="fa-solid fa-arrow-down ml-1"></i></a>
-                    <a id="hero-call-btn" href="#" target="_blank" class="bg-white border-2 border-brand text-brand hover:bg-brand hover:text-white font-bold py-1.5 px-6 rounded-full shadow transition-transform hover:scale-105 flex items-center justify-center w-full sm:w-auto text-sm">
-                        <i class="fa-solid fa-phone mr-1"></i> কল করে অর্ডার দিন
-                    </a>
-                </div>
-            </div>
-        </header>
-
-        <!-- Marquee Promo Banner -->
-        <div id="promo-banner-container" class="bg-green-600 text-white text-xs py-1.5 font-medium hidden">
-            <div class="marquee-container max-w-7xl mx-auto">
-                <span id="promo-banner" class="marquee-content"></span>
-            </div>
-        </div>
-
-        <!-- Carousel Slider -->
-        <div id="carousel-container" class="relative w-full h-[180px] md:h-[350px] bg-gray-200 overflow-hidden hidden group mt-2">
-            <div id="carousel-slides" class="relative w-full h-full"></div>
-            <!-- Slide Arrows -->
-            <button onclick="moveSlide(-1)" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/70 hover:bg-white text-gray-800 w-8 h-8 rounded-full shadow z-20 flex items-center justify-center"><i class="fa-solid fa-chevron-left"></i></button>
-            <button onclick="moveSlide(1)" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/70 hover:bg-white text-gray-800 w-8 h-8 rounded-full shadow z-20 flex items-center justify-center"><i class="fa-solid fa-chevron-right"></i></button>
-        </div>
-
-        <!-- Main Menu -->
-        <main id="menu-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <h3 class="text-xl font-bold text-gray-800 mb-6 border-b-2 border-brand pb-1 inline-block">আমাদের মেনু</h3>
-            <div id="menu-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
-        </main>
-
-        <footer class="bg-gray-800 text-white py-6 text-center mt-6 text-sm">
-            <p class="text-gray-400">&copy; 2026 Sherpur Cloud Kitchen - All rights reserved.</p>
-        </footer>
-
-        <!-- Float WhatsApp Button -->
-        <a id="float-wa-btn" href="#" target="_blank" class="fixed bottom-[88px] md:bottom-[104px] right-6 bg-[#25D366] hover:bg-[#128C7E] text-white p-3 md:p-4 rounded-full shadow-2xl z-30 flex items-center justify-center transition-transform hover:scale-110 group">
-            <i class="fa-brands fa-whatsapp text-xl md:text-2xl animate-pulse"></i>
-            <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap pl-0 group-hover:pl-3 font-semibold text-sm">WhatsApp</span>
-        </a>
-
-        <!-- Float Call Button -->
-        <a id="float-call-btn" href="#" target="_blank" class="fixed bottom-6 right-6 bg-blue-500 hover:bg-blue-600 text-white p-3 md:p-4 rounded-full shadow-2xl z-30 flex items-center justify-center transition-transform hover:scale-110 group">
-            <i class="fa-solid fa-phone-volume text-xl md:text-2xl"></i>
-            <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap pl-0 group-hover:pl-3 font-semibold text-sm">Call Now</span>
-        </a>
-
-        <!-- ================= MODALS ================= -->
+    <!-- App Container -->
+    <div class="app-container w-full bg-white relative flex flex-col overflow-hidden">
         
-        <!-- Notifications Modal -->
-        <div id="notif-overlay" onclick="toggleNotifications()" class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
-        <div id="notif-sidebar" class="fixed top-0 left-0 h-full w-full sm:w-[350px] bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
-            <div class="p-4 border-b flex justify-between bg-gray-50">
-                <h2 class="text-lg font-bold"><i class="fa-solid fa-bell text-brand mr-2"></i>Notifications</h2>
-                <button onclick="toggleNotifications()" class="text-gray-500 hover:text-red-500"><i class="fa-solid fa-times text-lg"></i></button>
-            </div>
-            <div id="notif-items" class="flex-1 overflow-y-auto p-4 space-y-3">
-                <div class="text-center text-gray-400 py-10"><i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i></div>
-            </div>
+        <!-- Offline Alert -->
+        <div id="offline-alert" class="absolute top-0 left-0 w-full bg-red-500 text-white text-xs font-bold text-center py-2 z-[99999] transition-all duration-300 transform -translate-y-full">
+            <i class="fa-solid fa-wifi mr-2"></i> ইন্টারনেট কানেকশন নেই!
         </div>
 
-        <!-- Food Details Modal -->
-        <div id="food-details-overlay" onclick="closeFoodDetails()" class="fixed inset-0 bg-black bg-opacity-60 z-[60] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
-        <div id="food-details-modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md bg-white rounded-xl shadow-2xl z-[70] hidden opacity-0 transition-all duration-300 scale-95 flex flex-col max-h-[90vh] overflow-hidden"></div>
-
-        <!-- Tracking Modal -->
-        <div id="tracking-overlay" onclick="toggleTracking()" class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
-        <div id="tracking-modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md bg-white rounded-xl shadow-2xl z-50 hidden opacity-0 transition-all duration-300 scale-95 flex flex-col max-h-[90vh]">
-            <div class="p-4 border-b flex justify-between bg-gray-50 rounded-t-xl">
-                <h2 id="tracking-title" class="text-lg font-bold"><i class="fa-solid fa-truck-fast text-brand mr-2"></i>Order Status</h2>
-                <button onclick="toggleTracking()" class="text-gray-500 hover:text-red-500"><i class="fa-solid fa-times text-lg"></i></button>
+        <!-- INITIAL LOADING -->
+        <div id="initial-loading" class="absolute inset-0 bg-white z-[5000] flex flex-col items-center justify-center">
+            <!-- Original Orange Logo -->
+            <div class="w-28 h-28 bg-[#ea580c] rounded-full flex items-center justify-center mb-6 text-6xl text-white shadow-xl shadow-orange-500/40 fa-bounce">
+                <i class="fa-solid fa-fire-burner"></i>
             </div>
-            <div class="p-5 flex-1 overflow-y-auto">
-                <div id="tracking-form-container">
-                    <form onsubmit="searchOrder(event)" class="flex gap-2 mb-6">
-                        <input type="text" id="search-phone" required placeholder="Phone Number or ID" class="flex-1 px-3 border rounded-md outline-none text-sm focus:border-brand">
-                        <button type="submit" id="search-btn" class="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-md font-bold text-sm">Track</button>
+            <!-- Stylish Bengali Text -->
+            <h2 class="text-4xl text-[#ea580c] stylish-font text-center px-4 leading-tight mb-2">শেরপুর<br>ক্লাউড কিচেন</h2>
+            <p class="text-slate-500 font-bold text-sm mt-3 flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-full border border-slate-100">
+                <i class="fa-solid fa-spinner fa-spin text-[#ea580c]"></i> অরিজিনাল স্বাদ লোড হচ্ছে...
+            </p>
+        </div>
+
+        <!-- Area Strict Overlay -->
+        <div id="area-modal-overlay" class="fixed inset-0 bg-slate-900/80 z-[3500] hidden opacity-0 transition-opacity duration-300 backdrop-blur-md"></div>
+        <div id="area-modal" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white rounded-t-[32px] shadow-2xl z-[3600] hidden transition-all duration-300 translate-y-full flex flex-col pb-safe max-h-[85vh] desktop-modal">
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-4 mb-2 shrink-0 md:hidden"></div>
+            <div class="p-6 pb-2 shrink-0 border-b border-slate-100 flex justify-between items-center">
+                <div><h2 class="text-xl font-extrabold text-slate-900 mb-1">ডেলিভারি এরিয়া</h2><p class="text-slate-500 text-xs font-medium">ডেলিভারি চার্জ দেখতে এরিয়া নির্বাচন করুন</p></div>
+                <button id="close-area-btn" onclick="uiModals.close('area-modal')" class="bg-slate-50 text-slate-500 hover:text-red-500 rounded-full w-8 h-8 flex items-center justify-center transition-colors"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="p-6 flex-1 overflow-hidden flex flex-col"><div id="area-list-container" class="flex-1 overflow-y-auto custom-scroll space-y-3 pb-6"></div></div>
+        </div>
+
+        <!-- MAIN APP -->
+        <div id="main-app" class="flex-1 flex flex-col bg-slate-50 h-full overflow-y-auto custom-scroll relative">
+
+            <!-- Sticky Header -->
+            <header class="bg-white px-3 py-3 sticky top-0 z-40 shadow-sm flex items-center gap-3 border-b border-slate-100">
+                <!-- Original Orange Logo -->
+                <button onclick="uiModals.navTo('home')" class="w-11 h-11 shrink-0 bg-[#ea580c] text-white rounded-full flex items-center justify-center text-xl shadow-md shadow-orange-500/30 transition-transform active:scale-95">
+                    <i class="fa-solid fa-fire-burner"></i>
+                </button>
+                
+                <!-- Location Info -->
+                <button onclick="uiModals.open('area-modal')" class="flex-1 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100 flex flex-col items-start transition-colors hover:bg-brand/5 text-left overflow-hidden">
+                    <span class="text-[9px] font-extrabold text-brand uppercase tracking-widest flex items-center gap-1"><i class="fa-solid fa-location-dot"></i> লোকেশন</span>
+                    <span class="text-sm font-extrabold text-slate-900 w-full truncate" id="header-loc-text">এরিয়া নির্বাচন করুন</span>
+                </button>
+
+                <!-- Icons -->
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <button onclick="menuLogic.toggleSearchBar()" class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors border border-slate-100"><i class="fa-solid fa-search"></i></button>
+                    <button onclick="favLogic.openFavorites()" class="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 transition-colors border border-red-100"><i class="fa-solid fa-heart" id="header-fav-icon"></i></button>
+                    <button onclick="uiModals.open('profile-modal')" class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors border border-slate-100"><i class="fa-solid fa-user"></i></button>
+                </div>
+            </header>
+
+            <!-- Search Bar -->
+            <div id="search-bar-container" class="sticky top-[68px] z-30 px-4 py-2 bg-white hidden shadow-sm border-b border-slate-100 slide-up">
+                <div class="relative w-full md:max-w-md md:mx-auto">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="menu-search" oninput="menuLogic.handleSearch()" placeholder="খাবার খুঁজুন..." class="w-full bg-slate-50 rounded-xl py-3 pl-11 pr-4 text-sm font-semibold outline-none focus:ring-2 focus:ring-brand/30 border border-slate-200">
+                </div>
+            </div>
+
+            <!-- Offers Section -->
+            <section class="px-4 mt-4 mb-4 hidden fade-in" id="offers-section">
+                <h3 class="text-sm font-extrabold text-slate-900 tracking-tight mb-3 flex items-center gap-2"><i class="fa-solid fa-bolt text-brand"></i> স্পেশাল অফার</h3>
+                <div id="offers-container" class="flex overflow-x-auto gap-4 custom-scroll pb-2"></div>
+            </section>
+
+            <!-- Category Icons -->
+            <section class="pl-4 mt-2 mb-4 bg-white py-4 shadow-sm border-y border-slate-100">
+                <div id="category-icons" class="flex gap-4 overflow-x-auto custom-scroll pr-5"></div>
+            </section>
+
+            <!-- Menu Container (Added massive padding-bottom pb-40 to prevent hiding items) -->
+            <main id="grouped-menu-container" class="pb-10 min-h-[400px]">
+                <div id="empty-menu-msg" class="hidden text-center py-20 fade-in">
+                    <i class="fa-solid fa-cookie-bite text-5xl mb-4 text-slate-300 block"></i>
+                    <p class="font-bold text-slate-500">খাবার পাওয়া যায়নি</p>
+                </div>
+                <!-- Skeletons initially -->
+                <div id="menu-skeletons" class="px-4 mt-4 space-y-4">
+                    <div class="h-6 w-32 skeleton rounded"></div>
+                    <div class="grid grid-cols-2 gap-3"><div class="w-full h-64 skeleton rounded-2xl"></div><div class="w-full h-64 skeleton rounded-2xl"></div></div>
+                </div>
+            </main>
+            
+            <!-- Extra spacer block to guarantee scrolling space for the last item -->
+            <div class="h-40 w-full shrink-0 block"></div>
+        </div>
+
+        <!-- BOTTOM NAV -->
+        <div class="absolute bottom-0 left-0 w-full bg-white flex justify-between items-center py-2 px-6 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] z-[40] border-t border-slate-100 pb-safe">
+            <button onclick="uiModals.navTo('home')" class="nav-item active flex flex-col items-center p-2 w-12 transition-colors"><i class="fa-solid fa-house text-[22px] mb-1"></i><span class="text-[9px] font-extrabold">হোম</span></button>
+            <button onclick="uiModals.open('cart-sidebar')" class="nav-item text-slate-400 flex flex-col items-center p-2 w-12 transition-colors relative"><i class="fa-solid fa-basket-shopping text-[22px] mb-1"></i><span class="text-[9px] font-extrabold">কার্ট</span><span id="bottom-cart-badge" class="absolute top-0 right-0 bg-brand text-white text-[9px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white hidden">0</span></button>
+            <button onclick="trackingLogic.openTracking()" class="nav-item text-slate-400 flex flex-col items-center p-2 w-12 transition-colors"><i class="fa-solid fa-route text-[22px] mb-1"></i><span class="text-[9px] font-extrabold">ট্র্যাক</span></button>
+            <button onclick="notifLogic.openNotifications()" class="nav-item text-slate-400 flex flex-col items-center p-2 w-12 transition-colors relative"><i class="fa-regular fa-comment-dots text-[22px] mb-1"></i><span class="text-[9px] font-extrabold">মেসেজ</span><span id="bottom-notif-badge" class="absolute top-0 right-1 bg-red-500 border border-white text-white text-[9px] font-bold h-3 w-3 flex items-center justify-center rounded-full hidden"></span></button>
+            <button onclick="uiModals.open('about-modal')" class="nav-item text-slate-400 flex flex-col items-center p-2 w-12 transition-colors"><i class="fa-solid fa-circle-info text-[22px] mb-1"></i><span class="text-[9px] font-extrabold">এবাউট</span></button>
+        </div>
+
+        <!-- Floating Buttons -->
+        <div class="absolute bottom-20 right-4 flex flex-col gap-3 z-[45] pointer-events-none items-end mb-2">
+            <a id="float-wa-btn" href="#" target="_blank" class="pointer-events-auto bg-[#25D366] text-white w-12 h-12 rounded-full shadow-lg shadow-green-500/30 flex items-center justify-center transition-transform hover:scale-110 border-2 border-white"><i class="fa-brands fa-whatsapp text-2xl"></i></a>
+            <a id="float-call-btn" href="#" target="_blank" class="pointer-events-auto bg-slate-900 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 border-2 border-white"><i class="fa-solid fa-phone text-xl"></i></a>
+        </div>
+
+    </div> <!-- End App Container -->
+
+    <!-- ================== MODALS & SIDEBARS ================== -->
+
+    <!-- Request Modal -->
+    <div id="request-modal-overlay" onclick="uiModals.close('request-modal')" class="fixed inset-0 bg-slate-900/60 z-[150] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
+    <div id="request-modal" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white rounded-t-[32px] shadow-2xl z-[160] hidden transition-all duration-300 translate-y-full flex flex-col max-h-[90vh] pb-safe desktop-modal">
+        <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-4 mb-2 shrink-0 md:hidden"></div>
+        <div class="p-6 flex justify-between items-center border-b border-slate-100 shrink-0"><h2 class="text-xl font-extrabold text-slate-900">খাবারের রিকোয়েস্ট</h2><button onclick="uiModals.close('request-modal')" class="bg-slate-50 text-slate-500 hover:text-red-500 rounded-full w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-times"></i></button></div>
+        <div class="p-6 flex-1 overflow-y-auto custom-scroll">
+            <p class="text-xs text-slate-500 font-bold mb-4">আপনার পছন্দের কোনো খাবার তৈরি করার অনুরোধ করতে বিস্তারিত লিখে দিন।</p>
+            <textarea id="custom-request-text" placeholder="খাবারের নাম বা বিস্তারিত বিবরণ..." rows="4" class="input mb-4"></textarea>
+            <button onclick="requestLogic.send()" id="req-send-btn" class="btn-primary w-full">সেন্ড করুন <i class="fa-solid fa-paper-plane ml-2"></i></button>
+        </div>
+    </div>
+
+    <!-- Offer Modal -->
+    <div id="offer-modal-overlay" onclick="uiModals.close('offer-modal')" class="fixed inset-0 bg-slate-900/60 z-[150] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
+    <div id="offer-modal" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white rounded-t-[32px] shadow-2xl z-[160] hidden transition-all duration-300 translate-y-full flex flex-col max-h-[90vh] pb-safe desktop-modal">
+        <div class="relative h-48 w-full bg-slate-50 shrink-0 rounded-t-[32px] overflow-hidden md:rounded-t-3xl">
+            <img id="offer-modal-img" src="" class="w-full h-full object-cover">
+            <button onclick="uiModals.close('offer-modal')" class="absolute top-4 right-4 bg-white/90 backdrop-blur rounded-full w-10 h-10 shadow-sm flex items-center justify-center text-slate-800 hover:text-red-500"><i class="fa-solid fa-times"></i></button>
+            <div class="absolute bottom-4 left-4 bg-red-500 text-white text-[10px] font-extrabold px-3 py-1 rounded-lg shadow-md uppercase tracking-wide">স্পেশাল অফার</div>
+        </div>
+        <div class="p-6 flex-1 overflow-y-auto custom-scroll bg-white flex flex-col">
+            <div class="flex justify-between items-start mb-3"><h3 id="offer-modal-title" class="text-2xl font-extrabold text-slate-900"></h3><span id="offer-modal-price" class="text-brand font-extrabold text-2xl"></span></div>
+            <p id="offer-modal-desc" class="text-slate-600 text-sm font-medium leading-relaxed mb-6"></p>
+            <div class="mt-auto"><button onclick="offerLogic.executeOrder()" class="btn-primary w-full py-4 text-base">এখনই অর্ডার দিন <i class="fa-solid fa-arrow-right ml-2"></i></button></div>
+        </div>
+    </div>
+
+    <!-- Profile -->
+    <div id="profile-modal-overlay" onclick="uiModals.close('profile-modal')" class="fixed inset-0 bg-slate-900/60 z-[150] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
+    <div id="profile-modal" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white rounded-t-[32px] shadow-2xl z-[160] hidden transition-all duration-300 translate-y-full flex flex-col max-h-[90vh] pb-safe desktop-modal">
+        <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-4 mb-2 shrink-0 md:hidden"></div>
+        <div class="p-6 flex justify-between items-center border-b border-slate-100 shrink-0"><h2 class="text-xl font-extrabold text-slate-900">কাস্টমার প্রোফাইল</h2><button onclick="uiModals.close('profile-modal')" class="bg-slate-50 text-slate-500 hover:text-red-500 rounded-full w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-times"></i></button></div>
+        <div class="p-6 flex-1 overflow-y-auto custom-scroll">
+            <form onsubmit="profileLogic.save(event)" class="space-y-4 mb-6">
+                <input type="text" id="prof-name" placeholder="আপনার নাম" class="input border border-slate-200">
+                <!-- Strict 11 digit input validation -->
+                <input type="tel" id="prof-phone" required placeholder="১১ ডিজিটের মোবাইল নম্বর" class="input border border-slate-200" pattern="01[3-9][0-9]{8}" maxlength="11" minlength="11">
+                <input type="email" id="prof-email" placeholder="ইমেইল (ঐচ্ছিক)" class="input border border-slate-200">
+                <div class="relative"><select id="prof-area" class="input bg-white appearance-none pr-10 cursor-pointer border border-slate-200"></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i></div>
+                <textarea id="prof-address" placeholder="বিস্তারিত ঠিকানা" rows="2" class="input border border-slate-200"></textarea>
+                <button type="submit" id="prof-save-btn" class="btn-dark w-full mt-2">তথ্য সেভ করুন</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- About Us -->
+    <div id="about-modal-overlay" onclick="uiModals.close('about-modal')" class="fixed inset-0 bg-slate-900/60 z-[150] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
+    <div id="about-modal" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white rounded-t-[32px] shadow-2xl z-[160] hidden transition-all duration-300 translate-y-full flex flex-col max-h-[90vh] pb-safe desktop-modal">
+        <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-4 mb-2 shrink-0 md:hidden"></div>
+        <div class="p-6 flex justify-between items-center border-b border-slate-100 shrink-0"><h2 class="text-xl font-extrabold text-slate-900">আমাদের সম্পর্কে</h2><button onclick="uiModals.close('about-modal')" class="bg-slate-50 text-slate-500 hover:text-red-500 rounded-full w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-times"></i></button></div>
+        <div class="p-6 flex-1 overflow-y-auto custom-scroll text-center">
+            <div class="w-24 h-24 bg-brand rounded-full flex items-center justify-center mx-auto mb-4 text-4xl text-white shadow-lg shadow-brand/30"><i class="fa-solid fa-fire-burner"></i></div>
+            <h3 class="font-extrabold text-xl text-slate-900 mb-2">শেরপুর ক্লাউড কিচেন</h3>
+            <p class="text-sm text-slate-600 leading-relaxed font-medium mb-6">ক্লাউড কিচেন হলো একটি আধুনিক রেস্টুরেন্ট ব্যবস্থা, যেখানে কোনো ডাইনিং স্পেস থাকে না। আমরা শুধু ডেলিভারির জন্য হাই-জিনিক পরিবেশে সেরা মানের খাবার তৈরি করি এবং সরাসরি আপনার দোরগোড়ায় পৌঁছে দেই।</p>
+            <div class="flex gap-4 justify-center mt-4">
+                <a href="#" class="w-12 h-12 rounded-full bg-[#1877F2]/10 text-[#1877F2] flex items-center justify-center text-2xl transition-transform hover:scale-110"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#" class="w-12 h-12 rounded-full bg-[#E4405F]/10 text-[#E4405F] flex items-center justify-center text-2xl transition-transform hover:scale-110"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="w-12 h-12 rounded-full bg-[#25D366]/10 text-[#25D366] flex items-center justify-center text-2xl transition-transform hover:scale-110"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Food Details -->
+    <div id="food-details-modal-overlay" onclick="uiModals.close('food-details-modal')" class="fixed inset-0 bg-slate-900/60 z-[150] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
+    <div id="food-details-modal" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white rounded-t-[32px] shadow-2xl z-[160] hidden transition-all duration-300 translate-y-full flex flex-col max-h-[90vh] pb-safe overflow-hidden desktop-modal">
+        <div id="food-details-content" class="flex flex-col h-full overflow-hidden"></div>
+    </div>
+
+    <!-- Tracking -->
+    <div id="tracking-modal-overlay" onclick="uiModals.close('tracking-modal')" class="fixed inset-0 bg-slate-900/60 z-[150] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
+    <div id="tracking-modal" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white rounded-t-[32px] shadow-2xl z-[160] hidden transition-all duration-300 translate-y-full flex flex-col max-h-[90vh] pb-safe desktop-modal">
+        <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-4 mb-2 shrink-0 md:hidden"></div>
+        <div class="p-6 flex justify-between items-center border-b border-slate-50 shrink-0"><h2 class="text-xl font-extrabold text-slate-900">অর্ডার ট্র্যাকিং</h2><button onclick="uiModals.close('tracking-modal')" class="bg-slate-50 text-slate-500 hover:text-red-500 rounded-full w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-times"></i></button></div>
+        <div class="p-6 flex-1 overflow-y-auto custom-scroll bg-slate-50/50">
+            <div id="tracking-form-container">
+                <form onsubmit="trackingLogic.executeSearch(event)" class="flex flex-col gap-3 mb-6">
+                    <label class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">মোবাইল বা অর্ডার আইডি দিন</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="search-phone" required placeholder="017XXXX বা ORD-123" class="input shadow-sm border border-slate-200">
+                        <button type="submit" id="search-btn" class="btn-dark px-6 w-auto"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+            <div id="tracking-result" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <!-- Favorite Sidebar -->
+    <div id="fav-sidebar-overlay" onclick="uiModals.close('fav-sidebar')" class="fixed inset-0 bg-slate-900/60 z-[150] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
+    <div id="fav-sidebar" class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-[160] transform translate-x-full transition-transform duration-300 flex flex-col md:left-1/2 md:-translate-x-1/2 md:translate-x-0 md:opacity-0 md:pointer-events-none md:transition-opacity">
+        <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
+            <div class="flex items-center gap-3">
+                <button onclick="uiModals.close('fav-sidebar')" class="bg-slate-50 text-slate-500 hover:text-brand rounded-full w-10 h-10 flex items-center justify-center transition-transform active:scale-95"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2 class="text-xl font-extrabold text-slate-900">প্রিয় খাবার</h2>
+            </div>
+        </div>
+        <div class="flex-1 overflow-y-auto p-5 space-y-4 custom-scroll bg-slate-50" id="fav-items"></div>
+    </div>
+
+    <!-- Messages -->
+    <div id="notif-sidebar-overlay" onclick="uiModals.close('notif-sidebar')" class="fixed inset-0 bg-slate-900/60 z-[150] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
+    <div id="notif-sidebar" class="fixed top-0 right-0 h-full w-full max-w-[340px] bg-white shadow-2xl z-[160] transform translate-x-full transition-transform duration-300 flex flex-col rounded-l-[32px] md:left-1/2 md:translate-x-0 md:rounded-none md:max-w-md md:opacity-0 md:pointer-events-none">
+        <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white rounded-tl-[32px] shrink-0 md:rounded-none"><h2 class="text-xl font-extrabold text-slate-900">মেসেজসমূহ</h2><button onclick="uiModals.close('notif-sidebar')" class="bg-slate-50 text-slate-500 hover:text-red-500 rounded-full w-10 h-10 flex items-center justify-center"><i class="fa-solid fa-times"></i></button></div>
+        <div id="notif-items" class="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50 custom-scroll"></div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar-overlay" onclick="uiModals.close('cart-sidebar')" class="fixed inset-0 bg-slate-900/60 z-[150] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-[160] transform translate-x-full transition-transform duration-300 flex flex-col md:left-1/2 md:-translate-x-1/2 md:translate-x-0 md:opacity-0 md:pointer-events-none">
+        <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-white shrink-0">
+            <div class="flex items-center gap-3"><button id="cart-back-btn" onclick="cartLogic.backToItems()" class="hidden bg-slate-50 text-slate-500 hover:text-brand rounded-full w-10 h-10 flex items-center justify-center"><i class="fa-solid fa-arrow-left"></i></button><h2 id="cart-title" class="text-xl font-extrabold text-slate-900">আপনার কার্ট</h2></div>
+            <button onclick="uiModals.close('cart-sidebar')" class="bg-slate-50 text-slate-500 hover:text-red-500 rounded-full w-10 h-10 flex items-center justify-center"><i class="fa-solid fa-times text-lg"></i></button>
+        </div>
+        
+        <!-- Step 1: Items -->
+        <div id="cart-step-1" class="flex-1 flex flex-col overflow-hidden bg-slate-50/50">
+            <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4 custom-scroll"></div>
+            <div class="p-6 border-t border-slate-100 bg-white shadow-[0_-5px_15px_rgba(0,0,0,0.02)] shrink-0">
+                <div class="flex justify-between mb-2 text-sm text-slate-600"><span>সাবটোটাল:</span><span id="cart-subtotal-1" class="font-bold">৳ 0</span></div>
+                <div class="flex justify-between mb-4 text-sm text-slate-600"><span>ডেলিভারি চার্জ:</span><span id="cart-delivery-charge" class="font-bold">৳ 0</span></div>
+                <div class="flex justify-between mb-4 items-center"><span class="text-xs font-extrabold text-slate-900 uppercase">সর্বমোট:</span><span id="cart-grand-total" class="text-2xl font-bold text-brand">৳ 0</span></div>
+                <button id="proceed-btn" onclick="cartLogic.goToCheckout()" class="btn-primary w-full py-4 text-base hidden">চেকআউটে যান <i class="fa-solid fa-arrow-right ml-2 text-sm"></i></button>
+            </div>
+        </div>
+        
+        <!-- Step 2: Checkout -->
+        <div id="cart-step-2" class="hidden flex-1 flex-col overflow-y-auto custom-scroll bg-white pb-10">
+            <div class="p-5">
+                <div id="spam-warning-container" class="hidden bg-red-50 p-5 rounded-2xl border border-red-200 mb-6">
+                    <div class="text-red-500 text-3xl mb-3 text-center"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <p id="spam-warning-text" class="text-sm text-red-700 font-bold text-center leading-relaxed mb-4"></p>
+                    <a id="spam-call-btn" href="#" class="btn-primary w-full bg-red-600 hover:bg-red-700 text-white border-none"><i class="fa-solid fa-phone mr-2"></i> কল দিন</a>
+                </div>
+
+                <div id="checkout-main-content">
+                    <div class="bg-brand/5 p-5 rounded-2xl border border-brand/20 mb-6 relative overflow-hidden">
+                        <div id="free-delivery-badge" class="absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl hidden">ফ্রি ডেলিভারি</div>
+                        <div class="flex justify-between text-sm mb-2 text-slate-600 font-medium"><span>খাবারের মূল্য:</span><span id="checkout-subtotal" class="text-slate-800 font-bold">৳ 0</span></div>
+                        
+                        <!-- Area selection in checkout -->
+                        <div class="flex justify-between items-center text-sm mb-3 text-slate-600 font-medium border-b border-brand/10 pb-3">
+                            <select id="checkout-area-select" class="bg-transparent font-bold text-slate-800 outline-none w-[120px] cursor-pointer" onchange="checkoutLogic.calculateTotal()"></select>
+                            <span id="checkout-delivery" class="text-slate-800 font-bold">৳ 0</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center border-b border-brand/10 pb-3 mb-3">
+                            <div class="flex w-full gap-2"><input type="text" id="coupon-input" placeholder="কুপন কোড" class="input py-2 px-3 text-xs flex-1 border border-slate-200"><button type="button" onclick="checkoutLogic.applyCoupon()" class="bg-slate-800 text-white text-xs px-4 rounded-xl font-bold active:scale-95">অ্যাপ্লাই</button></div>
+                        </div>
+                        <div id="coupon-discount-row" class="flex justify-between text-sm mb-3 text-green-600 font-bold hidden border-b border-brand/10 pb-3"><span>ডিসকাউন্ট:</span><span id="checkout-discount">-৳ 0</span></div>
+                        <div class="flex justify-between items-center"><span class="text-slate-900 font-extrabold text-sm uppercase">মোট বিল:</span><span id="checkout-total-top" class="text-2xl font-bold text-brand">৳ 0</span></div>
+                    </div>
+
+                    <form id="checkout-form" onsubmit="checkoutLogic.execute(event)" class="space-y-4">
+                        <h4 class="font-extrabold text-slate-900 text-sm mb-2">আপনার তথ্য (বাধ্যতামূলক)</h4>
+                        <input type="text" id="cust-name" required placeholder="সম্পূর্ণ নাম" class="input border border-slate-200">
+                        <input type="tel" id="cust-phone" required placeholder="১১ ডিজিটের মোবাইল নম্বর" class="input border border-slate-200" pattern="01[3-9][0-9]{8}" maxlength="11" minlength="11">
+                        <textarea id="cust-address" required placeholder="বিস্তারিত ঠিকানা (বাড়ি নম্বর, রোড)" rows="2" class="input border border-slate-200"></textarea>
+                        
+                        <!-- Extra note taking space -->
+                        <textarea id="cust-note" placeholder="আপনার স্পেশাল কোনো রিকুয়েস্ট থাকলে এখানে লিখে দিন" rows="2" class="input border border-slate-200 mt-2 text-sm"></textarea>
+                        
+                        <h4 class="font-extrabold text-slate-900 text-sm mb-2 mt-6">পেমেন্ট মেথড</h4>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="cursor-pointer relative"><input type="radio" name="payment_method" value="cod" checked onchange="checkoutLogic.togglePayment()" class="absolute opacity-0 wallet-radio"><div class="border-2 border-slate-100 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 bg-white transition-colors"><i class="fa-solid fa-hand-holding-dollar text-2xl text-slate-400"></i><span class="text-[11px] font-bold text-slate-700 text-center uppercase">ক্যাশ অন<br>ডেলিভারি</span></div></label>
+                            <label class="cursor-pointer relative"><input type="radio" name="payment_method" value="online" onchange="checkoutLogic.togglePayment()" class="absolute opacity-0 wallet-radio"><div class="border-2 border-slate-100 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 bg-white transition-colors"><i class="fa-solid fa-mobile-screen-button text-2xl text-slate-400"></i><span class="text-[11px] font-bold text-slate-700 text-center uppercase">অনলাইন<br>পেমেন্ট</span></div></label>
+                        </div>
+                        
+                        <div id="online-payment-details" class="hidden mt-4 bg-slate-50 p-5 rounded-2xl border border-slate-100 slide-up">
+                            <select id="online-method-select" class="input bg-white border border-slate-200 font-bold mb-3" onchange="checkoutLogic.updateInstructions()"><option value="">ওয়ালেট নির্বাচন করুন</option><option value="bkash">bKash</option><option value="nagad">Nagad</option><option value="rocket">Rocket</option></select>
+                            <div id="payment-instructions" class="text-slate-600 text-xs bg-white p-4 rounded-xl border border-slate-200 hidden mb-3 font-medium"></div>
+                            <input type="text" id="trx-id" placeholder="যে নাম্বার থেকে টাকা পাঠিয়েছেন তা দিন" class="input bg-white hidden border border-slate-200">
+                        </div>
+                        <button type="submit" id="confirm-btn" class="btn-primary w-full py-4 text-base mt-6">অর্ডার কনফার্ম করুন <i class="fa-solid fa-check ml-2"></i></button>
                     </form>
                 </div>
-                <div id="tracking-result" class="space-y-3"></div>
             </div>
-        </div>
-
-        <!-- Cart Sidebar & Checkout -->
-        <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden opacity-0 transition-opacity duration-300"></div>
-        <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
-            <div class="p-4 border-b flex justify-between bg-gray-50">
-                <div class="flex items-center gap-2">
-                    <button id="cart-back-btn" onclick="backToCartItems()" class="hidden text-gray-500 hover:text-brand"><i class="fa-solid fa-arrow-left"></i></button>
-                    <h2 id="cart-title" class="text-lg font-bold"><i class="fa-solid fa-basket-shopping text-brand mr-2"></i>Cart</h2>
-                </div>
-                <button onclick="toggleCart()" class="text-gray-500 hover:text-red-500"><i class="fa-solid fa-times text-lg"></i></button>
-            </div>
-            
-            <!-- Step 1: Cart Items -->
-            <div id="cart-step-1" class="flex-1 flex flex-col overflow-hidden">
-                <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
-                <div class="p-4 border-t bg-gray-50">
-                    <div class="flex justify-between mb-3"><span class="text-sm font-semibold text-gray-600">Subtotal:</span><span id="cart-subtotal-1" class="text-xl font-bold text-brand">৳ 0</span></div>
-                    <button id="proceed-btn" onclick="goToCheckout()" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-3 rounded-md shadow-md hidden text-sm transition-colors">Checkout <i class="fa-solid fa-arrow-right ml-1"></i></button>
-                </div>
-            </div>
-            
-            <!-- Step 2: Checkout Form -->
-            <div id="cart-step-2" class="hidden flex-1 overflow-y-auto bg-white p-4">
-                
-                <div class="bg-orange-50 p-3 rounded-lg border border-orange-100 mb-4 relative overflow-hidden">
-                    <div id="free-delivery-badge" class="absolute top-0 right-0 bg-green-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-bl-lg hidden">Free Delivery!</div>
-                    <div class="flex justify-between text-xs mb-1 text-gray-600"><span>Food Total:</span><span id="checkout-subtotal">৳ 0</span></div>
-                    <div class="flex justify-between text-xs mb-2 text-gray-600 border-b border-orange-200 pb-2"><span>Delivery Charge:</span><span id="checkout-delivery">৳ 0</span></div>
-                    <div class="flex justify-between"><span class="text-gray-800 font-bold text-sm">Grand Total:</span><span id="checkout-total" class="text-lg font-bold text-brand">৳ 0</span></div>
-                </div>
-
-                <form id="checkout-form" onsubmit="handleCheckout(event)" class="space-y-3 text-sm">
-                    <input type="text" id="cust-name" required placeholder="Full Name" class="w-full px-3 py-2 border rounded-md outline-none focus:border-brand bg-gray-50">
-                    <input type="tel" id="cust-phone" required placeholder="Phone Number" class="w-full px-3 py-2 border rounded-md outline-none focus:border-brand bg-gray-50">
-                    <select id="delivery-area" required class="w-full px-3 py-2 border rounded-md outline-none focus:border-brand bg-white text-gray-700" onchange="calculateDeliveryCharge()"></select>
-                    <textarea id="cust-address" required placeholder="Detailed Address" rows="2" class="w-full px-3 py-2 border rounded-md outline-none focus:border-brand"></textarea>
-                    
-                    <div class="bg-gray-50 p-3 rounded-lg border">
-                        <p class="font-bold text-gray-800 mb-2 border-b pb-1 text-xs">Payment Method</p>
-                        <label class="flex items-center gap-2 mb-1 cursor-pointer"><input type="radio" name="payment_method" value="cod" checked onchange="togglePaymentDetails()" class="accent-brand"><span>Cash on Delivery</span></label>
-                        <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="payment_method" value="online" onchange="togglePaymentDetails()" class="accent-brand"><span>Online Payment</span></label>
-                        
-                        <div id="online-payment-details" class="hidden mt-3 pt-3 border-t">
-                            <select id="online-method-select" class="w-full px-3 py-2 border rounded-md mb-2 outline-none bg-white focus:border-brand" onchange="updatePaymentInstructions()">
-                                <option value="">-- Select Method --</option>
-                                <option value="bkash">bKash</option><option value="nagad">Nagad</option><option value="rocket">Rocket</option>
-                            </select>
-                            <div id="payment-instructions" class="text-brand-dark text-xs bg-brand-light/40 p-2 rounded border border-brand/20 hidden mb-2 leading-relaxed"></div>
-                            <input type="text" id="trx-id" placeholder="Enter Number or TrxID" class="w-full px-3 py-2 border rounded-md outline-none focus:border-brand hidden">
-                        </div>
-                    </div>
-
-                    <div class="bg-red-50 text-red-800 text-[11px] p-2.5 rounded border border-red-200">
-                        <p><strong>Note:</strong> We will call you to confirm the order. Please receive the call, otherwise your order might be cancelled.</p>
-                    </div>
-
-                    <button type="submit" id="confirm-btn" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-3 rounded-md shadow-md mt-2 transition-colors">Confirm Order</button>
-                    
-                    <a id="checkout-call-btn" href="#" target="_blank" class="w-full block text-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-md mt-2 border transition-colors">
-                        <i class="fa-solid fa-phone mr-2"></i> Need Help? Call Us
-                    </a>
-                </form>
-            </div>
-        </div>
-    </div> <!-- END MAIN APP -->
-
-    <!-- TOAST NOTIFICATIONS -->
-    <div id="toast" class="fixed top-5 md:top-10 left-1/2 transform -translate-x-1/2 text-white px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 z-[9999] transition-all duration-300 opacity-0 -translate-y-10 scale-95 w-[90%] max-w-sm pointer-events-none">
-        <div id="toast-icon" class="text-2xl"></div>
-        <div>
-            <span id="toast-title" class="font-bold block mb-0.5 text-sm"></span>
-            <span id="toast-msg" class="text-xs block opacity-90 leading-tight"></span>
         </div>
     </div>
 
-    <div id="cart-toast" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900/90 text-white px-5 py-2.5 rounded-full shadow-2xl flex items-center gap-2 z-[9999] transition-all duration-300 opacity-0 scale-50 pointer-events-none">
-        <i class="fa-solid fa-check-circle text-green-400"></i><span class="font-bold text-sm">Added to Cart</span>
+    <!-- Center Toasts -->
+    <div id="toast" class="fixed top-1/2 left-0 right-0 mx-auto transform -translate-y-1/2 bg-slate-900/95 backdrop-blur text-white px-6 py-5 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center gap-4 z-[999999] transition-all duration-300 opacity-0 scale-90 pointer-events-none w-[85%] max-w-sm border border-slate-700">
+        <div id="toast-icon" class="text-3xl shrink-0"></div>
+        <div class="flex-1"><span id="toast-title" class="font-extrabold block mb-1 text-base tracking-wide text-white"></span><span id="toast-msg" class="text-sm block text-slate-300 font-medium leading-relaxed"></span></div>
     </div>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbx1iS5LzeMkdknCemQk7ihWCLqoeUWcgirTDBRJKahmyMo442W1EOi6fEwYSS9N25GE/exec'; 
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbx1iS5LzeMkdknCemQk7ihWCLqoeUWcgirTDBRJKahmyMo442W1EOi6fEwYSS9N25GE/exec';
         
-        let cart = JSON.parse(localStorage.getItem('cloudKitchenCart')) || [];
-        let deliveryCharge = 0; 
-        let currentUser = JSON.parse(localStorage.getItem('cloudKitchenUser')); 
-        let guestPhone = localStorage.getItem('cloudKitchenGuestPhone') || '';
-        let knownOrderStatuses = JSON.parse(localStorage.getItem('cloudKitchenOrderStatuses')) || {};
-        
-        let menuItems = []; let areaList = []; let carouselList = []; 
-        let storeSettings = { AdminPhone: "", WhatsAppNumber: "", BkashNumber: "", NagadNumber: "", RocketNumber: "", FreeDeliveryThreshold: 1000, PromoText: "" };
-        const paymentAccounts = { bkash: `bKash: {number} (Personal)`, nagad: `Nagad: {number} (Personal)`, rocket: `Rocket: {number} (Personal)` };
-
-        let unreadNotifCount = 0; 
-        let readNotifIds = JSON.parse(localStorage.getItem('readNotifs')) || []; 
-        let alertedNotifs = JSON.parse(localStorage.getItem('alertedNotifs')) || [];
-        let currentSlide = 0; let slideInterval;
-
-        window.onload = async () => {
-            await loadDynamicData();
-            document.getElementById('initial-loading').style.display = 'none';
-            if(currentUser && currentUser.name) enterMainApp();
-            else document.getElementById('landing-page').classList.remove('hidden');
-            updateCartUI();
+        const state = {
+            menu: [], areas: [], combinedOffers: [], 
+            cart: JSON.parse(localStorage.getItem('sk_cart')) || [],
+            favorites: JSON.parse(localStorage.getItem('sk_favs')) || [],
+            customer: JSON.parse(localStorage.getItem('sk_customer')) || { name:'', phone:'', email:'', address:'' },
+            areaVal: localStorage.getItem('sk_area') || '',
+            settings: { SiteName: "Sherpur Cloud Kitchen", FreeDeliveryThreshold: 1000, AdminPhone: "01700000000", Coupons: { "SAVE20": 20 }, BlockedUsers: "" }, 
+            activeCategory: 'সব', discountAmount: 0,
+            readNotifs: JSON.parse(localStorage.getItem('sk_read_notifs')) || [],
+            isOffline: !navigator.onLine,
+            dummyCategories: ['সব', 'বিরিয়ানি', 'ফাস্ট ফুড', 'ড্রিংকস', 'ডেজার্ট', 'পিৎজা', 'রিকোয়েস্ট']
         };
 
-        // Alert Sound Function
-        function playAlertSound() {
-            try { new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play(); } catch(e) {}
-        }
+        window.addEventListener('offline', () => { state.isOffline=true; document.getElementById('offline-alert').classList.remove('-translate-y-full'); });
+        window.addEventListener('online', () => { state.isOffline=false; document.getElementById('offline-alert').classList.add('-translate-y-full'); utils.toast("Online", "ইন্টারনেট কানেকশন ফিরে এসেছে", "success"); apiLogic.syncBasicData(); });
 
-        function getUserPhone() {
-            return currentUser ? currentUser.phone : (guestPhone ? guestPhone : 'guest');
-        }
+        const utils = {
+            toastTimer: null,
+            playAlert: () => { try { new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play(); } catch(e){} },
+            toast: (title, msg, type='success', duration=3000) => {
+                const el = document.getElementById('toast'); 
+                document.getElementById('toast-title').textContent = title; document.getElementById('toast-msg').textContent = msg;
+                el.className = `fixed top-1/2 left-0 right-0 mx-auto transform -translate-y-1/2 bg-slate-900/95 backdrop-blur text-white px-6 py-5 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center gap-4 z-[999999] transition-all duration-300 w-[85%] max-w-sm border-l-4 ${type==='success'?'border-green-500':'border-red-500'} pop`;
+                document.getElementById('toast-icon').innerHTML = type==='success' ? '<div class="w-12 h-12 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center"><i class="fa-solid fa-check"></i></div>':'<div class="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center"><i class="fa-solid fa-exclamation"></i></div>';
+                clearTimeout(utils.toastTimer);
+                utils.toastTimer = setTimeout(() => { el.classList.remove('pop'); el.classList.add('opacity-0', 'scale-90'); }, duration);
+            }
+        };
 
-        function closeAllModals() {
-            document.getElementById('notif-sidebar').classList.add('-translate-x-full');
-            document.getElementById('notif-overlay').classList.add('hidden');
-            document.getElementById('tracking-modal').classList.add('hidden');
-            document.getElementById('tracking-overlay').classList.add('hidden');
-            document.getElementById('cart-sidebar').classList.add('translate-x-full');
-            document.getElementById('cart-overlay').classList.add('hidden');
-            closeFoodDetails();
-        }
-
-        // BACKGROUND SYNC (Every 60 Seconds)
-        setInterval(async () => {
-            if(document.getElementById('landing-page').style.display !== 'none') return;
-
-            // 1. Sync Store Data
-            try {
-                const res = await fetch(`${scriptURL}?action=getStoreData`); const data = await res.json();
-                if(data.result === 'success') {
-                    menuItems = data.data.menu || []; areaList = data.data.areas || [];
-                    storeSettings = { ...storeSettings, ...data.data.settings };
-                    applyDynamicSettings(); renderMenu(); // silently update menu stock
-                }
-            } catch(e) {}
-
-            // 2. Sync Notifications
-            fetchNotifications(true);
-
-            // 3. Sync Order Statuses
-            const phoneToCheck = getUserPhone();
-            if(phoneToCheck !== 'guest') {
-                try {
-                    const res = await fetch(`${scriptURL}?action=track&phone=${phoneToCheck}`);
-                    const data = await res.json();
-                    if(data.result === 'success' && data.data) {
-                        let statusChanged = false;
-                        data.data.forEach(o => {
-                            if(knownOrderStatuses[o.id] && knownOrderStatuses[o.id] !== o.status) {
-                                showToast("Order Update!", `Your order (${o.id}) is now: ${o.status}`, "success", 8000);
-                                statusChanged = true;
-                            }
-                            knownOrderStatuses[o.id] = o.status;
-                        });
-                        if(statusChanged) {
-                            playAlertSound();
-                            localStorage.setItem('cloudKitchenOrderStatuses', JSON.stringify(knownOrderStatuses));
-                            if(!document.getElementById('tracking-modal').classList.contains('hidden')) {
-                                executeSearch(phoneToCheck); 
-                            }
-                        }
+        const uiModals = {
+            open: (modalId) => {
+                uiModals.closeAllBut(modalId);
+                const m = document.getElementById(modalId); const o = document.getElementById(modalId + '-overlay');
+                if(o) { o.classList.remove('hidden'); setTimeout(() => o.classList.remove('opacity-0'), 10); }
+                
+                if(m) { 
+                    if(modalId.includes('sidebar')) {
+                        m.classList.remove('md:opacity-0', 'md:pointer-events-none');
+                        m.classList.remove('translate-x-full');
+                    } else {
+                        m.classList.remove('hidden'); setTimeout(() => m.classList.remove('translate-y-full'), 20); 
                     }
-                } catch(e) {}
-            }
-        }, 60000);
-
-        async function loadDynamicData() {
-            try {
-                const res = await fetch(`${scriptURL}?action=getStoreData`); const data = await res.json();
-                if(data.result === 'success') {
-                    menuItems = data.data.menu || []; areaList = data.data.areas || []; 
-                    carouselList = data.data.carousel || []; storeSettings = { ...storeSettings, ...data.data.settings };
-                    applyDynamicSettings(); renderMenu(); renderCarousel();
                 }
-            } catch(e) { console.error("Error loading data", e); }
-        }
 
-        function applyDynamicSettings() {
-            const promoContainer = document.getElementById('promo-banner-container');
-            const promoBar = document.getElementById('promo-banner');
-            if(storeSettings.PromoText) { 
-                promoBar.textContent = storeSettings.PromoText; 
-                promoContainer.classList.remove('hidden'); 
-            } else {
-                promoContainer.classList.add('hidden');
+                if(modalId === 'area-modal') {
+                    const btn = document.getElementById('close-area-btn');
+                    if(state.areaVal) btn.classList.remove('hidden'); else btn.classList.add('hidden');
+                }
+            },
+            close: (modalId) => {
+                const m = document.getElementById(modalId); const o = document.getElementById(modalId + '-overlay');
+                if(m) { 
+                    if(modalId.includes('sidebar')) {
+                        m.classList.add('translate-x-full'); 
+                        setTimeout(() => m.classList.add('md:opacity-0', 'md:pointer-events-none'), 300);
+                    } else { 
+                        m.classList.add('translate-y-full'); 
+                    } 
+                }
+                if(o) { o.classList.add('opacity-0'); setTimeout(() => { o.classList.add('hidden'); if(m && !modalId.includes('sidebar')) m.classList.add('hidden'); }, 300); }
+            },
+            closeAllBut: (exceptId) => {
+                ['area-modal', 'profile-modal', 'about-modal', 'food-details-modal', 'tracking-modal', 'notif-sidebar', 'cart-sidebar', 'request-modal', 'offer-modal', 'fav-sidebar'].forEach(id => { if(id !== exceptId) uiModals.close(id); });
+            },
+            navTo: (view) => {
+                uiModals.closeAllBut('');
+                document.querySelectorAll('.nav-item').forEach(el => { el.classList.remove('active'); el.classList.add('text-slate-400'); });
+                if(view==='home') document.querySelector('.nav-item').classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-            
-            const phone = storeSettings.AdminPhone || '';
-            document.getElementById('hero-call-btn').href = `tel:${phone}`; 
-            document.getElementById('float-call-btn').href = `tel:${phone}`; 
-            document.getElementById('checkout-call-btn').href = `tel:${phone}`;
+        };
 
-            const wa = storeSettings.WhatsAppNumber || phone;
-            let waClean = wa.replace(/\D/g, ''); // Removes spaces, +, dashes etc.
-            if (waClean.startsWith('0')) waClean = '88' + waClean;
-            else if (waClean.length === 10) waClean = '880' + waClean;
-            document.getElementById('float-wa-btn').href = `https://wa.me/${waClean}`;
-            
-            // Retain selected area if already chosen
-            const areaSelect = document.getElementById('delivery-area');
-            const currentVal = areaSelect.value;
-            areaSelect.innerHTML = '<option value="">-- Area Select --</option>' + areaList.map(a => `<option value="${a.charge}">${a.name} (৳ ${a.charge})</option>`).join('');
-            if(currentVal) areaSelect.value = currentVal;
-        }
+        // Anti Spam completely controlled by Admin Block list
+        const spamLogic = {
+            checkLimit: (phone) => {
+                if(!phone) return { allowed: true };
+                const blockedStr = String(state.settings.BlockedUsers || "");
+                if(blockedStr.includes(phone)) {
+                    return { allowed: false, msg: "আপনি এখন আর অনলাইনে অর্ডার দিতে পারবেন না। অনুগ্রহ করে কল দিয়ে যোগাযোগ করুন।" };
+                }
+                return { allowed: true };
+            }
+        };
 
-        function renderCarousel() {
-            const container = document.getElementById('carousel-container');
-            const slideWrapper = document.getElementById('carousel-slides');
-            if(carouselList.length === 0) return; 
-            
-            container.classList.remove('hidden');
-            slideWrapper.innerHTML = carouselList.map((c, i) => `
-                <div class="carousel-item absolute inset-0 w-full h-full ${i===0?'active-slide':'inactive-slide'}">
-                    <img src="${c.image}" class="w-full h-full object-cover">
-                    ${c.title ? `<div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-4 pt-10"><h3 class="text-white font-bold text-lg drop-shadow-md">${c.title}</h3></div>` : ''}
-                </div>
-            `).join('');
+        const profileLogic = {
+            init: () => {
+                if(state.customer) { document.getElementById('prof-name').value=state.customer.name||''; document.getElementById('prof-phone').value=state.customer.phone||''; document.getElementById('prof-email').value=state.customer.email||''; document.getElementById('prof-address').value=state.customer.address||''; }
+                if(state.areaVal) document.getElementById('prof-area').value = state.areaVal;
+            },
+            save: (e) => {
+                e.preventDefault();
+                const phone = document.getElementById('prof-phone').value.trim();
+                if(!/^(01[3-9]\d{8})$/.test(phone)) { return utils.toast("ভুল তথ্য", "দয়া করে সঠিক ১১ ডিজিটের মোবাইল নাম্বার দিন", "error"); }
 
-            if(carouselList.length > 1) slideInterval = setInterval(() => moveSlide(1), 3000); 
-        }
+                state.customer.name = document.getElementById('prof-name').value; state.customer.phone = phone;
+                state.customer.email = document.getElementById('prof-email').value; state.customer.address = document.getElementById('prof-address').value;
+                localStorage.setItem('sk_customer', JSON.stringify(state.customer));
+                const area = document.getElementById('prof-area').value;
+                if(area) { state.areaVal = area; localStorage.setItem('sk_area', area); document.getElementById('header-loc-text').innerHTML = `${area.split('|')[0]} <span class="text-[10px] text-slate-400 font-bold">(৳ ${area.split('|')[1]})</span>`; cartLogic.updateAll(); }
+                utils.toast('সফল', 'আপনার তথ্য সেভ হয়েছে'); uiModals.close('profile-modal');
+            }
+        };
 
-        function moveSlide(dir) {
-            const slides = document.querySelectorAll('.carousel-item');
-            if(slides.length <= 1) return;
-            slides[currentSlide].classList.replace('active-slide', 'inactive-slide');
-            currentSlide = (currentSlide + dir + slides.length) % slides.length;
-            slides[currentSlide].classList.replace('inactive-slide', 'active-slide');
-            
-            clearInterval(slideInterval); slideInterval = setInterval(() => moveSlide(1), 3000);
-        }
+        const areaLogic = {
+            render: () => { document.getElementById('area-list-container').innerHTML = state.areas.map(a => `<button onclick="areaLogic.select('${a.name}', '${a.charge}')" class="w-full flex justify-between items-center p-4 bg-white border border-slate-100 rounded-2xl cursor-pointer hover:border-brand active:bg-brand/10 transition-all mb-3 text-left"><div class="flex items-center gap-3 pointer-events-none"><div class="w-10 h-10 rounded-full bg-brand/10 flex justify-center items-center text-brand"><i class="fa-solid fa-location-crosshairs text-lg"></i></div><span class="font-extrabold text-sm">${a.name}</span></div><span class="text-[10px] font-extrabold text-brand bg-brand/10 px-3 py-1.5 rounded-lg uppercase pointer-events-none">৳ ${a.charge}</span></button>`).join(''); },
+            select: (name, charge) => {
+                state.areaVal = `${name}|${charge}`; localStorage.setItem('sk_area', state.areaVal);
+                document.getElementById('header-loc-text').innerHTML = `${name} <span class="text-[10px] text-slate-400 font-bold">(৳ ${charge})</span>`; 
+                document.getElementById('prof-area').value = state.areaVal;
+                uiModals.close('area-modal'); cartLogic.updateAll();
+            }
+        };
 
-        function renderMenu() {
-            const container = document.getElementById('menu-container');
-            if(menuItems.length === 0) { container.innerHTML = `<div class="col-span-full text-center text-gray-500 py-10"><p>No items found in menu.</p></div>`; return; }
-            container.innerHTML = menuItems.map(item => {
-                const isAvail = item.available !== false;
+        const menuLogic = {
+            searchTimeout: null,
+            init: () => {
+                document.getElementById('menu-skeletons').style.display = 'none';
+                const container = document.getElementById('grouped-menu-container');
+                container.querySelectorAll('.category-group').forEach(e=>e.remove());
+                const grouped = {}; state.menu.forEach(i => { const c = i.category || 'অন্যান্য'; if(!grouped[c]) grouped[c] = []; grouped[c].push(i); });
+                let html = '';
+                for(let cat in grouped) { html += `<div class="mb-8 category-group" data-cat="${cat}"><h3 class="text-xl font-extrabold text-slate-900 px-5 mb-4">${cat}</h3><div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 px-4 pb-2">${grouped[cat].map(item => menuLogic.buildCard(item)).join('')}</div></div>`; }
+                container.insertAdjacentHTML('beforeend', html);
+                menuLogic.renderCategories(); menuLogic.applyFilters();
+            },
+            buildCard: (item) => {
+                const isAvail = item.available !== false; const isFav = state.favorites.includes(String(item.id));
                 return `
-                <div class="bg-white rounded-xl shadow-sm border overflow-hidden flex flex-col hover:shadow-md transition-shadow relative ${isAvail ? '' : 'opacity-70'}">
-                    ${isAvail ? '' : '<span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow z-10">Out of Stock</span>'}
-                    <div class="relative ${isAvail ? 'cursor-pointer' : ''} group bg-gray-50 h-52 flex justify-center items-center overflow-hidden" ${isAvail ? `onclick="openFoodDetails('${item.id}')"` : ''}>
-                        <img src="${item.image}" onerror="this.src='https://placehold.co/500x500?text=No+Image'" class="w-full h-full object-contain p-2 ${isAvail ? 'group-hover:scale-105' : 'grayscale'} transition-transform">
+                <div class="card p-3 flex flex-col relative w-full shadow-sm food-card" data-id="${item.id}" data-name="${item.name.toLowerCase()}" data-cat="${item.category}">
+                    ${isAvail ? '' : '<span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900/80 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl z-20 uppercase border border-white/20">স্টক আউট</span>'}
+                    
+                    <button onclick="menuLogic.toggleFav('${item.id}', event)" class="absolute top-4 right-4 z-10 w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm text-lg fav-btn ${isFav ? 'text-red-500 pop' : 'text-slate-300'}"><i class="fa-solid fa-heart"></i></button>
+                    
+                    <div class="cursor-pointer group flex flex-col h-full" onclick="menuLogic.openDetails('${item.id}')">
+                        <div class="relative w-full h-32 rounded-[16px] overflow-hidden mb-3 bg-slate-50"><img src="${item.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${isAvail ? '' : 'grayscale'}"></div>
+                        <h4 class="font-extrabold text-slate-900 text-sm line-clamp-1 mb-1">${item.name}</h4>
+                        <span class="font-extrabold text-brand text-base mb-3 block">৳ ${Number(item.price).toLocaleString()}</span>
                     </div>
-                    <div class="p-4 flex-1 flex flex-col border-t">
-                        <h4 class="text-base font-bold text-gray-800 ${isAvail ? 'cursor-pointer hover:text-brand' : ''} line-clamp-1" ${isAvail ? `onclick="openFoodDetails('${item.id}')"` : ''}>${item.name}</h4>
-                        <p class="text-brand font-bold text-lg my-2 mt-auto">৳ ${item.price}</p>
-                        ${isAvail 
-                            ? `<button onclick="addToCart('${item.id}')" class="w-full bg-gray-900 hover:bg-black text-white py-2 rounded text-sm font-medium transition-colors"><i class="fa-solid fa-cart-plus mr-1"></i> Add to Cart</button>` 
-                            : `<button disabled class="w-full bg-gray-300 text-gray-500 cursor-not-allowed py-2 rounded text-sm font-bold"><i class="fa-solid fa-ban mr-1"></i> Out of Stock</button>`}
+
+                    <div class="mt-auto flex gap-2">
+                        ${isAvail ? `<button onclick="menuLogic.orderNow('${item.id}')" class="flex-1 bg-slate-900 text-white text-xs font-bold rounded-xl py-2 active:scale-95 transition-transform">অর্ডার নাও</button><button onclick="cartLogic.add('${item.id}', event)" class="w-10 bg-[#ea580c] text-white rounded-xl flex items-center justify-center active:scale-90 transition-transform"><i class="fa-solid fa-plus text-white text-sm"></i></button>` : `<button disabled class="w-full bg-slate-100 text-slate-400 text-xs font-bold rounded-xl py-2 cursor-not-allowed">স্টক আউট</button>`}
                     </div>
                 </div>`;
-            }).join('');
-        }
-
-        function openFoodDetails(id) {
-            const item = menuItems.find(i => i.id === id); const modal = document.getElementById('food-details-modal');
-            const isAvail = item.available !== false;
-            modal.innerHTML = `
-                <div class="relative h-64 w-full bg-gray-50 p-2 border-b">
-                    <img src="${item.image}" onerror="this.src='https://placehold.co/500x500?text=No+Image'" class="w-full h-full object-contain ${isAvail ? '' : 'grayscale'}">
-                    ${isAvail ? '' : '<span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow z-10">Out of Stock</span>'}
-                    <button onclick="closeFoodDetails()" class="absolute top-3 right-3 bg-white hover:bg-red-50 text-gray-800 hover:text-red-500 rounded-full w-8 h-8 shadow border flex items-center justify-center transition-colors"><i class="fa-solid fa-times"></i></button>
-                </div>
-                <div class="p-5 overflow-y-auto cart-scroll">
-                    <h3 class="text-xl font-bold mb-1 text-gray-800">${item.name}</h3>
-                    <p class="inline-block bg-orange-100 text-brand text-[10px] font-bold px-2 py-0.5 rounded mb-3">${item.category}</p>
-                    <p class="text-brand font-bold text-xl mb-3">৳ ${item.price}</p>
-                    <h4 class="font-bold text-gray-700 mb-1 text-sm">Details:</h4>
-                    <p class="text-gray-600 text-xs mb-5 leading-relaxed">${item.ingredients}</p>
-                    <div class="grid grid-cols-2 gap-2">
-                        ${isAvail 
-                            ? `<button onclick="addToCart('${item.id}'); closeFoodDetails();" class="bg-gray-900 hover:bg-black text-white font-bold py-2.5 rounded-md text-xs transition-colors shadow"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>`
-                            : `<button disabled class="bg-gray-300 text-gray-500 cursor-not-allowed font-bold py-2.5 rounded-md text-xs shadow"><i class="fa-solid fa-ban"></i> Out of Stock</button>`}
-                        <a href="tel:${storeSettings.AdminPhone}" target="_blank" class="bg-brand hover:bg-brand-dark text-white font-bold py-2.5 rounded-md text-xs text-center flex items-center justify-center transition-colors shadow"><i class="fa-solid fa-phone mr-1"></i> Call Details</a>
-                    </div>
-                </div>
-            `;
-            document.getElementById('food-details-overlay').classList.remove('hidden', 'opacity-0'); 
-            modal.classList.remove('hidden', 'opacity-0', 'scale-95');
-        }
-        function closeFoodDetails() { 
-            document.getElementById('food-details-overlay').classList.add('hidden'); 
-            document.getElementById('food-details-modal').classList.add('hidden'); 
-        }
-
-        // --- AUTH ---
-        function toggleAuth(mode) { document.getElementById('login-section').classList.toggle('hidden', mode==='register'); document.getElementById('register-section').classList.toggle('hidden', mode==='login'); }
-        
-        async function handleLogin(e) { 
-            e.preventDefault(); const btn = document.getElementById('login-btn'); btn.disabled=true; btn.innerHTML='Loading...';
-            try{ 
-                 const res = await fetch(`${scriptURL}?action=login&phone=${document.getElementById('login-phone').value}&password=${document.getElementById('login-pass').value}`); 
-                 const data = await res.json();
-                 if(data.result==='success' && data.data && data.data.name) { 
-                     currentUser={name:data.data.name, phone:data.data.phone}; localStorage.setItem('cloudKitchenUser', JSON.stringify(currentUser)); 
-                     enterMainApp(); showToast("Welcome!", "Login successful.", "success"); 
-                 } else showToast("Error", data.message||"Invalid Info!", "error");
-            } catch(e){ showToast("Error", "Server Issue", "error"); } 
-            btn.disabled=false; btn.innerHTML='Login';
-        }
-
-        async function handleRegister(e) { 
-            e.preventDefault(); const btn = document.getElementById('reg-btn'); btn.disabled=true; btn.innerHTML='Loading...';
-             try{ 
-                  const res = await fetch(scriptURL, {method:'POST', body:JSON.stringify({action:'register', name:document.getElementById('reg-name').value, phone:document.getElementById('reg-phone').value, password:document.getElementById('reg-pass').value})}); 
-                  const data = await res.json();
-                  if(data.result==='success') { 
-                      currentUser={name:document.getElementById('reg-name').value, phone:document.getElementById('reg-phone').value}; localStorage.setItem('cloudKitchenUser', JSON.stringify(currentUser)); 
-                      enterMainApp(); showToast("Success!", "Account created.", "success"); 
-                  } else showToast("Error", data.message, "error");
-             } catch(e){ showToast("Error", "Server Issue", "error"); } 
-             btn.disabled=false; btn.innerHTML='Register';
-        }
-
-        function continueAsGuest() { currentUser=null; localStorage.removeItem('cloudKitchenUser'); enterMainApp(); }
-        function logout() { localStorage.removeItem('cloudKitchenUser'); window.location.reload(); }
-        
-        function enterMainApp() {
-            document.getElementById('landing-page').style.display='none'; document.getElementById('main-app').classList.remove('hidden');
-            if(currentUser) {
-                document.getElementById('nav-user-icon').className="fa-solid fa-user text-brand"; 
-                document.getElementById('nav-user-text').textContent=currentUser.name.split(' ')[0];
-                document.getElementById('nav-logout-btn').classList.remove('hidden');
-                document.getElementById('cust-name').value=currentUser.name; document.getElementById('cust-phone').value=currentUser.phone;
-                document.getElementById('cust-name').readOnly=true; document.getElementById('cust-phone').readOnly=true;
-            } else {
-                document.getElementById('nav-user-icon').className="fa-solid fa-route text-brand"; 
-                document.getElementById('nav-user-text').textContent="Track";
-                if(guestPhone) document.getElementById('cust-phone').value = guestPhone;
-            }
-            fetchNotifications(true);
-        }
-
-        // --- NOTIFICATIONS ---
-        function toggleNotifications() {
-            const sidebar = document.getElementById('notif-sidebar'); const overlay = document.getElementById('notif-overlay');
-            if(sidebar.classList.contains('-translate-x-full')) { 
-                sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden', 'opacity-0'); 
-                fetchNotifications(false); 
-            } else { 
-                sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); 
-            }
-        }
-
-        async function fetchNotifications(isBackgroundCheck = false) {
-            const phone = getUserPhone();
-            try { 
-                const res = await fetch(`${scriptURL}?action=notifications&phone=${phone}`); const data=await res.json();
-                if(data.result==='success' && data.data && data.data.length>0) { 
-                    unreadNotifCount = 0; let latestUnread = null; let newAlertFound = false;
-                    
-                    data.data.forEach(n => { 
-                        if(!readNotifIds.includes(String(n.id))) { 
-                            unreadNotifCount++; 
-                            if(!latestUnread) latestUnread = n; 
-                            if(!alertedNotifs.includes(String(n.id))) {
-                                newAlertFound = true;
-                                alertedNotifs.push(String(n.id));
-                            }
-                        } 
+            },
+            renderCategories: () => {
+                const catsFromApi = state.menu.map(i => i.category).filter(Boolean);
+                const combinedCats = [...new Set([...state.dummyCategories, ...catsFromApi])];
+                const iconMap = { 'সব':'fa-border-all', 'বিরিয়ানি':'fa-bowl-rice', 'ফাস্ট ফুড':'fa-burger', 'ড্রিংকস':'fa-martini-glass-citrus', 'ডেজার্ট':'fa-ice-cream', 'পিৎজা':'fa-pizza-slice', 'রিকোয়েস্ট':'fa-bell-concierge' };
+                document.getElementById('category-icons').innerHTML = combinedCats.map(c => `<div class="flex flex-col items-center gap-2 cursor-pointer shrink-0" onclick="menuLogic.setCategory('${c}')"><div class="w-[70px] h-[70px] rounded-2xl flex items-center justify-center transition-all duration-300 ${state.activeCategory === c ? 'bg-[#ea580c] text-white shadow-lg transform -translate-y-1' : 'bg-white text-slate-500 border border-slate-100 shadow-sm'}"><i class="fa-solid ${iconMap[c] || 'fa-utensils'} text-2xl"></i></div><span class="text-[11px] font-bold ${state.activeCategory === c ? 'text-slate-900' : 'text-slate-500'}">${c}</span></div>`).join('');
+            },
+            setCategory: (c) => { 
+                if(c === 'রিকোয়েস্ট') { uiModals.open('request-modal'); return; }
+                state.activeCategory = c; menuLogic.renderCategories(); menuLogic.applyFilters(); 
+            },
+            toggleSearchBar: () => { const sb = document.getElementById('search-bar-container'); sb.classList.toggle('hidden'); if(!sb.classList.contains('hidden')) document.getElementById('menu-search').focus(); },
+            handleSearch: () => { if(menuLogic.searchTimeout) clearTimeout(menuLogic.searchTimeout); menuLogic.searchTimeout = setTimeout(() => menuLogic.applyFilters(), 200); },
+            applyFilters: () => {
+                const term = document.getElementById('menu-search').value.toLowerCase(); const groups = document.querySelectorAll('.category-group'); let anyVisible = false;
+                groups.forEach(group => {
+                    let groupHasVisible = false;
+                    group.querySelectorAll('.food-card').forEach(card => {
+                        const mSearch = !term || card.dataset.name.includes(term); const mCat = state.activeCategory === 'সব' || card.dataset.cat === state.activeCategory;
+                        if(mSearch && mCat) { card.classList.remove('hide-item'); groupHasVisible = true; anyVisible = true; } else { card.classList.add('hide-item'); }
                     });
-                    
-                    const badge = document.getElementById('notif-badge');
-                    if(unreadNotifCount > 0) { badge.textContent = unreadNotifCount; badge.classList.remove('hidden'); badge.style.display = 'flex'; } 
-                    else { badge.classList.add('hidden'); badge.style.display = 'none'; }
-
-                    if(isBackgroundCheck && newAlertFound && latestUnread) {
-                        playAlertSound();
-                        showToast("New Message: " + latestUnread.title, "Click the bell icon to read.", "success", 8000);
-                        localStorage.setItem('alertedNotifs', JSON.stringify(alertedNotifs));
-                    }
-
-                    if(!isBackgroundCheck) {
-                        document.getElementById('notif-items').innerHTML = data.data.map(n=>`
-                            <div class="bg-blue-50 border border-blue-100 rounded-lg p-3">
-                                <h4 class="font-bold text-sm mb-1 text-gray-800">${n.title}</h4>
-                                <p class="text-xs text-gray-700 leading-relaxed">${n.message}</p>
-                                <span class="text-[10px] text-gray-400 mt-2 block mb-2"><i class="fa-regular fa-clock mr-1"></i>${new Date(n.date).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' })}</span>
-                            </div>
-                        `).join('');
-                        data.data.forEach(n => { if(!readNotifIds.includes(String(n.id))) readNotifIds.push(String(n.id)); });
-                        localStorage.setItem('readNotifs', JSON.stringify(readNotifIds));
-                        badge.classList.add('hidden'); badge.style.display = 'none'; unreadNotifCount = 0;
-                    }
-                } else if(!isBackgroundCheck) document.getElementById('notif-items').innerHTML='<div class="text-center py-10 text-gray-500 text-sm">No new notifications</div>';
-            } catch(e){}
-        }
-
-        // --- TRACKING ---
-        function handleTrackingClick() { 
-            toggleTracking(); 
-            const phoneToTrack = getUserPhone();
-            if(phoneToTrack !== 'guest') { 
-                document.getElementById('tracking-form-container').classList.add('hidden'); 
-                executeSearch(phoneToTrack); 
-            } else { 
-                document.getElementById('tracking-form-container').classList.remove('hidden'); 
-            } 
-        }
-        function toggleTracking() { document.getElementById('tracking-modal').classList.toggle('hidden'); document.getElementById('tracking-overlay').classList.toggle('hidden'); setTimeout(()=>document.getElementById('tracking-modal').classList.toggle('opacity-0'),10); }
-        async function searchOrder(e) { e.preventDefault(); executeSearch(document.getElementById('search-phone').value); }
-        
-        async function executeSearch(term) {
-            const resDiv = document.getElementById('tracking-result'); resDiv.innerHTML='<div class="flex justify-center py-5"><i class="fa-solid fa-spinner fa-spin text-2xl text-brand"></i></div>';
-            try { 
-                  const res=await fetch(`${scriptURL}?action=track&phone=${term}`); const data=await res.json();
-                  if(data.result==='success' && data.data && data.data.length>0) {
-                      resDiv.innerHTML=data.data.map(o=>`
-                        <div class="border p-3 rounded-lg bg-white shadow-sm mb-3">
-                            <div class="flex justify-between items-start mb-2 border-b pb-2"><span class="font-bold text-xs text-gray-800">${o.id}</span><span class="text-[10px] px-1.5 py-0.5 rounded border font-bold shadow-sm ${getStatusStyle(o.status)}">${o.status}</span></div>
-                            <p class="text-xs text-gray-600 mb-2 leading-relaxed bg-gray-50 p-2 rounded">${o.details}</p>
-                            <div class="flex justify-between items-end mt-2">
-                                <div><span class="text-[10px] text-gray-400 block mb-0.5"><i class="fa-regular fa-clock mr-1"></i>${new Date(o.time).toLocaleDateString('en-US', {day:'numeric', month:'short', year:'numeric'})}</span><span class="text-[10px] text-gray-500 uppercase font-bold">${o.payment.includes('Online')?'Online':'COD'}</span></div>
-                                <span class="font-bold text-brand text-base">৳ ${o.total}</span>
-                            </div>
-                        </div>`).join('');
-                  } else resDiv.innerHTML='<div class="text-center py-6 text-gray-500"><i class="fa-solid fa-box-open text-3xl mb-2 text-gray-300"></i><p class="text-sm">No orders found!</p></div>';
-            } catch(e){ resDiv.innerHTML='<p class="text-center text-red-500 text-sm py-5">Error checking status.</p>'; }
-        }
-
-        function getStatusStyle(s) {
-            if(s==='ডেলিভারি সম্পন্ন হয়েছে') return 'text-green-700 bg-green-50 border-green-200';
-            if(s==='আপনার অর্ডারটি বাতিল করা হয়েছে') return 'text-red-700 bg-red-50 border-red-200';
-            if(s==='পেন্ডিং') return 'text-gray-700 bg-gray-100 border-gray-300';
-            return 'text-orange-700 bg-orange-50 border-orange-200';
-        }
-
-        // --- CART & CHECKOUT ---
-        function calculateDeliveryCharge() {
-            const charge = parseInt(document.getElementById('delivery-area').value) || 0;
-            const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            const isFree = subtotal >= Number(storeSettings.FreeDeliveryThreshold);
-            document.getElementById('checkout-subtotal').textContent = `৳ ${subtotal}`;
-            if(isFree) { document.getElementById('free-delivery-badge').classList.remove('hidden'); document.getElementById('checkout-delivery').innerHTML=`<span class="line-through text-gray-400">৳ ${charge}</span> <span class="text-green-600 font-bold">Free!</span>`; document.getElementById('checkout-total').textContent = `৳ ${subtotal}`; }
-            else { document.getElementById('free-delivery-badge').classList.add('hidden'); document.getElementById('checkout-delivery').textContent=`৳ ${charge}`; document.getElementById('checkout-total').textContent = `৳ ${subtotal + charge}`; }
-            
-            if(document.querySelector('input[name="payment_method"]:checked').value === 'online') updatePaymentInstructions();
-        }
-
-        function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('translate-x-full'); document.getElementById('cart-overlay').classList.toggle('hidden'); }
-        function goToCheckout() { document.getElementById('cart-step-1').classList.add('hidden'); document.getElementById('cart-step-2').classList.remove('hidden'); document.getElementById('cart-back-btn').classList.remove('hidden'); calculateDeliveryCharge(); }
-        function backToCartItems() { document.getElementById('cart-step-2').classList.add('hidden'); document.getElementById('cart-step-1').classList.remove('hidden'); document.getElementById('cart-back-btn').classList.add('hidden'); }
-        function togglePaymentDetails() { document.getElementById('online-payment-details').classList.toggle('hidden', document.querySelector('input[name="payment_method"]:checked').value !== 'online'); updatePaymentInstructions(); }
-        
-        function updatePaymentInstructions() { 
-            const sel = document.getElementById('online-method-select').value; 
-            const ins = document.getElementById('payment-instructions'); 
-            if(sel) { 
-                const charge = parseInt(document.getElementById('delivery-area').value) || 0;
-                const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-                const isFree = subtotal >= Number(storeSettings.FreeDeliveryThreshold);
-                const finalCharge = isFree ? 0 : charge;
-                const total = subtotal + finalCharge;
+                    group.classList.toggle('hide-item', !groupHasVisible);
+                });
+                let emptyEl = document.getElementById('empty-menu-msg');
+                if(!anyVisible) { emptyEl.classList.remove('hidden'); } else { emptyEl.classList.add('hidden'); }
+            },
+            toggleFav: (id, e) => {
+                if(e) e.stopPropagation(); const idStr = String(id);
+                if(state.favorites.includes(idStr)) { state.favorites = state.favorites.filter(f => f !== idStr); utils.toast("প্রিয় তালিকা", "খাবারটি প্রিয় তালিকা থেকে সরানো হয়েছে"); } 
+                else { state.favorites.push(idStr); utils.toast("প্রিয় তালিকা", "এই খাবারটি আপনার প্রিয় তালিকায় যোগ করা হয়েছে", "success"); }
+                localStorage.setItem('sk_favs', JSON.stringify(state.favorites));
                 
-                let accNumber = '';
-                if(sel === 'bkash') accNumber = storeSettings.BkashNumber || 'Not Set';
-                else if(sel === 'nagad') accNumber = storeSettings.NagadNumber || 'Not Set';
-                else if(sel === 'rocket') accNumber = storeSettings.RocketNumber || 'Not Set';
-
-                const acc = paymentAccounts[sel].replace('{number}', accNumber); 
-                ins.innerHTML = `Food Total: <b>৳ ${subtotal}</b>, Delivery: <b>৳ ${finalCharge}</b>, Pay <b>৳ ${total}</b>.<br>Please send money to <b>${acc}</b> and put your number or TrxID below.`; 
-                ins.classList.remove('hidden'); document.getElementById('trx-id').classList.remove('hidden'); 
-            } else { ins.classList.add('hidden'); document.getElementById('trx-id').classList.add('hidden'); } 
-        }
-
-        // Cart Toast - Short duration
-        function showCartToast() {
-            const toast = document.getElementById('cart-toast');
-            toast.classList.remove('opacity-0', 'scale-50'); toast.classList.add('opacity-100', 'scale-100');
-            setTimeout(() => { toast.classList.remove('opacity-100', 'scale-100'); toast.classList.add('opacity-0', 'scale-50'); }, 1500);
-        }
-
-        function addToCart(id) { const item = menuItems.find(i=>i.id===id); const ex = cart.find(i=>i.id===id); if(ex) ex.qty++; else cart.push({...item, qty:1}); updateCartUI(); showCartToast(); }
-        function changeQty(id, d) { const i = cart.find(x=>x.id===id); if(i){ i.qty+=d; if(i.qty<=0) cart=cart.filter(x=>x.id!==id); updateCartUI(); } }
-        
-        function updateCartUI() {
-            localStorage.setItem('cloudKitchenCart', JSON.stringify(cart));
-            const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            document.getElementById('cart-badge').textContent = cart.length; document.getElementById('cart-badge').classList.toggle('hidden', cart.length===0);
-            document.getElementById('cart-subtotal-1').textContent = `৳ ${subtotal}`; document.getElementById('proceed-btn').classList.toggle('hidden', cart.length===0);
-            
-            document.getElementById('cart-items').innerHTML = cart.length===0 ? '<div class="text-center py-10 text-gray-400 text-sm">Cart is empty</div>' : cart.map(i=>`
-                <div class="flex items-center gap-3 border p-2 rounded-lg bg-white mb-2 shadow-sm">
-                    <img src="${i.image}" onerror="this.src='https://placehold.co/100x100?text=No+Image'" class="w-12 h-12 rounded object-cover bg-gray-50 border">
-                    <div class="flex-1">
-                        <h5 class="text-xs font-bold line-clamp-1">${i.name}</h5>
-                        <div class="flex items-center gap-2 mt-1">
-                            <button onclick="changeQty('${i.id}', -1)" class="bg-gray-200 px-2 rounded hover:bg-gray-300">-</button>
-                            <span class="text-xs font-bold">${i.qty}</span>
-                            <button onclick="changeQty('${i.id}', 1)" class="bg-brand-light text-brand px-2 rounded hover:bg-brand hover:text-white">+</button>
-                        </div>
-                    </div>
-                    <span class="font-bold text-brand text-sm">৳ ${i.price*i.qty}</span>
-                </div>
-            `).join('');
-            calculateDeliveryCharge();
-        }
-
-        async function handleCheckout(e) {
-            e.preventDefault();
-            const area = document.getElementById('delivery-area'); 
-            if(!area.value) return showToast("Warning", "Please select delivery area!", "error");
-
-            const pm = document.querySelector('input[name="payment_method"]:checked').value;
-            let pDetails = "Cash on Delivery"; 
-            if(pm==='online') {
-                const method = document.getElementById('online-method-select').value;
-                const trx = document.getElementById('trx-id').value;
-                if(!method || !trx) return showToast("Warning", "Select payment method and enter TrxID!", "error");
-                pDetails = `Online: ${method.toUpperCase()} (${trx})`;
+                document.querySelectorAll(`.food-card[data-id="${id}"] .fav-btn`).forEach(btn => { if(state.favorites.includes(idStr)) btn.classList.replace('text-slate-300', 'text-red-500'); else btn.classList.replace('text-red-500', 'text-slate-300'); });
+                if(!document.getElementById('fav-sidebar').classList.contains('translate-x-full')) { favLogic.render(); }
+            },
+            openDetails: (id) => {
+                const item = state.menu.find(i => String(i.id) === String(id)); if(!item) return;
+                const isAvail = item.available !== false; const charge = state.areaVal ? parseInt(state.areaVal.split('|')[1]) : 0; const grandTotal = Number(item.price) + charge;
+                document.getElementById('food-details-content').innerHTML = `
+                    <div class="relative h-64 w-full bg-slate-50 p-4 border-b border-slate-100 flex items-center justify-center shrink-0"><img src="${item.image}" class="max-h-full max-w-full object-contain rounded-2xl ${isAvail ? '' : 'grayscale'}"><button onclick="uiModals.close('food-details-modal')" class="absolute top-4 right-4 bg-white/90 backdrop-blur rounded-full w-10 h-10 text-slate-800 hover:text-red-500 flex justify-center items-center shadow-sm"><i class="fa-solid fa-times"></i></button></div>
+                    <div class="p-6 overflow-y-auto custom-scroll flex-1 flex flex-col bg-white">
+                        <div class="flex justify-between items-start mb-2"><h3 class="text-2xl font-extrabold leading-tight">${item.name}</h3><p class="text-brand font-extrabold text-2xl">৳ ${Number(item.price).toLocaleString()}</p></div>
+                        <p class="inline-block bg-slate-50 text-slate-500 text-[9px] font-bold uppercase px-3 py-1 rounded-lg mb-6 w-fit">${item.category}</p>
+                        <h4 class="font-extrabold text-sm mb-2">বিবরণ</h4><p class="text-slate-500 text-sm mb-6 font-medium">${item.ingredients || 'নাই'}</p>
+                        <div class="mt-auto bg-slate-50 p-4 rounded-2xl mb-4 border border-slate-100"><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>খাবারের দাম:</span><span>৳ ${item.price}</span></div><div class="flex justify-between text-xs font-bold text-slate-600 mb-2 pb-2 border-b border-slate-200"><span>ডেলিভারি চার্জ (${state.areaVal?state.areaVal.split('|')[0]:'এরিয়া নেই'}):</span><span>৳ ${charge}</span></div><div class="flex justify-between items-center"><span class="font-extrabold text-slate-900 uppercase text-xs">মোট:</span><span class="text-xl font-extrabold text-brand">৳ ${grandTotal}</span></div></div>
+                        ${isAvail ? `<button onclick="menuLogic.orderNow('${item.id}'); uiModals.close('food-details-modal');" class="btn-primary w-full py-4 text-base">চেকআউটে যান <i class="fa-solid fa-arrow-right ml-2"></i></button>` : `<button disabled class="btn-primary w-full py-4 text-base bg-slate-200 text-slate-400">স্টক আউট</button>`}
+                    </div>`;
+                uiModals.open('food-details-modal');
+            },
+            orderNow: (id) => { 
+                const ex = state.cart.find(i => i.id === String(id)); 
+                if(!ex) { state.cart.push({id: String(id), qty: 1}); cartLogic.updateAll(); } else { utils.toast("তথ্য", "এই আইটেমটি ইতিমধ্যে কার্টে যোগ করা আছে!", "error"); }
+                uiModals.open('cart-sidebar'); cartLogic.goToCheckout(); 
             }
+        };
 
-            const btn = document.getElementById('confirm-btn'); btn.disabled=true; btn.innerHTML='Processing...';
-            const name = document.getElementById('cust-name').value; const phone = document.getElementById('cust-phone').value;
-            const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            const totalBill = subtotal + ((subtotal >= Number(storeSettings.FreeDeliveryThreshold)) ? 0 : parseInt(area.value)); 
-            const orderId = 'ORD-'+Math.floor(100000+Math.random()*900000);
-            
-            try {
-                await fetch(scriptURL, { method:'POST', body:JSON.stringify({ action:'order', orderId:orderId, name, phone, address:`[${area.options[area.selectedIndex].text.split(' (')[0]}] ${document.getElementById('cust-address').value}`, orderDetails:cart.map(i=>`${i.name}(${i.qty})`).join(', '), totalBill, paymentDetails:pDetails, status:'পেন্ডিং' }) });
+        const favLogic = {
+            openFavorites: () => { favLogic.render(); uiModals.open('fav-sidebar'); },
+            render: () => {
+                const container = document.getElementById('fav-items');
+                if(state.favorites.length === 0) { container.innerHTML = '<div class="text-center py-20 fade-in"><i class="fa-solid fa-heart-crack text-5xl mb-4 text-slate-300 block"></i><p class="font-bold text-slate-500 text-sm">প্রিয় খাবারের তালিকা শূন্য</p></div>'; return; }
+                container.innerHTML = state.favorites.map(id => {
+                    const mItem = state.menu.find(x => String(x.id) === id); if(!mItem) return '';
+                    return `<div class="card !p-3 flex items-center gap-4 shadow-sm mb-3 fade-in"><img src="${mItem.image}" class="w-16 h-16 rounded-xl object-cover bg-slate-50"><div class="flex-1 pr-2"><h5 class="text-sm font-extrabold text-slate-900 line-clamp-1 mb-1">${mItem.name}</h5><span class="font-extrabold text-brand text-xs block mb-2">৳ ${Number(mItem.price).toLocaleString()}</span><div class="flex items-center justify-between mt-1"><button onclick="menuLogic.orderNow('${mItem.id}')" class="bg-slate-900 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform">অর্ডার নাও</button><button onclick="menuLogic.toggleFav('${mItem.id}')" class="text-red-400 bg-red-50 w-8 h-8 rounded-lg flex justify-center items-center"><i class="fa-solid fa-trash-can text-[10px]"></i></button></div></div></div>`;
+                }).join('');
+            }
+        };
+
+        const offerLogic = {
+            open: (idx) => {
+                const offer = state.combinedOffers[idx]; if(!offer) return;
+                const mItem = state.menu.find(m => m.name.toLowerCase() === offer.title.toLowerCase());
+                const price = mItem ? Number(mItem.price) : Number(offer.price || 0);
+                document.getElementById('offer-modal-img').src = offer.image || ''; document.getElementById('offer-modal-title').textContent = offer.title || 'অফার'; document.getElementById('offer-modal-price').textContent = `৳ ${price}`; document.getElementById('offer-modal-desc').textContent = offer.description || 'বিস্তারিত তথ্য নেই।'; document.getElementById('offer-modal').dataset.idx = idx;
+                uiModals.open('offer-modal');
+            },
+            executeOrder: () => {
+                const idx = document.getElementById('offer-modal').dataset.idx; const offer = state.combinedOffers[idx]; if(!offer) return;
+                let mItem = state.menu.find(m => m.name.toLowerCase() === offer.title.toLowerCase());
+                const offerPrice = Number(offer.price) || 0;
+                if(!mItem) { mItem = { id: 'OFFER-'+idx, name: offer.title, price: offerPrice, image: offer.image, category: 'অফার' }; state.menu.push(mItem); }
+                const ex = state.cart.find(i => i.id === mItem.id); if(!ex) { state.cart.push({id: mItem.id, qty: 1}); cartLogic.updateAll(); } else { utils.toast("তথ্য", "অফারটি ইতিমধ্যে কার্টে যোগ করা আছে!", "error"); }
+                uiModals.close('offer-modal'); uiModals.open('cart-sidebar'); cartLogic.goToCheckout();
+            }
+        };
+
+        const requestLogic = {
+            send: async () => {
+                const txt = document.getElementById('custom-request-text').value; if(!txt.trim()) return utils.toast("ভুল", "কিছু লিখুন", "error");
+                const btn = document.getElementById('req-send-btn'); btn.disabled=true; btn.innerHTML='প্রসেস হচ্ছে...';
+                const payload = { action:'order', orderId: 'REQ-'+Math.floor(100000+Math.random()*900000), name: state.customer.name||'Guest', phone: state.customer.phone||'N/A', address: 'Special Request', orderDetails: '[SPECIAL FOOD REQUEST] ' + txt, totalBill: 0, paymentDetails: 'N/A', status: 'পেন্ডিং' };
+                try { await fetch(scriptURL, {method:'POST', body:JSON.stringify(payload)}); utils.toast("সফল", "আপনার রিকোয়েস্ট পাঠানো হয়েছে।", "success", 4000); document.getElementById('custom-request-text').value = ''; uiModals.close('request-modal'); } catch(e) { utils.toast("Error", "সার্ভার সমস্যা", "error"); } finally { btn.disabled=false; btn.innerHTML='সেন্ড করুন <i class="fa-solid fa-paper-plane ml-2"></i>'; }
+            }
+        };
+
+        const cartLogic = {
+            add: (id, e) => {
+                if(e) { e.currentTarget.classList.add('scale-125'); setTimeout(()=>e.currentTarget.classList.remove('scale-125'), 200); e.stopPropagation(); }
+                const ex = state.cart.find(i => i.id === String(id));
+                if(ex) { utils.toast("তথ্য", "এই আইটেমটি ইতিমধ্যে কার্টে যোগ করা আছে!", "error"); return; } 
+                else { state.cart.push({id: String(id), qty: 1}); utils.toast("সফল", "কার্টে যোগ করা হয়েছে", "success"); }
+                cartLogic.updateAll(); 
+            },
+            changeQty: (id, d) => { const item = state.cart.find(i => i.id === String(id)); if(!item) return; if(d > 0 && item.qty >= 20) return; item.qty += d; if(item.qty <= 0) state.cart = state.cart.filter(i => i.id !== String(id)); cartLogic.updateAll(); },
+            remove: (id) => { state.cart = state.cart.filter(i => i.id !== String(id)); cartLogic.updateAll(); },
+            getSubtotal: () => state.cart.reduce((s, i) => { const m = state.menu.find(x=>x.id===i.id); return s + (m ? Number(m.price)*i.qty : 0); }, 0),
+            updateAll: () => {
+                localStorage.setItem('sk_cart', JSON.stringify(state.cart));
+                const qty = state.cart.reduce((s, i) => s + i.qty, 0); const b = document.getElementById('bottom-cart-badge');
+                if(qty > 0) { b.textContent = qty; b.classList.remove('hidden', 'pop'); void b.offsetWidth; b.classList.add('pop'); } else b.classList.add('hidden');
                 
-                // Track Guest Phone & Order Status
-                if(!currentUser) {
-                    guestPhone = phone;
-                    localStorage.setItem('cloudKitchenGuestPhone', guestPhone);
+                const cItems = document.getElementById('cart-items'); const sub1 = document.getElementById('cart-subtotal-1'); const pBtn = document.getElementById('proceed-btn');
+                const charge = state.areaVal ? parseInt(state.areaVal.split('|')[1]) : 0;
+                
+                if(state.cart.length === 0) {
+                    if(cItems) cItems.innerHTML = '<div class="text-center py-20 fade-in"><i class="fa-solid fa-basket-shopping text-5xl mb-4 text-slate-300 block"></i><p class="font-bold text-slate-500 text-sm">কার্ট খালি</p></div>';
+                    if(pBtn) pBtn.classList.add('hidden'); if(sub1) sub1.textContent = '৳ 0'; document.getElementById('cart-delivery-charge').textContent='৳ 0'; document.getElementById('cart-grand-total').textContent='৳ 0'; return;
                 }
-                knownOrderStatuses[orderId] = 'পেন্ডিং';
-                localStorage.setItem('cloudKitchenOrderStatuses', JSON.stringify(knownOrderStatuses));
+                
+                if(cItems) { cItems.innerHTML = state.cart.map(cItem => { const mItem = state.menu.find(x => x.id === cItem.id); if(!mItem) return ''; return `<div class="card !p-3 flex items-center gap-4 shadow-sm mb-3 fade-in"><img src="${mItem.image}" class="w-16 h-16 rounded-xl object-cover bg-slate-50"><div class="flex-1 pr-2"><h5 class="text-sm font-extrabold text-slate-900 line-clamp-1 mb-1">${mItem.name}</h5><span class="font-extrabold text-brand text-xs block mb-2">৳ ${(Number(mItem.price)*cItem.qty).toLocaleString()}</span><div class="flex items-center justify-between"><div class="flex gap-3 bg-slate-50 rounded-lg p-1.5 border border-slate-100"><button onclick="cartLogic.changeQty('${cItem.id}', -1)" class="w-6 h-6 rounded-md bg-white shadow-sm flex justify-center items-center"><i class="fa-solid fa-minus text-[10px]"></i></button><span class="text-xs font-extrabold w-4 text-center">${cItem.qty}</span><button onclick="cartLogic.changeQty('${cItem.id}', 1)" class="w-6 h-6 rounded-md bg-brand text-white shadow-sm flex justify-center items-center"><i class="fa-solid fa-plus text-[10px] text-white"></i></button></div><button onclick="cartLogic.remove('${cItem.id}')" class="text-red-400 bg-red-50 w-8 h-8 rounded-lg flex justify-center items-center"><i class="fa-solid fa-trash-can text-[10px]"></i></button></div></div></div>`; }).join(''); }
+                const st = cartLogic.getSubtotal();
+                if(sub1) sub1.textContent = `৳ ${st.toLocaleString()}`; document.getElementById('cart-delivery-charge').textContent = `৳ ${charge}`; document.getElementById('cart-grand-total').textContent = `৳ ${(st+charge).toLocaleString()}`;
+                if(pBtn) pBtn.classList.remove('hidden'); checkoutLogic.calculateTotal();
+            },
+            goToCheckout: () => {
+                if(!state.areaVal) { utils.toast('সতর্কতা', 'আগে ডেলিভারি এরিয়া নির্বাচন করুন', 'error'); uiModals.open('area-modal'); return; }
+                document.getElementById('cart-step-1').classList.add('hidden'); document.getElementById('cart-step-2').classList.remove('hidden'); document.getElementById('cart-back-btn').classList.remove('hidden');
+                
+                document.getElementById('cust-name').value = state.customer.name || ''; document.getElementById('cust-phone').value = state.customer.phone || ''; document.getElementById('cust-address').value = state.customer.address || '';
+                
+                const aOpts = state.areas.map(a => `<option value="${a.name}|${a.charge}">${a.name} (৳ ${a.charge})</option>`).join('');
+                document.getElementById('checkout-area-select').innerHTML = aOpts; document.getElementById('checkout-area-select').value = state.areaVal;
+                
+                const limit = spamLogic.checkLimit(state.customer.phone);
+                if(!limit.allowed) { document.getElementById('checkout-main-content').classList.add('hidden'); document.getElementById('spam-warning-container').classList.remove('hidden'); document.getElementById('spam-warning-text').textContent = limit.msg; document.getElementById('spam-call-btn').href = `tel:${state.settings.AdminPhone}`; } 
+                else { document.getElementById('checkout-main-content').classList.remove('hidden'); document.getElementById('spam-warning-container').classList.add('hidden'); }
+                checkoutLogic.calculateTotal();
+            },
+            backToItems: () => { document.getElementById('cart-step-2').classList.add('hidden'); document.getElementById('cart-step-1').classList.remove('hidden'); document.getElementById('cart-back-btn').classList.add('hidden'); }
+        };
 
-                cart=[]; localStorage.removeItem('cloudKitchenCart'); updateCartUI(); toggleCart(); document.getElementById('checkout-form').reset();
-                showToast("Order Successful!", "Thanks, we will call you to confirm.", "success", 6000);
-            } catch(e) { showToast("Error", "Internet Issue", "error"); } finally { btn.disabled=false; btn.innerHTML='Confirm Order'; }
-        }
+        const checkoutLogic = {
+            calculateTotal: () => {
+                const areaSelectVal = document.getElementById('checkout-area-select').value;
+                if(areaSelectVal && areaSelectVal !== state.areaVal) { state.areaVal = areaSelectVal; localStorage.setItem('sk_area', state.areaVal); document.getElementById('header-loc-text').innerHTML = `${state.areaVal.split('|')[0]} <span class="text-[10px] text-slate-400 font-bold">(৳ ${state.areaVal.split('|')[1]})</span>`; }
+                const charge = state.areaVal ? parseInt(state.areaVal.split('|')[1]) : 0; const subtotal = cartLogic.getSubtotal(); const isFree = subtotal >= Number(state.settings.FreeDeliveryThreshold);
+                
+                document.getElementById('checkout-subtotal').textContent = `৳ ${subtotal}`;
+                let finalCharge = charge;
+                if(isFree) { document.getElementById('free-delivery-badge').classList.remove('hidden'); document.getElementById('checkout-delivery').innerHTML = `<span class="line-through text-slate-300 mr-1">৳ ${charge}</span> <span class="text-green-500 font-extrabold uppercase text-[10px]">ফ্রি</span>`; finalCharge = 0; } else { document.getElementById('free-delivery-badge').classList.add('hidden'); document.getElementById('checkout-delivery').textContent = `৳ ${charge}`; }
+                
+                const total = subtotal + finalCharge - state.discountAmount;
+                document.getElementById('checkout-total-top').textContent = `৳ ${total}`;
+                if(document.querySelector('input[name="payment_method"]:checked')?.value === 'online') checkoutLogic.updateInstructions();
+            },
+            applyCoupon: () => {
+                const code = document.getElementById('coupon-input').value.trim().toUpperCase(); if(!code) return;
+                const discount = state.settings.Coupons ? state.settings.Coupons[code] : null;
+                if(discount) { state.discountAmount = discount; document.getElementById('coupon-discount-row').classList.remove('hidden'); document.getElementById('checkout-discount').textContent = `-৳ ${discount}`; utils.toast("সফল", "কুপন অ্যাপ্লাই হয়েছে", "success"); } else { state.discountAmount = 0; document.getElementById('coupon-discount-row').classList.add('hidden'); utils.toast("দুঃখিত", "ভুল কুপন কোড", "error"); }
+                checkoutLogic.calculateTotal();
+            },
+            togglePayment: () => { const isOnline = document.querySelector('input[name="payment_method"]:checked').value === 'online'; document.getElementById('online-payment-details').classList.toggle('hidden', !isOnline); checkoutLogic.updateInstructions(); },
+            updateInstructions: () => {
+                const sel = document.getElementById('online-method-select').value; const ins = document.getElementById('payment-instructions');
+                if(sel) { const total = Number(document.getElementById('checkout-total-top').textContent.replace(/\D/g, '')); const accMap = { bkash: state.settings.BkashNumber, nagad: state.settings.NagadNumber, rocket: state.settings.RocketNumber }; ins.innerHTML = `এই নাম্বারে <b class="text-slate-900">৳ ${total}</b> সেন্ড মানি করুন: <b class="text-slate-900">${accMap[sel]||'Not Set'}</b> (${sel.toUpperCase()}).`; ins.classList.remove('hidden'); document.getElementById('trx-id').classList.remove('hidden'); } else { ins.classList.add('hidden'); document.getElementById('trx-id').classList.add('hidden'); }
+            },
+            execute: async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('confirm-btn'); 
+                
+                const phone = document.getElementById('cust-phone').value.trim();
+                if(phone.length < 11 || !/^(01[3-9]\d{8})$/.test(phone)) { return utils.toast("ভুল তথ্য", "আপনার ফোন নাম্বারে কোথাও ভুল হয়েছে, আবার চেক করুন (১১ ডিজিট)", "error"); }
+                
+                const limit = spamLogic.checkLimit(phone);
+                if(!limit.allowed) { return utils.toast("অ্যাকাউন্ট ব্লকড", limit.msg, "error"); }
 
-        // General Long Toast
-        let tTimer; function showToast(t, m, type='success', duration=4000){ 
-            const el=document.getElementById('toast'); document.getElementById('toast-title').textContent=t; document.getElementById('toast-msg').textContent=m; 
-            el.className=`fixed top-5 md:top-10 left-1/2 transform -translate-x-1/2 text-white px-5 py-4 rounded-xl shadow-2xl flex items-center gap-3 z-[9999] transition-all duration-300 w-[90%] max-w-sm ${type==='success'?'bg-green-600':'bg-red-600'}`; 
-            document.getElementById('toast-icon').innerHTML=type==='success'?'<i class="fa-solid fa-check-circle"></i>':'<i class="fa-solid fa-triangle-exclamation"></i>'; 
-            clearTimeout(tTimer); el.classList.remove('opacity-0', '-translate-y-10'); 
-            tTimer=setTimeout(()=>{el.classList.add('opacity-0', '-translate-y-10');}, duration); 
-        }
+                btn.disabled=true; btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> প্রসেস হচ্ছে...';
+                if(document.querySelector('input[name="payment_method"]:checked').value === 'online') { 
+                    if(!document.getElementById('online-method-select').value) { utils.toast("সতর্কতা", "ওয়ালেট নির্বাচন করুন!", "error"); btn.disabled=false; btn.innerHTML='অর্ডার কনফার্ম করুন <i class="fa-solid fa-check ml-2"></i>'; return; } 
+                    const trx = document.getElementById('trx-id').value.trim();
+                    if(!trx || trx.length < 3) { utils.toast("সতর্কতা", "দয়া করে ট্রানজেকশন আইডি অথবা নাম্বারের শেষের 3-4 ডিজিট দিন!", "error"); btn.disabled=false; btn.innerHTML='অর্ডার কনফার্ম করুন <i class="fa-solid fa-check ml-2"></i>'; return; } 
+                }
+                
+                const backupCart = [...state.cart]; 
+                try {
+                    const areaName = state.areaVal.split('|')[0]; const isOnline = document.querySelector('input[name="payment_method"]:checked').value === 'online';
+                    const pDetails = isOnline ? `Online: ${document.getElementById('online-method-select').value.toUpperCase()} (${document.getElementById('trx-id').value})` : "Cash on Delivery";
+                    const orderId = 'ORD-'+Math.floor(100000+Math.random()*900000); const totalBill = Number(document.getElementById('checkout-total-top').textContent.replace(/\D/g, ''));
+                    const cNote = document.getElementById('cust-note').value.trim();
+                    const detailsStr = state.cart.map(c => { const m = state.menu.find(x=>x.id===c.id); return m ? `${m.name}(${c.qty})` : ''; }).join(', ') + (cNote ? ` | Note: ${cNote}` : '');
+
+                    const payload = { action:'order', orderId, name: document.getElementById('cust-name').value, phone, address:`[${areaName}] ${document.getElementById('cust-address').value}`, orderDetails: detailsStr, totalBill, paymentDetails: pDetails, status:'পেন্ডিং' };
+                    
+                    const response = await fetch(scriptURL, { method:'POST', body:JSON.stringify(payload) }); const resData = await response.json();
+                    if(resData.result === 'success') {
+                        state.customer.phone = phone; state.customer.name = document.getElementById('cust-name').value; state.customer.address = document.getElementById('cust-address').value; localStorage.setItem('sk_customer', JSON.stringify(state.customer));
+                        state.cart = []; cartLogic.updateAll(); uiModals.close('cart-sidebar'); cartLogic.backToItems();
+                        utils.toast("সফল", "আপনার অর্ডার কমপ্লিট হয়েছে", "success", 2000);
+                        setTimeout(() => { utils.playAlert(); utils.toast("অ্যালার্ট", "প্রিয় কাস্টমার আপনার অর্ডার আমরা পেয়েছি, আমরা কল করে কনফার্ম হব, দয়া করে রিসিভ করবেন।", "success", 4000); document.getElementById('search-phone').value = phone; trackingLogic.openTracking(); trackingLogic.executeSearch(); }, 2200);
+                    } else throw new Error("Failed");
+                } catch(e) { state.cart = backupCart; cartLogic.updateAll(); utils.toast("Error", "সার্ভার সমস্যা। আবার চেষ্টা করুন।", "error"); 
+                } finally { btn.disabled=false; btn.innerHTML='অর্ডার কনফার্ম করুন <i class="fa-solid fa-check ml-2"></i>'; }
+            }
+        };
+
+        const trackingLogic = {
+            openTracking: () => { uiModals.open('tracking-modal'); const p = state.customer.phone; if(p) { document.getElementById('search-phone').value = p; trackingLogic.executeSearch(); } },
+            executeSearch: async (e) => {
+                if(e) e.preventDefault(); const term = document.getElementById('search-phone').value; const resDiv = document.getElementById('tracking-result'); if(!term) return;
+                resDiv.innerHTML='<div class="flex justify-center py-10"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-brand"></i></div>';
+                try {
+                    const res = await fetch(`${scriptURL}?action=track&phone=${term}`); const data = await res.json();
+                    if(data.result==='success' && data.data && data.data.length>0) {
+                        resDiv.innerHTML = data.data.map(o => {
+                            const statuses = ['পেন্ডিং', 'খাবার তৈরি হচ্ছে', 'ডেলিভারি ম্যান পথে আছে', 'বৃষ্টির জন্য দেরি হচ্ছে', 'সম্পূর্ণ হয়েছে'];
+                            let step = statuses.indexOf(o.status); if(o.status.includes('বাতিল')) step = -1;
+                            const stepsHtml = step >= 0 ? `<div class="flex justify-between items-center mt-6 mb-10 px-4 relative"><div class="absolute top-2 left-4 right-4 h-1 bg-slate-100 z-0"></div><div class="absolute top-2 left-4 h-1 bg-brand z-0 transition-all progress-line" style="width: ${step * 25}%"></div>${statuses.map((s, i) => `<div class="progress-step flex flex-col items-center z-10 ${i<=step?'active':''}"><div class="step-icon w-5 h-5 rounded-full border-2 border-slate-200 bg-white flex items-center justify-center text-[10px] text-transparent transition-colors mb-1"><i class="fa-solid fa-check"></i></div><span class="text-[9px] text-slate-500 font-bold step-text absolute whitespace-nowrap" style="margin-top: ${i%2===0 ? '25px' : '-22px'}">${s}</span></div>`).join('')}</div>` : '';
+                            return `<div class="card !p-5 shadow-sm border border-slate-100 mb-4 fade-in"><div class="flex justify-between items-center mb-2"><span class="font-extrabold text-sm">${o.id}</span><span class="text-[9px] px-3 py-1 rounded-full uppercase font-extrabold border ${step===-1?'text-red-700 bg-red-50 border-red-200':'text-brand bg-brand/10 border-brand/20'}">${o.status}</span></div>${stepsHtml}<div class="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-4 mt-6"><span class="font-extrabold uppercase text-[9px] text-slate-400 block mb-1">অর্ডারকৃত খাবার</span><p class="text-xs font-medium">${o.details}</p></div><div class="flex justify-between items-end mb-4"><div><span class="text-[10px] font-extrabold text-slate-500 uppercase"><i class="fa-solid fa-wallet mr-1"></i>${o.payment.includes('Online')?'Online':'COD'}</span></div><span class="font-extrabold text-brand text-xl">৳ ${Number(o.total).toLocaleString()}</span></div>
+                            <button onclick="trackingLogic.reorder('${o.details}')" class="w-full bg-brand/10 text-brand rounded-xl py-3 flex items-center justify-center font-bold text-sm hover:bg-brand/20 transition-colors mb-2"><i class="fa-solid fa-rotate-right mr-2"></i> এই অর্ডারটি পুনরায় করুন</button>
+                            <a href="tel:${state.settings.AdminPhone}" class="w-full bg-slate-900 text-white rounded-xl py-3 flex items-center justify-center font-bold text-sm hover:bg-slate-800 transition-colors"><i class="fa-solid fa-phone mr-2"></i> কল দিন</a></div>`;
+                        }).join('');
+                    } else resDiv.innerHTML='<div class="text-center py-10 text-slate-400"><i class="fa-solid fa-box-open text-4xl mb-4 text-slate-200"></i><p class="font-bold text-sm">কোনো অর্ডার নেই!</p></div>';
+                } catch(e){ resDiv.innerHTML='<p class="text-center text-red-500 font-bold">কানেকশন সমস্যা।</p>'; }
+            },
+            reorder: (details) => {
+                const itemsStr = details.split(' | Note:')[0].split(' | ')[0]; 
+                const items = itemsStr.split(', '); let addedCount = 0;
+                items.forEach(itemStr => {
+                    const match = itemStr.match(/(.+?)\((\d+)\)/);
+                    if(match) {
+                        const name = match[1].trim().toLowerCase(); const qty = parseInt(match[2]);
+                        const menuItem = state.menu.find(m => m.name.trim().toLowerCase() === name);
+                        if(menuItem) { const ex = state.cart.find(c => c.id === menuItem.id); if(ex) { ex.qty += qty; } else { state.cart.push({id: menuItem.id, qty}); } addedCount++; }
+                    }
+                });
+                if(addedCount > 0) { cartLogic.updateAll(); uiModals.open('cart-sidebar'); cartLogic.goToCheckout(); utils.toast("সফল", "আগের আইটেমগুলো কার্টে যোগ করা হয়েছে"); } 
+                else { utils.toast("দুঃখিত", "এই অর্ডারের আইটেমগুলো এখন মেনুতে নেই", "error"); }
+            }
+        };
+
+        const notifLogic = {
+            openNotifications: () => { uiModals.open('notif-sidebar'); notifLogic.fetch(false); },
+            fetch: async (isBg = false) => {
+                const p = state.customer.phone || 'guest';
+                try {
+                    const res = await fetch(`${scriptURL}?action=notifications&phone=${p}`); const data = await res.json();
+                    if(data.result==='success' && data.data?.length>0) {
+                        let unread = 0; let newNotif = false;
+                        data.data.forEach(n => { if(!state.readNotifs.includes(String(n.id))) { unread++; newNotif = true; } });
+                        const b2 = document.getElementById('bottom-notif-badge'); if(unread > 0) { b2?.classList.remove('hidden'); } else { b2?.classList.add('hidden'); }
+                        
+                        if(isBg && newNotif) { utils.playAlert(); }
+
+                        if(!isBg) { document.getElementById('notif-items').innerHTML = data.data.map(n => `<div class="card !p-5 shadow-sm relative overflow-hidden"><div class="absolute left-0 top-0 bottom-0 w-1 bg-brand"></div><h4 class="font-extrabold text-sm mb-1 text-slate-900">${n.title}</h4><p class="text-xs text-slate-600 font-medium">${n.message}</p></div>`).join(''); state.readNotifs = data.data.map(n => String(n.id)); localStorage.setItem('sk_read_notifs', JSON.stringify(state.readNotifs)); b2?.classList.add('hidden'); }
+                    }
+                } catch(e){}
+            }
+        };
+
+        const apiLogic = {
+            syncBasicData: async () => {
+                try {
+                    const res = await fetch(`${scriptURL}?action=getStoreData`); const data = await res.json();
+                    if(data.result === 'success') {
+                        state.menu = data.data.menu || []; state.areas = data.data.areas || []; state.settings = { ...state.settings, ...data.data.settings };
+                        const aOpts = '<option value="">-- এরিয়া নির্বাচন করুন --</option>' + state.areas.map(a => `<option value="${a.name}|${a.charge}">${a.name} (৳ ${a.charge})</option>`).join('');
+                        document.getElementById('prof-area').innerHTML = aOpts; 
+                        if(state.areaVal) { document.getElementById('prof-area').value = state.areaVal; document.getElementById('header-loc-text').innerHTML = `${state.areaVal.split('|')[0]} <span class="text-[10px] text-slate-400 font-bold">(৳ ${state.areaVal.split('|')[1]})</span>`; }
+                        menuLogic.init(); areaLogic.render(); cartLogic.updateAll(); profileLogic.init();
+                        const combined = [...(data.data.carousel||[]), ...(data.data.offers||[])]; state.combinedOffers = combined;
+                        if(combined.length) { document.getElementById('offers-section').classList.remove('hidden'); document.getElementById('offers-container').innerHTML = combined.map((o, idx) => `<div onclick="offerLogic.open(${idx})" class="card p-3 flex gap-4 items-center bg-gradient-to-r from-orange-50 to-white shrink-0 w-64 cursor-pointer hover:shadow-md transition-shadow"><img src="${o.image}" class="w-12 h-12 rounded-xl object-cover"><div class="flex-1"><h4 class="font-extrabold text-sm leading-tight line-clamp-2">${o.title}</h4></div></div>`).join(''); }
+                        
+                        const wPhone = String(state.settings.WhatsAppNumber || state.settings.AdminPhone).replace(/\D/g, '');
+                        document.getElementById('float-wa-btn').href = `https://wa.me/${wPhone.startsWith('0')?'88'+wPhone:wPhone}`; document.getElementById('float-call-btn').href = `tel:${state.settings.AdminPhone}`;
+                    }
+                } catch(e) { console.error(e); }
+            }
+        };
+
+        window.onload = async () => {
+            menuLogic.renderCategories(); 
+            await apiLogic.syncBasicData();
+            document.getElementById('initial-loading').style.display = 'none';
+            if(!state.areaVal) uiModals.open('area-modal');
+            notifLogic.fetch(true);
+            setInterval(() => { if(!state.isOffline && !document.hidden) { notifLogic.fetch(true); } }, 60000);
+        };
     </script>
 </body>
-</html>
+            </html>
