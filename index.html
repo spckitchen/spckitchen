@@ -720,10 +720,12 @@
                     const res = await fetch(`${scriptURL}?action=getStoreData`); const data = await res.json();
                     if(data.result === 'success') {
                         state.menu = data.data.menu || []; state.areas = data.data.areas || []; state.settings = { ...state.settings, ...data.data.settings };
+                        
+                        // Fix: Google Sheets auto-converts text "false" to boolean false. We must cast it to string.
+                        state.settings.IsOpen = String(state.settings.IsOpen);
+                        
                         const aOpts = '<option value="">-- এরিয়া নির্বাচন করুন --</option>' + state.areas.map(a => `<option value="${a.name}|${a.charge}">${a.name} (৳ ${a.charge})</option>`).join('');
                         document.getElementById('prof-area').innerHTML = aOpts; 
-                        
-                        if(state.areaVal) { document.getElementById('prof-area').value = state.areaVal; document.getElementById('header-loc-text').innerHTML = `${state.areaVal.split('|')[0]} <span class="text-[10px] text-slate-400 font-bold">(৳ ${state.areaVal.split('|')[1]})</span>`; }
                         
                         if(state.settings.IsOpen === 'false') { document.getElementById('closed-banner').classList.remove('hidden'); } 
                         else { document.getElementById('closed-banner').classList.add('hidden'); }
