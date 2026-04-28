@@ -249,12 +249,9 @@
 
                     <form id="checkout-form" onsubmit="checkoutLogic.execute(event)" class="space-y-4">
                         <h4 class="font-extrabold text-slate-900 text-sm mb-2">আপনার তথ্য (বাধ্যতামূলক)</h4>
-                        
-                        <!-- Removed 'required' attribute, validation is now handled by custom JS logic -->
                         <input type="text" id="cust-name" placeholder="সম্পূর্ণ নাম" class="input border border-slate-200">
                         <input type="tel" id="cust-phone" placeholder="১১ ডিজিটের মোবাইল নম্বর" class="input border border-slate-200" maxlength="11">
                         <textarea id="cust-address" placeholder="বিস্তারিত ঠিকানা (বাড়ি নম্বর, রোড)" rows="2" class="input border border-slate-200"></textarea>
-                        
                         <textarea id="cust-note" placeholder="আপনার স্পেশাল কোনো রিকুয়েস্ট থাকলে এখানে লিখে দিন" rows="2" class="input border border-slate-200 mt-2 text-sm"></textarea>
                         
                         <h4 class="font-extrabold text-slate-900 text-sm mb-2 mt-6">পেমেন্ট মেথড</h4>
@@ -269,13 +266,12 @@
                             <input type="text" id="trx-id" placeholder="যে নাম্বার থেকে টাকা পাঠিয়েছেন তা দিন" class="input bg-white hidden border border-slate-200">
                         </div>
 
-                        <!-- NEW: Total block above the confirm button -->
                         <div class="flex justify-between items-center bg-brand/5 p-4 rounded-2xl border border-brand/20 mt-6 mb-2">
                             <span class="text-sm font-extrabold text-slate-800">সর্বমোট বিল:</span>
                             <span id="checkout-total-bottom" class="text-2xl font-extrabold text-brand">৳ 0</span>
                         </div>
 
-                        <button type="submit" id="confirm-btn" class="btn-primary w-full py-4 text-base">অর্ডার কনফার্ম করুন <i class="fa-solid fa-check ml-2"></i></button>
+                        <button type="submit" id="confirm-btn" class="btn-primary w-full py-4 text-base mt-2">অর্ডার কনফার্ম করুন <i class="fa-solid fa-check ml-2"></i></button>
                     </form>
                 </div>
             </div>
@@ -301,7 +297,7 @@
             readNotifs: JSON.parse(localStorage.getItem('sk_read_notifs')) || [],
             alertedNotifs: JSON.parse(localStorage.getItem('sk_alerted_notifs')) || [],
             isOffline: !navigator.onLine,
-            dummyCategories: ['সব', 'বিরিয়ানি', 'ফাস্ট ফুড', 'ড্রিংকস', 'ডেজার্ট', 'পিৎজা', 'রিকোয়েস্ট']
+            dummyCategories: ['সব', 'মেইন ডিশ', 'সাইড ডিশ', 'ফাস্ট ফুড', 'ডেজার্ট', 'কেইক', 'SPC কিচেন স্পেশাল', 'রিকুয়েষ্ট']
         };
 
         window.addEventListener('offline', () => { state.isOffline=true; document.getElementById('offline-alert').classList.remove('-translate-y-full'); });
@@ -411,7 +407,7 @@
                     <button onclick="menuLogic.toggleFav('${item.id}', event)" class="absolute top-4 right-4 z-10 w-8 h-8 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm text-lg fav-btn ${isFav ? 'text-red-500 pop' : 'text-slate-300'}"><i class="fa-solid fa-heart"></i></button>
                     
                     <div class="cursor-pointer group flex flex-col h-full" onclick="menuLogic.openDetails('${item.id}')">
-                        <div class="relative w-full h-32 rounded-[16px] overflow-hidden mb-3 bg-slate-50"><img src="${item.image}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${item.available === false ? 'grayscale' : ''}"></div>
+                        <div class="relative w-full h-32 rounded-[16px] overflow-hidden mb-3 bg-slate-50"><img src="${item.image}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 ${item.available === false ? 'grayscale' : ''}"></div>
                         <h4 class="font-extrabold text-slate-900 text-sm line-clamp-1 mb-1">${item.name}</h4>
                         <span class="font-extrabold text-brand text-base mb-3 block">৳ ${Number(item.price).toLocaleString()}</span>
                     </div>
@@ -424,11 +420,11 @@
             renderCategories: () => {
                 const catsFromApi = state.menu.map(i => i.category).filter(Boolean);
                 const combinedCats = [...new Set([...state.dummyCategories, ...catsFromApi])];
-                const iconMap = { 'সব':'fa-border-all', 'বিরিয়ানি':'fa-bowl-rice', 'ফাস্ট ফুড':'fa-burger', 'ড্রিংকস':'fa-martini-glass-citrus', 'ডেজার্ট':'fa-ice-cream', 'পিৎজা':'fa-pizza-slice', 'রিকোয়েস্ট':'fa-bell-concierge' };
+                const iconMap = { 'সব':'fa-border-all', 'মেইন ডিশ':'fa-plate-wheat', 'সাইড ডিশ':'fa-bowl-rice', 'ফাস্ট ফুড':'fa-burger', 'ডেজার্ট':'fa-ice-cream', 'কেইক':'fa-cake-candles', 'SPC কিচেন স্পেশাল':'fa-crown', 'রিকুয়েষ্ট':'fa-bell-concierge' };
                 document.getElementById('category-icons').innerHTML = combinedCats.map(c => `<div class="flex flex-col items-center gap-2 cursor-pointer shrink-0" onclick="menuLogic.setCategory('${c}')"><div class="w-[70px] h-[70px] rounded-2xl flex items-center justify-center transition-all duration-300 ${state.activeCategory === c ? 'bg-[#ea580c] text-white shadow-lg transform -translate-y-1' : 'bg-white text-slate-500 border border-slate-100 shadow-sm'}"><i class="fa-solid ${iconMap[c] || 'fa-utensils'} text-2xl"></i></div><span class="text-[11px] font-bold ${state.activeCategory === c ? 'text-slate-900' : 'text-slate-500'}">${c}</span></div>`).join('');
             },
             setCategory: (c) => { 
-                if(c === 'রিকোয়েস্ট') { uiModals.open('request-modal'); return; }
+                if(c === 'রিকুয়েষ্ট') { uiModals.open('request-modal'); return; }
                 state.activeCategory = c; menuLogic.renderCategories(); menuLogic.applyFilters(); 
             },
             toggleSearchBar: () => { const sb = document.getElementById('search-bar-container'); sb.classList.toggle('hidden'); if(!sb.classList.contains('hidden')) document.getElementById('menu-search').focus(); },
@@ -475,8 +471,7 @@
                 if(state.settings.IsOpen === 'false') return utils.toast("দুঃখিত", "রেস্টুরেন্ট এখন বন্ধ আছে।", "error");
                 const ex = state.cart.find(i => i.id === String(id)); 
                 if(!ex) { state.cart.push({id: String(id), qty: 1}); cartLogic.updateAll(); } else { utils.toast("তথ্য", "এই আইটেমটি ইতিমধ্যে কার্টে যোগ করা আছে!", "error"); }
-                uiModals.open('cart-sidebar'); 
-                cartLogic.backToItems(); // Fix: Force to stay on items list view instead of jumping to step 2
+                uiModals.open('cart-sidebar'); cartLogic.backToItems(); 
             }
         };
 
@@ -487,7 +482,7 @@
                 if(state.favorites.length === 0) { container.innerHTML = '<div class="text-center py-20 fade-in"><i class="fa-solid fa-heart-crack text-5xl mb-4 text-slate-300 block"></i><p class="font-bold text-slate-500 text-sm">প্রিয় খাবারের তালিকা শূন্য</p></div>'; return; }
                 container.innerHTML = state.favorites.map(id => {
                     const mItem = state.menu.find(x => String(x.id) === id); if(!mItem) return '';
-                    return `<div class="card !p-3 flex items-center gap-4 shadow-sm mb-3 fade-in"><img src="${mItem.image}" class="w-16 h-16 rounded-xl object-cover bg-slate-50"><div class="flex-1 pr-2"><h5 class="text-sm font-extrabold text-slate-900 line-clamp-1 mb-1">${mItem.name}</h5><span class="font-extrabold text-brand text-xs block mb-2">৳ ${Number(mItem.price).toLocaleString()}</span><div class="flex items-center justify-between mt-1"><button onclick="menuLogic.orderNow('${mItem.id}')" class="bg-slate-900 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform">অর্ডার নাও</button><button onclick="menuLogic.toggleFav('${mItem.id}')" class="text-red-400 bg-red-50 w-8 h-8 rounded-lg flex justify-center items-center"><i class="fa-solid fa-trash-can text-[10px]"></i></button></div></div></div>`;
+                    return `<div class="card !p-3 flex items-center gap-4 shadow-sm mb-3 fade-in"><img src="${mItem.image}" class="w-16 h-16 rounded-xl object-contain bg-slate-50"><div class="flex-1 pr-2"><h5 class="text-sm font-extrabold text-slate-900 line-clamp-1 mb-1">${mItem.name}</h5><span class="font-extrabold text-brand text-xs block mb-2">৳ ${Number(mItem.price).toLocaleString()}</span><div class="flex items-center justify-between mt-1"><button onclick="menuLogic.orderNow('${mItem.id}')" class="bg-slate-900 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform">অর্ডার নাও</button><button onclick="menuLogic.toggleFav('${mItem.id}')" class="text-red-400 bg-red-50 w-8 h-8 rounded-lg flex justify-center items-center"><i class="fa-solid fa-trash-can text-[10px]"></i></button></div></div></div>`;
                 }).join('');
             }
         };
@@ -507,8 +502,7 @@
                 const offerPrice = Number(offer.price) || 0;
                 if(!mItem) { mItem = { id: 'OFFER-'+idx, name: offer.title, price: offerPrice, image: offer.image, category: 'অফার' }; state.menu.push(mItem); }
                 const ex = state.cart.find(i => i.id === mItem.id); if(!ex) { state.cart.push({id: mItem.id, qty: 1}); cartLogic.updateAll(); } else { utils.toast("তথ্য", "অফারটি ইতিমধ্যে কার্টে যোগ করা আছে!", "error"); }
-                uiModals.close('offer-modal'); uiModals.open('cart-sidebar'); 
-                cartLogic.backToItems(); // Fix: Force to stay on items list view
+                uiModals.close('offer-modal'); uiModals.open('cart-sidebar'); cartLogic.backToItems();
             }
         };
 
@@ -552,7 +546,7 @@
                     if(pBtn) pBtn.classList.add('hidden'); if(sub1) sub1.textContent = '৳ 0'; document.getElementById('cart-delivery-charge').textContent='৳ 0'; document.getElementById('cart-grand-total').textContent='৳ 0'; return;
                 }
                 
-                if(cItems) { cItems.innerHTML = state.cart.map(cItem => { const mItem = state.menu.find(x => x.id === cItem.id); if(!mItem) return ''; return `<div class="card !p-3 flex items-center gap-4 shadow-sm mb-3 fade-in"><img src="${mItem.image}" class="w-16 h-16 rounded-xl object-cover bg-slate-50"><div class="flex-1 pr-2"><h5 class="text-sm font-extrabold text-slate-900 line-clamp-1 mb-1">${mItem.name}</h5><span class="font-extrabold text-brand text-xs block mb-2">৳ ${(Number(mItem.price)*cItem.qty).toLocaleString()}</span><div class="flex items-center justify-between"><div class="flex gap-3 bg-slate-50 rounded-lg p-1.5 border border-slate-100"><button onclick="cartLogic.changeQty('${cItem.id}', -1)" class="w-6 h-6 rounded-md bg-white shadow-sm flex justify-center items-center"><i class="fa-solid fa-minus text-[10px]"></i></button><span class="text-xs font-extrabold w-4 text-center">${cItem.qty}</span><button onclick="cartLogic.changeQty('${cItem.id}', 1)" class="w-6 h-6 rounded-md bg-brand text-white shadow-sm flex justify-center items-center"><i class="fa-solid fa-plus text-[10px] text-white"></i></button></div><button onclick="cartLogic.remove('${cItem.id}')" class="text-red-400 bg-red-50 w-8 h-8 rounded-lg flex justify-center items-center"><i class="fa-solid fa-trash-can text-[10px]"></i></button></div></div></div>`; }).join(''); }
+                if(cItems) { cItems.innerHTML = state.cart.map(cItem => { const mItem = state.menu.find(x => x.id === cItem.id); if(!mItem) return ''; return `<div class="card !p-3 flex items-center gap-4 shadow-sm mb-3 fade-in"><img src="${mItem.image}" class="w-16 h-16 rounded-xl object-contain bg-slate-50"><div class="flex-1 pr-2"><h5 class="text-sm font-extrabold text-slate-900 line-clamp-1 mb-1">${mItem.name}</h5><span class="font-extrabold text-brand text-xs block mb-2">৳ ${(Number(mItem.price)*cItem.qty).toLocaleString()}</span><div class="flex items-center justify-between"><div class="flex gap-3 bg-slate-50 rounded-lg p-1.5 border border-slate-100"><button onclick="cartLogic.changeQty('${cItem.id}', -1)" class="w-6 h-6 rounded-md bg-white shadow-sm flex justify-center items-center"><i class="fa-solid fa-minus text-[10px]"></i></button><span class="text-xs font-extrabold w-4 text-center">${cItem.qty}</span><button onclick="cartLogic.changeQty('${cItem.id}', 1)" class="w-6 h-6 rounded-md bg-brand text-white shadow-sm flex justify-center items-center"><i class="fa-solid fa-plus text-[10px] text-white"></i></button></div><button onclick="cartLogic.remove('${cItem.id}')" class="text-red-400 bg-red-50 w-8 h-8 rounded-lg flex justify-center items-center"><i class="fa-solid fa-trash-can text-[10px]"></i></button></div></div></div>`; }).join(''); }
                 const st = cartLogic.getSubtotal();
                 if(sub1) sub1.textContent = `৳ ${st.toLocaleString()}`; document.getElementById('cart-delivery-charge').textContent = `৳ ${charge}`; document.getElementById('cart-grand-total').textContent = `৳ ${(st+charge).toLocaleString()}`;
                 if(pBtn) pBtn.classList.remove('hidden'); checkoutLogic.calculateTotal();
@@ -587,7 +581,6 @@
                 
                 const total = Math.max(0, subtotal + finalCharge - state.discountAmount);
                 document.getElementById('checkout-total-top').textContent = `৳ ${total}`;
-                // Update total at the bottom
                 document.getElementById('checkout-total-bottom').textContent = `৳ ${total}`;
 
                 if(document.querySelector('input[name="payment_method"]:checked')?.value === 'online') checkoutLogic.updateInstructions();
@@ -607,7 +600,6 @@
                 e.preventDefault();
                 const btn = document.getElementById('confirm-btn'); 
                 
-                // --- কাস্টম ভ্যালিডেশন লজিক ---
                 const name = document.getElementById('cust-name').value.trim();
                 if(!name) { return utils.toast("সতর্কতা", "দয়া করে আপনার পুরো নাম লিখুন।", "error"); }
 
@@ -721,7 +713,6 @@
                     if(data.result === 'success') {
                         state.menu = data.data.menu || []; state.areas = data.data.areas || []; state.settings = { ...state.settings, ...data.data.settings };
                         
-                        // Fix: Google Sheets auto-converts text "false" to boolean false. We must cast it to string.
                         state.settings.IsOpen = String(state.settings.IsOpen);
                         
                         const aOpts = '<option value="">-- এরিয়া নির্বাচন করুন --</option>' + state.areas.map(a => `<option value="${a.name}|${a.charge}">${a.name} (৳ ${a.charge})</option>`).join('');
@@ -729,6 +720,8 @@
                         
                         if(state.settings.IsOpen === 'false') { document.getElementById('closed-banner').classList.remove('hidden'); } 
                         else { document.getElementById('closed-banner').classList.add('hidden'); }
+                        
+                        if(state.areaVal) { document.getElementById('prof-area').value = state.areaVal; document.getElementById('header-loc-text').innerHTML = `${state.areaVal.split('|')[0]} <span class="text-[10px] text-slate-400 font-bold">(৳ ${state.areaVal.split('|')[1]})</span>`; }
                         
                         menuLogic.init(); areaLogic.render(); cartLogic.updateAll(); profileLogic.init();
                         
