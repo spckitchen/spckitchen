@@ -20,43 +20,47 @@
 </head>
 <body class="h-screen flex overflow-hidden relative">
 
+    <!-- ADMIN LOGIN MODAL -->
     <div id="admin-login" class="fixed inset-0 bg-gray-900 z-[9999] flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm text-center">
-            <i class="fa-solid fa-user-shield text-5xl text-brand mb-4"></i><h2 class="text-2xl font-bold mb-6">অ্যাডমিন লগইন</h2>
-            <input type="password" id="admin-pass" placeholder="পাসওয়ার্ড লিখুন..." class="w-full px-4 py-3 border rounded-lg mb-4 outline-none focus:ring-2 focus:ring-brand">
-            <button id="admin-login-btn" onclick="checkAdmin()" class="w-full bg-gray-900 text-white font-bold py-3 rounded-lg hover:bg-brand transition-colors">প্রবেশ করুন</button>
+            <i class="fa-solid fa-user-shield text-5xl text-brand mb-4"></i><h2 class="text-2xl font-bold mb-6">Admin Login</h2>
+            <input type="password" id="admin-pass" placeholder="Enter Password..." class="w-full px-4 py-3 border rounded-lg mb-4 outline-none focus:ring-2 focus:ring-brand">
+            <button onclick="checkAdmin()" id="admin-login-btn" class="w-full bg-gray-900 text-white font-bold py-3 rounded-lg hover:bg-brand transition-colors">Login</button>
+            <p class="text-[10px] text-gray-400 mt-4">Default password is 'test'</p>
         </div>
     </div>
 
+    <!-- Mobile Sidebar Overlay -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
+    <!-- SIDEBAR -->
     <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-64 bg-gray-900 text-white flex flex-col transition-transform duration-300 z-50 shrink-0">
         <div class="p-5 flex items-center justify-between border-b border-gray-800">
             <div class="flex items-center gap-2 cursor-pointer hover:text-brand transition-colors" onclick="switchTab('dashboard')" title="Go to Dashboard">
                 <i class="fa-solid fa-fire-burner text-brand text-xl"></i>
-                <h1 class="text-base font-bold">শেরপুর ক্লাউড কিচেন</h1>
+                <h1 class="text-base font-bold">Sherpur Cloud Kitchen</h1>
             </div>
             <button class="md:hidden text-gray-300 hover:text-white" onclick="toggleSidebar()"><i class="fa-solid fa-times text-xl"></i></button>
         </div>
         
         <nav id="nav-links" class="flex-1 px-3 py-4 space-y-1 overflow-y-auto text-sm custom-scroll">
-            <a href="#" onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg text-white bg-gray-800"><i class="fa-solid fa-chart-pie w-5"></i> ড্যাশবোর্ড</a>
-            <a href="#" onclick="switchTab('orders')" id="tab-btn-orders" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-clipboard-list w-5"></i> সকল অর্ডার <span id="pending-badge" class="ml-auto bg-brand text-[10px] font-bold px-2 py-0.5 rounded-full hidden text-white">0</span></a>
-            <a href="#" onclick="switchTab('menu')" id="tab-btn-menu" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-burger w-5"></i> মেনু কন্ট্রোল</a>
-            <a href="#" onclick="switchTab('offers')" id="tab-btn-offers" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-tags w-5"></i> স্পেশাল অফার</a>
-            <a href="#" onclick="switchTab('areas')" id="tab-btn-areas" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-map-location-dot w-5"></i> ডেলিভারি এরিয়া</a>
-            <a href="#" onclick="switchTab('customers')" id="tab-btn-customers" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-users w-5"></i> কাস্টমার লিস্ট</a>
-            <a href="#" onclick="switchTab('notifications')" id="tab-btn-notifications" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-bullhorn w-5"></i> নোটিফিকেশন</a>
-            <a href="#" onclick="switchTab('settings')" id="tab-btn-settings" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-gear w-5"></i> সেটিংস</a>
+            <a href="#" onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg text-white bg-gray-800"><i class="fa-solid fa-chart-pie w-5"></i> Dashboard</a>
+            <a href="#" onclick="switchTab('orders')" id="tab-btn-orders" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-clipboard-list w-5"></i> All Orders <span id="pending-badge" class="ml-auto bg-brand text-[10px] font-bold px-2 py-0.5 rounded-full hidden text-white">0</span></a>
+            <a href="#" onclick="switchTab('menu')" id="tab-btn-menu" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-burger w-5"></i> Menu Control</a>
+            <a href="#" onclick="switchTab('offers')" id="tab-btn-offers" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-tags w-5"></i> Special Offers</a>
+            <a href="#" onclick="switchTab('areas')" id="tab-btn-areas" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-map-location-dot w-5"></i> Delivery Areas</a>
+            <a href="#" onclick="switchTab('customers')" id="tab-btn-customers" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-users w-5"></i> Customers</a>
+            <a href="#" onclick="switchTab('notifications')" id="tab-btn-notifications" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-bullhorn w-5"></i> Notifications</a>
+            <a href="#" onclick="switchTab('settings')" id="tab-btn-settings" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800"><i class="fa-solid fa-gear w-5"></i> Settings</a>
         </nav>
-        <div class="p-4 border-t border-gray-800"><button onclick="location.reload()" class="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-gray-800 rounded-lg transition-colors"><i class="fa-solid fa-right-from-bracket"></i> লগআউট</button></div>
+        <div class="p-4 border-t border-gray-800"><button onclick="location.reload()" class="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-gray-800 rounded-lg transition-colors"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></div>
     </aside>
 
     <main class="flex-1 bg-gray-100 h-full overflow-y-auto custom-scroll relative flex flex-col w-full">
         <header class="md:hidden bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-30">
             <div class="flex items-center gap-2 cursor-pointer hover:text-brand" onclick="switchTab('dashboard')">
                 <i class="fa-solid fa-fire-burner text-brand text-lg"></i>
-                <h1 class="text-base font-bold text-gray-800">অ্যাডমিন প্যানেল</h1>
+                <h1 class="text-base font-bold text-gray-800">Admin Panel</h1>
             </div>
             <button onclick="toggleSidebar()" class="text-gray-800 focus:outline-none"><i class="fa-solid fa-bars text-xl"></i></button>
         </header>
@@ -65,6 +69,7 @@
 
         <div class="p-4 md:p-8 max-w-7xl mx-auto pb-20 w-full flex-1">
             
+            <!-- TAB: DASHBOARD -->
             <div id="tab-dashboard" class="tab-content active">
                 <div class="flex justify-between items-center mb-6"><h2 class="text-xl md:text-2xl font-bold text-gray-800">Overview</h2><button onclick="fetchDashboardData()" class="bg-white border shadow-sm px-3 py-1.5 rounded-md text-xs font-bold hover:bg-gray-50 text-gray-700"><i class="fa-solid fa-rotate-right mr-1"></i> Reload</button></div>
                 
@@ -86,6 +91,7 @@
                 <div class="space-y-3" id="recent-orders-list"></div>
             </div>
 
+            <!-- TAB: ALL ORDERS -->
             <div id="tab-orders" class="tab-content">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-bold text-gray-800">All Orders</h2>
@@ -96,7 +102,7 @@
                     <div class="flex gap-2">
                         <div class="relative flex-1">
                             <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" id="order-search" onkeyup="filterOrders()" placeholder="অর্ডার আইডি, নাম বা ফোন নম্বর সার্চ করুন..." class="w-full pl-10 pr-8 py-2.5 border rounded-lg outline-none text-sm focus:border-brand bg-gray-50">
+                            <input type="text" id="order-search" onkeyup="filterOrders()" placeholder="Search Order ID, Name or Phone..." class="w-full pl-10 pr-8 py-2.5 border rounded-lg outline-none text-sm focus:border-brand bg-gray-50">
                             <button onclick="document.getElementById('order-search').value=''; filterOrders();" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors" title="Clear Search"><i class="fa-solid fa-times-circle text-lg"></i></button>
                         </div>
                     </div>
@@ -104,16 +110,19 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="all-orders-grid"></div>
             </div>
 
+            <!-- TAB: MENU -->
             <div id="tab-menu" class="tab-content">
                 <div class="flex justify-between items-center mb-6"><h2 class="text-xl font-bold text-gray-800">Menu Items</h2><button onclick="openMenuModal()" class="bg-brand text-white px-3 py-1.5 text-sm rounded-md font-bold shadow hover:bg-brand-dark transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add New</button></div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="admin-menu-grid"></div>
             </div>
 
+            <!-- TAB: OFFERS -->
             <div id="tab-offers" class="tab-content">
                 <div class="flex justify-between items-center mb-6"><h2 class="text-xl font-bold text-gray-800">Special Offers</h2><button onclick="openOfferModal()" class="bg-brand text-white px-3 py-1.5 text-sm rounded-md font-bold shadow hover:bg-brand-dark transition-colors"><i class="fa-solid fa-plus mr-1"></i> Add Offer</button></div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="admin-offers-grid"></div>
             </div>
 
+            <!-- TAB: AREAS -->
             <div id="tab-areas" class="tab-content">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-xl font-bold text-gray-800">Delivery Areas</h2>
@@ -122,6 +131,7 @@
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden"><table class="w-full text-left text-sm"><thead class="bg-gray-50 border-b"><tr><th class="p-3 text-gray-600">Area</th><th class="p-3 text-gray-600">Charge</th><th class="p-3 text-right text-gray-600">Action</th></tr></thead><tbody id="areas-table" class="divide-y"></tbody></table></div>
             </div>
 
+            <!-- TAB: CUSTOMERS -->
             <div id="tab-customers" class="tab-content">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-bold text-gray-800">Customer Directory</h2>
@@ -136,6 +146,7 @@
                 </div>
             </div>
 
+            <!-- TAB: NOTIFICATIONS -->
             <div id="tab-notifications" class="tab-content">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-xl font-bold text-gray-800">Push Notifications</h2>
@@ -147,18 +158,20 @@
                 </div>
             </div>
 
+            <!-- TAB: SETTINGS -->
             <div id="tab-settings" class="tab-content">
                 <h2 class="text-xl font-bold text-gray-800 mb-6">System Settings</h2>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-6">
+                    <!-- Contact Settings -->
                     <div class="bg-white p-6 rounded-xl shadow-sm border space-y-5">
-                        <h3 class="font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-address-book text-brand mr-2"></i>Contact & Operation</h3>
+                        <h3 class="font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-address-book text-brand mr-2"></i>Contact Numbers</h3>
                         
                         <div class="bg-orange-50 p-3 rounded-lg border border-orange-100 mb-3">
-                            <label class="block text-sm font-extrabold text-gray-900 mb-2"><i class="fa-solid fa-store mr-1"></i> Restaurant Status (রেস্টুরেন্ট চালু/বন্ধ)</label>
+                            <label class="block text-sm font-extrabold text-gray-900 mb-2"><i class="fa-solid fa-store mr-1"></i> Restaurant Status</label>
                             <div class="flex gap-2">
                                 <select id="set-is-open" class="flex-1 px-3 py-2 border rounded-md text-sm font-bold outline-none focus:border-brand">
-                                    <option value="true">Open (চালু আছে)</option>
-                                    <option value="false">Closed (বন্ধ আছে)</option>
+                                    <option value="true">Open</option>
+                                    <option value="false">Closed</option>
                                 </select>
                                 <button onclick="saveSetting('IsOpen', 'set-is-open')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button>
                             </div>
@@ -168,6 +181,7 @@
                         <div><label class="block text-xs font-bold text-gray-700 mb-1">WhatsApp Number</label><div class="flex gap-2"><input type="tel" id="set-whatsapp" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('WhatsAppNumber', 'set-whatsapp')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
                     </div>
                     
+                    <!-- Payment Account Settings -->
                     <div class="bg-white p-6 rounded-xl shadow-sm border space-y-5">
                         <h3 class="font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-money-bill-transfer text-brand mr-2"></i>Payment Accounts</h3>
                         <div><label class="block text-xs font-bold text-gray-700 mb-1">bKash Number (Personal)</label><div class="flex gap-2"><input type="tel" id="set-bkash" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('BkashNumber', 'set-bkash')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
@@ -175,10 +189,13 @@
                         <div><label class="block text-xs font-bold text-gray-700 mb-1">Rocket Number (Personal)</label><div class="flex gap-2"><input type="tel" id="set-rocket" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('RocketNumber', 'set-rocket')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
                     </div>
 
+                    <!-- General & Security Settings -->
                     <div class="bg-white p-6 rounded-xl shadow-sm border lg:col-span-2 space-y-5">
                         <h3 class="font-bold text-gray-800 border-b pb-2 mb-4"><i class="fa-solid fa-gear text-brand mr-2"></i>General & Security</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div><label class="block text-xs font-bold text-gray-700 mb-1">Top Announcement Marquee</label><div class="flex gap-2"><input type="text" id="set-promo-text" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('PromoText', 'set-promo-text')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
+                            <!-- Admin Password Setting (NEW) -->
+                            <div><label class="block text-xs font-bold text-brand mb-1">Admin Panel Password</label><div class="flex gap-2"><input type="text" id="set-admin-pass" placeholder="test" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand border-brand/30 bg-brand/5"><button onclick="saveSetting('AdminPassword', 'set-admin-pass')" class="bg-brand hover:bg-brand-dark transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
+                            
                             <div><label class="block text-xs font-bold text-gray-700 mb-1">Free Delivery Target Amount (৳)</label><div class="flex gap-2"><input type="number" id="set-free-del" class="flex-1 px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"><button onclick="saveSetting('FreeDeliveryThreshold', 'set-free-del')" class="bg-gray-900 hover:bg-black transition-colors text-white px-4 rounded-md text-sm font-bold">Save</button></div></div>
                             
                             <div><label class="block text-xs font-bold text-red-600 mb-1">Blocked Phone Numbers (Anti-Spam)</label><div class="flex gap-2"><input type="text" id="set-blocked" placeholder="017..., 018... (Comma separated)" class="flex-1 px-3 py-2 border border-red-200 rounded-md text-sm outline-none focus:border-red-500 bg-red-50"><button onclick="saveSetting('BlockedUsers', 'set-blocked')" class="bg-red-600 hover:bg-red-700 transition-colors text-white px-4 rounded-md text-sm font-bold">Block</button></div></div>
@@ -190,19 +207,26 @@
         </div>
     </main>
 
+    <!-- FLOATING NOTIFICATION BELL -->
     <button onclick="toggleAdminOrderNotif()" class="fixed bottom-6 right-6 md:bottom-10 md:right-10 bg-white border border-gray-200 text-brand shadow-xl w-14 h-14 rounded-full flex items-center justify-center z-[9000] hover:bg-gray-50 hover:scale-105 transition-all">
         <i class="fa-solid fa-bell text-2xl"></i>
         <span id="new-order-badge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold h-6 w-6 flex items-center justify-center rounded-full border-2 border-white hidden">0</span>
     </button>
 
+    <!-- ADMIN ORDER NOTIFICATIONS PANEL -->
     <div id="admin-order-notif-panel" class="fixed right-0 top-0 h-full w-80 max-w-full bg-white shadow-2xl z-[10000] transform translate-x-full transition-transform duration-300 flex flex-col border-l">
         <div class="p-4 bg-gray-900 text-white flex justify-between items-center shadow-md">
-            <h3 class="font-bold text-sm"><i class="fa-solid fa-bell text-brand mr-2 text-lg"></i> আজকের নতুন অর্ডার</h3>
+            <h3 class="font-bold text-sm"><i class="fa-solid fa-bell text-brand mr-2 text-lg"></i> Today's Orders</h3>
             <button onclick="toggleAdminOrderNotif()" class="text-gray-300 hover:text-white w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center transition-colors"><i class="fa-solid fa-times"></i></button>
         </div>
-        <div id="admin-order-notif-list" class="flex-1 overflow-y-auto bg-gray-50 p-3 space-y-3 custom-scroll"></div>
+        <div id="admin-order-notif-list" class="flex-1 overflow-y-auto bg-gray-50 p-3 space-y-3 custom-scroll">
+            <!-- Notifications load here -->
+        </div>
     </div>
 
+    <!-- MODALS SECTION -->
+    
+    <!-- CUSTOMER PROFILE MODAL -->
     <div id="customer-modal" class="fixed inset-0 bg-black/60 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-gray-100 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out]">
             <div class="p-4 border-b flex justify-between items-start bg-white">
@@ -224,7 +248,7 @@
         </div>
     </div>
 
-    <!-- MENU MODAL - Category Dropdown Updated -->
+    <!-- MENU MODAL -->
     <div id="menu-modal" class="fixed inset-0 bg-black/60 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md flex flex-col animate-[fadeIn_0.2s_ease-out]">
             <div class="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-xl"><h2 id="menu-modal-title" class="text-lg font-bold text-gray-800">Add Item</h2><button onclick="closeMenuModal()" class="text-gray-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50"><i class="fa-solid fa-times"></i></button></div>
@@ -236,7 +260,7 @@
                         <div><label class="text-[10px] font-bold text-gray-500 uppercase">Price</label><input type="number" id="m-price" required placeholder="৳" class="w-full px-3 py-2 border rounded-md text-sm outline-none focus:border-brand"></div>
                         <div>
                             <label class="text-[10px] font-bold text-gray-500 uppercase">Category</label>
-                            <input list="category-options" id="m-cat" required placeholder="সিলেক্ট বা টাইপ করুন..." class="w-full px-3 py-2 border rounded-md text-sm outline-none focus:border-brand">
+                            <input list="category-options" id="m-cat" required placeholder="Select or type..." class="w-full px-3 py-2 border rounded-md text-sm outline-none focus:border-brand">
                             <datalist id="category-options">
                                 <option value="মেইন ডিশ">
                                 <option value="সাইড ডিশ">
@@ -303,6 +327,7 @@
         </div>
     </div>
 
+    <!-- TOAST -->
     <div id="toast" class="fixed top-5 md:top-10 left-1/2 transform -translate-x-1/2 text-white px-5 py-3 rounded-lg shadow-2xl flex items-center gap-3 z-[10000] transition-all duration-300 opacity-0 -translate-y-10 pointer-events-none text-sm font-bold"></div>
 
     <script>
@@ -326,7 +351,7 @@
 
         async function checkAdmin() { 
             const pass = document.getElementById('admin-pass').value;
-            if(!pass) return alert('পাসওয়ার্ড দিন!');
+            if(!pass) return alert('Enter password!');
             
             const btn = document.getElementById('admin-login-btn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
@@ -344,7 +369,7 @@
             } catch(e) {
                 alert("Server Connection Error!");
             }
-            btn.innerHTML = 'প্রবেশ করুন';
+            btn.innerHTML = 'Login';
             btn.disabled = false;
         }
         
@@ -460,6 +485,7 @@
             } catch(e){} 
         }
 
+        // --- ORDER NOTIFICATION & AUTO REFRESH SYSTEM ---
         function updateAdminNotifications() {
             const now = new Date();
             const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
@@ -471,24 +497,33 @@
             let unreadCount = 0; let html = '';
 
             if(todaysOrders.length === 0) {
-                html = '<div class="h-full flex flex-col items-center justify-center text-gray-400 opacity-60 pt-10"><i class="fa-solid fa-box-open text-5xl mb-3"></i><p class="text-sm font-bold">আজকের কোনো নতুন অর্ডার নেই</p></div>';
+                html = '<div class="h-full flex flex-col items-center justify-center text-gray-400 opacity-60 pt-10"><i class="fa-solid fa-box-open text-5xl mb-3"></i><p class="text-sm font-bold">No new orders today</p></div>';
             } else {
                 todaysOrders.forEach(o => {
                     const isUnread = !viewedOrders.includes(o.id);
                     if(isUnread) unreadCount++;
 
                     html += `
-                    <div onclick="viewOrderFromNotif('${o.id}')" class="p-3 bg-white rounded-xl border shadow-sm cursor-pointer hover:border-brand/50 transition-all ${isUnread ? 'border-l-4 border-l-brand bg-orange-50/20' : ''}">
-                        <div class="flex justify-between items-start mb-1.5 border-b pb-1">
+                    <div class="p-3 bg-white rounded-xl border shadow-sm transition-all ${isUnread ? 'border-l-4 border-l-brand bg-orange-50/20' : ''}">
+                        <div class="flex justify-between items-start mb-1.5 border-b pb-1 cursor-pointer" onclick="viewOrderFromNotif('${o.id}')">
                             <span class="font-bold text-xs text-gray-800">${o.id} <span class="${isUnread?'inline-block':'hidden'} bg-red-500 text-white text-[8px] px-1 rounded ml-1 tracking-wider shadow-sm">NEW</span></span>
                             <div class="flex flex-col items-end">
                                 <span class="text-[9px] text-gray-500 font-medium mb-1"><i class="fa-regular fa-clock mr-1"></i>${formatEnglishDate(o.time, false)}</span>
                                 <span class="text-[8px] px-1.5 py-0.5 rounded border font-bold text-gray-700 bg-gray-100">${o.status}</span>
                             </div>
                         </div>
-                        <p class="text-xs font-bold text-gray-800 flex items-center mb-1"><i class="fa-solid fa-user text-gray-400 mr-1.5 w-3"></i> ${o.name}</p>
-                        <p class="text-[10px] text-gray-600 line-clamp-2"><span class="font-bold uppercase text-gray-400 mr-1">Items:</span> ${o.details}</p>
-                        <p class="text-[11px] text-brand font-bold mt-1.5 text-right">৳ ${o.total}</p>
+                        <p class="text-xs font-bold text-gray-800 flex items-center mb-1 cursor-pointer" onclick="viewOrderFromNotif('${o.id}')"><i class="fa-solid fa-user text-gray-400 mr-1.5 w-3"></i> ${o.name}</p>
+                        
+                        <!-- Click to expand section (Fixed) -->
+                        <div class="text-[10px] text-gray-600 bg-gray-50 p-2 rounded border border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors" onclick="let el = this.querySelector('.order-text'); el.classList.toggle('line-clamp-2');" title="Click to expand/collapse">
+                            <p class="font-bold text-gray-400 uppercase tracking-wide mb-1 flex justify-between items-center">
+                                <span>Items/Request:</span>
+                                <span class="text-brand flex items-center gap-1 bg-brand/10 px-1 rounded"><i class="fa-solid fa-expand text-[8px]"></i> Click</span>
+                            </p>
+                            <p class="line-clamp-2 order-text whitespace-pre-wrap leading-relaxed">${o.details}</p>
+                        </div>
+                        
+                        <p class="text-[11px] text-brand font-bold mt-1.5 text-right">৳ ${o.total.toLocaleString('en-US')}</p>
                     </div>`;
                 });
             }
@@ -522,7 +557,7 @@
                 if(data.result === 'success') {
                     const freshOrders = data.data.filter(o => o && o.id);
                     if(freshOrders.length > allOrders.length) { 
-                        showToast("🔔 নতুন অর্ডার এসেছে!", false); 
+                        showToast("🔔 New Order Arrived!", false); 
                         try { new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play(); } catch(e) {} 
                     }
                     allOrders = freshOrders; processCustomers(); cleanOldViewedOrders();
@@ -535,14 +570,15 @@
             } catch(e){}
         }, 60000);
 
+        // --- ADMIN RENDERS ---
         function renderDashboard() {
             processCustomers();
             document.getElementById('stat-users').textContent = Object.keys(customerMap).length;
             const sales = getSalesStats();
-            document.getElementById('stat-orders-today-count').textContent = sales.ordersToday;
-            document.getElementById('stat-sales-today').textContent = `৳ ${sales.today}`;
-            document.getElementById('stat-sales-month').textContent = `৳ ${sales.month}`;
-            document.getElementById('stat-sales-all').textContent = `৳ ${sales.all}`;
+            document.getElementById('stat-orders-today-count').textContent = sales.ordersToday.toLocaleString('en-US');
+            document.getElementById('stat-sales-today').textContent = `৳ ${sales.today.toLocaleString('en-US')}`;
+            document.getElementById('stat-sales-month').textContent = `৳ ${sales.month.toLocaleString('en-US')}`;
+            document.getElementById('stat-sales-all').textContent = `৳ ${sales.all.toLocaleString('en-US')}`;
 
             const items = getItemStats();
             document.getElementById('stat-best-item').textContent = items.best; document.getElementById('stat-worst-item').textContent = items.worst;
@@ -563,10 +599,19 @@
                         <div class="flex-1">
                             <div class="flex gap-2 items-center mb-1.5 border-b border-gray-50 pb-1.5"><span class="font-bold text-sm text-gray-800">${o.id}</span><span class="text-[10px] text-gray-400 bg-gray-100 px-1.5 rounded">${formatEnglishDate(o.time)}</span></div>
                             <p class="text-xs text-gray-700 font-bold flex items-center mb-1.5">${o.name} ${tagHtml} <a href="tel:${o.phone}" class="text-blue-500 hover:text-blue-700 ml-2 border-l pl-2 border-gray-300"><i class="fa-solid fa-phone"></i> ${o.phone}</a></p>
-                            <p class="text-[10px] text-gray-600 bg-orange-50/40 p-2 rounded-lg border border-orange-100 line-clamp-2" title="${o.details}"><span class="font-bold text-gray-400 uppercase tracking-wide mr-1 text-[9px]">Items:</span> ${o.details}</p>
+                            
+                            <!-- Click to expand section (Fixed) -->
+                            <div class="text-[10px] text-gray-600 bg-orange-50/40 p-2 rounded-lg border border-orange-100 cursor-pointer hover:bg-orange-50" onclick="let el = this.querySelector('.order-text'); el.classList.toggle('line-clamp-2');" title="Click to expand/collapse">
+                                <p class="font-bold text-gray-400 uppercase tracking-wide flex justify-between mb-1">
+                                    <span>Items/Request:</span>
+                                    <span class="text-brand flex items-center gap-1 bg-brand/10 px-1.5 py-0.5 rounded"><i class="fa-solid fa-expand text-[8px]"></i> Click</span>
+                                </p>
+                                <p class="line-clamp-2 order-text whitespace-pre-wrap">${o.details}</p>
+                            </div>
+
                         </div>
                         <div class="text-left md:text-right shrink-0 w-full md:w-48 bg-gray-50 md:bg-transparent p-2 md:p-0 rounded">
-                            <p class="text-brand font-bold text-sm">৳ ${o.total}</p>
+                            <p class="text-brand font-bold text-sm">৳ ${o.total.toLocaleString('en-US')}</p>
                             ${getStatusDropdown(o.id, o.status)}
                         </div>
                     </div>`
@@ -581,7 +626,7 @@
             
             if(search) filtered = filtered.filter(o => String(o.id||'').toLowerCase().includes(search) || String(o.phone||'').includes(search) || String(o.name||'').toLowerCase().includes(search) || String(o.address||'').toLowerCase().includes(search));
 
-            if(filtered.length === 0) { container.innerHTML = '<p class="text-center py-10 col-span-full text-sm text-gray-500 bg-white border rounded-xl">কোনো অর্ডার পাওয়া যায়নি</p>'; return; }
+            if(filtered.length === 0) { container.innerHTML = '<p class="text-center py-10 col-span-full text-sm text-gray-500 bg-white border rounded-xl">No orders found</p>'; return; }
             
             container.innerHTML = filtered.map(o => `
                 <div class="bg-white border hover:border-brand/40 transition-colors rounded-xl p-4 shadow-sm flex flex-col justify-between">
@@ -595,15 +640,21 @@
                             <p class="text-xs text-gray-600 flex items-start"><i class="fa-solid fa-phone text-gray-400 mt-0.5 mr-2 w-3"></i> <a href="tel:${o.phone}" class="text-blue-600 hover:underline font-bold">${o.phone}</a></p>
                             <p class="text-xs text-gray-600 flex items-start"><i class="fa-solid fa-location-dot text-gray-400 mt-0.5 mr-2 w-3"></i> <span class="leading-relaxed">${o.address}</span></p>
                         </div>
-                        <div class="bg-orange-50/50 p-2.5 rounded-lg border border-orange-100 text-xs text-gray-700 font-medium mb-3">
-                            <p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Items:</p>
-                            <p class="line-clamp-2" title="${o.details}">${o.details}</p>
+                        
+                        <!-- Click to expand section (Fixed) -->
+                        <div class="bg-orange-50/50 p-2.5 rounded-lg border border-orange-100 text-xs text-gray-700 font-medium mb-3 cursor-pointer hover:bg-orange-50 transition-colors" onclick="let el = this.querySelector('.order-text'); el.classList.toggle('line-clamp-2');" title="Click to expand/collapse">
+                            <p class="text-[9px] text-gray-400 uppercase font-bold mb-1 flex justify-between items-center">
+                                <span>Items / Request:</span>
+                                <span class="text-brand flex items-center gap-1 bg-brand/10 px-1.5 py-0.5 rounded"><i class="fa-solid fa-expand text-[8px]"></i> Click</span>
+                            </p>
+                            <p class="line-clamp-2 order-text whitespace-pre-wrap leading-relaxed">${o.details}</p>
                         </div>
+
                     </div>
                     <div class="border-t pt-3 flex flex-col sm:flex-row justify-between sm:items-end mt-auto gap-3">
                         <div>
                             <p class="text-[10px] text-gray-500 uppercase font-bold flex items-center gap-1"><i class="fa-solid ${o.payment.includes('Online')?'fa-building-columns':'fa-money-bill'}"></i> ${o.payment}</p>
-                            <p class="text-xl font-bold text-brand leading-none mt-1.5">৳ ${o.total}</p>
+                            <p class="text-xl font-bold text-brand leading-none mt-1.5">৳ ${o.total.toLocaleString('en-US')}</p>
                         </div>
                         <div class="w-full sm:w-48">${getStatusDropdown(o.id, o.status)}</div>
                     </div>
@@ -624,7 +675,7 @@
             showLoading(true); 
             try { 
                 await fetchPost({ action: 'updateOrderStatus', orderId: id, status: newStatus }); 
-                allOrders.find(o=>o.id===id).status=newStatus; showToast("স্ট্যাটাস আপডেট হয়েছে!"); 
+                allOrders.find(o=>o.id===id).status=newStatus; showToast("Status Updated!"); 
                 renderDashboard(); renderOrders(); updateAdminNotifications();
             } catch(e){} showLoading(false); 
         }
@@ -653,6 +704,7 @@
             downloadCSV('Customers_Report.csv', csv);
         }
 
+        // --- CUSTOMER PROFILE SYSTEM ---
         function renderCustomers() {
             const list = document.getElementById('customers-list');
             const search = document.getElementById('cust-search').value.toLowerCase();
@@ -669,11 +721,11 @@
 
                 html += `
                     <div onclick="viewCustomer('${phone}')" class="p-4 bg-white cursor-pointer transition-colors hover:bg-orange-50/50">
-                        <div class="flex justify-between items-center mb-1"><h4 class="font-bold text-sm text-gray-800 line-clamp-1">${c.name}</h4><span class="text-[10px] bg-gray-100 border px-1.5 py-0.5 rounded font-bold text-gray-600">${c.totalOrders} Orders</span></div>
+                        <div class="flex justify-between items-center mb-1"><h4 class="font-bold text-sm text-gray-800 line-clamp-1">${c.name}</h4><span class="text-[10px] bg-gray-100 border px-1.5 py-0.5 rounded font-bold text-gray-600">${c.totalOrders.toLocaleString('en-US')} Orders</span></div>
                         <p class="text-xs text-gray-500 font-bold flex items-center"><i class="fa-solid fa-phone mr-1 w-3"></i> ${phone} ${tagBadge}</p>
                     </div>`;
             }
-            if(count === 0) html = '<div class="p-8 text-center text-sm text-gray-500 col-span-full">কোনো কাস্টমার পাওয়া যায়নি</div>';
+            if(count === 0) html = '<div class="p-8 text-center text-sm text-gray-500 col-span-full">No customers found</div>';
             list.innerHTML = html;
         }
 
@@ -682,14 +734,23 @@
             currentViewedPhone = phone; const c = customerMap[phone];
             document.getElementById('customer-modal').classList.remove('hidden'); document.getElementById('customer-modal').classList.add('flex');
             document.getElementById('cp-name').textContent = c.name; document.getElementById('cp-phone').querySelector('span').textContent = phone; document.getElementById('cp-phone').href = `tel:${phone}`; document.getElementById('cp-tag').value = c.tag || '';
-            document.getElementById('cp-total-orders').textContent = c.totalOrders; document.getElementById('cp-delivered').textContent = c.delivered; document.getElementById('cp-spent').textContent = `৳ ${c.spent}`;
+            document.getElementById('cp-total-orders').textContent = c.totalOrders.toLocaleString('en-US'); document.getElementById('cp-delivered').textContent = c.delivered.toLocaleString('en-US'); document.getElementById('cp-spent').textContent = `৳ ${c.spent.toLocaleString('en-US')}`;
 
             document.getElementById('cp-order-history').innerHTML = c.orders.map(o => `
                 <div class="bg-white border border-gray-200 p-3 rounded-lg shadow-sm">
                     <div class="flex justify-between items-start mb-2 border-b pb-2"><span class="font-bold text-xs text-gray-800">${o.id}</span><span class="text-[9px] px-1.5 py-0.5 rounded border font-bold ${getStatusClass(o.status)}">${o.status}</span></div>
                     <p class="text-[10px] text-gray-500 mb-2"><i class="fa-regular fa-clock mr-1"></i>${formatEnglishDate(o.time)}</p>
-                    <p class="text-xs text-gray-700 bg-gray-50 p-2 rounded mb-2 border">${o.details}</p>
-                    <div class="flex justify-between items-end"><p class="text-[10px] text-gray-500 uppercase font-bold">${o.payment.includes('Online')?'Online':'COD'}</p><p class="text-sm font-bold text-brand">৳ ${o.total}</p></div>
+                    
+                    <!-- Click to expand section (Fixed) -->
+                    <div class="text-xs text-gray-700 bg-gray-50 p-2 rounded mb-2 border cursor-pointer hover:bg-gray-100 transition-colors" onclick="let el = this.querySelector('.order-text'); el.classList.toggle('line-clamp-2');" title="Click to expand/collapse">
+                        <p class="text-[8px] text-gray-400 uppercase font-bold mb-1 flex justify-between items-center">
+                            <span>Items / Request</span>
+                            <span class="text-brand flex items-center gap-1 bg-brand/10 px-1 rounded"><i class="fa-solid fa-expand text-[6px]"></i> Click</span>
+                        </p>
+                        <p class="line-clamp-2 order-text whitespace-pre-wrap leading-relaxed">${o.details}</p>
+                    </div>
+
+                    <div class="flex justify-between items-end"><p class="text-[10px] text-gray-500 uppercase font-bold">${o.payment.includes('Online')?'Online':'COD'}</p><p class="text-sm font-bold text-brand">৳ ${o.total.toLocaleString('en-US')}</p></div>
                 </div>
             `).join('');
         }
@@ -698,12 +759,13 @@
 
         async function saveCustomerTag() {
             if(!currentViewedPhone) return; const tag = document.getElementById('cp-tag').value; showLoading(true);
-            try { await fetchPost({ action: 'saveCustomerTag', phone: currentViewedPhone, tag: tag }); customerMap[currentViewedPhone].tag = tag; storeData.tags[currentViewedPhone] = tag; renderCustomers(); renderDashboard(); renderOrders(); showToast("ট্যাগ সেভ হয়েছে!"); } catch(e){} showLoading(false);
+            try { await fetchPost({ action: 'saveCustomerTag', phone: currentViewedPhone, tag: tag }); customerMap[currentViewedPhone].tag = tag; storeData.tags[currentViewedPhone] = tag; renderCustomers(); renderDashboard(); renderOrders(); showToast("Tag Saved!"); } catch(e){} showLoading(false);
         }
 
+        // --- MENU MANAGEMENT ---
         function renderMenuAdmin() { 
             const grid = document.getElementById('admin-menu-grid');
-            if(storeData.menu.length===0){ grid.innerHTML='<p class="text-sm col-span-full text-gray-500 text-center py-10 bg-white border rounded-xl">কোনো আইটেম নেই</p>'; return; }
+            if(storeData.menu.length===0){ grid.innerHTML='<p class="text-sm col-span-full text-gray-500 text-center py-10 bg-white border rounded-xl">No items</p>'; return; }
             grid.innerHTML = storeData.menu.map(m => `
                 <div class="bg-white border rounded-xl p-3 shadow-sm flex flex-col hover:border-brand/30 transition-colors ${m.available === false ? 'opacity-60 grayscale' : ''}">
                     <div class="flex items-start gap-3 mb-2 border-b pb-2">
@@ -721,7 +783,7 @@
                             <p class="text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded inline-block mt-1 border">${m.category}</p>
                         </div>
                     </div>
-                    <div class="flex justify-between items-end mt-auto pt-1"><p class="text-brand font-bold text-lg">৳ ${m.price}</p><div class="flex gap-2"><button onclick='editMenu(${JSON.stringify(m).replace(/'/g, "&#39;")})' class="text-blue-600 bg-blue-50 hover:bg-blue-100 p-1.5 rounded-md text-xs font-bold transition-colors border border-blue-100"><i class="fa-solid fa-pen"></i></button><button onclick="deleteMenu('${m.id}')" class="text-red-600 bg-red-50 hover:bg-red-100 p-1.5 rounded-md text-xs font-bold transition-colors border border-red-100"><i class="fa-solid fa-trash"></i></button></div></div>
+                    <div class="flex justify-between items-end mt-auto pt-1"><p class="text-brand font-bold text-lg">৳ ${Number(m.price).toLocaleString('en-US')}</p><div class="flex gap-2"><button onclick='editMenu(${JSON.stringify(m).replace(/'/g, "&#39;")})' class="text-blue-600 bg-blue-50 hover:bg-blue-100 p-1.5 rounded-md text-xs font-bold transition-colors border border-blue-100"><i class="fa-solid fa-pen"></i></button><button onclick="deleteMenu('${m.id}')" class="text-red-600 bg-red-50 hover:bg-red-100 p-1.5 rounded-md text-xs font-bold transition-colors border border-red-100"><i class="fa-solid fa-trash"></i></button></div></div>
                 </div>
             `).join(''); 
         }
@@ -729,7 +791,7 @@
         async function toggleMenuStatus(id) {
             const itemIndex = storeData.menu.findIndex(m => m.id === id); if(itemIndex === -1) return;
             const item = storeData.menu[itemIndex]; item.available = item.available === false ? true : false;
-            showLoading(true); try { await fetchPost({action:'saveMenu', item: item, isEdit: true}); showToast(item.available ? "আইটেম চালু হয়েছে" : "Out of stock করা হয়েছে"); renderMenuAdmin(); } catch(e) {} showLoading(false);
+            showLoading(true); try { await fetchPost({action:'saveMenu', item: item, isEdit: true}); showToast(item.available ? "Item Enabled" : "Item Disabled"); renderMenuAdmin(); } catch(e) {} showLoading(false);
         }
 
         function openMenuModal() { document.getElementById('menu-form').reset(); document.getElementById('m-id').value = 'f'+Date.now(); document.getElementById('menu-modal-title').textContent="Add Item"; document.getElementById('menu-modal').style.display='flex'; }
@@ -739,20 +801,21 @@
             e.preventDefault(); const id=document.getElementById('m-id').value; const existingItem = storeData.menu.find(m => m.id === id);
             const item={id, name:document.getElementById('m-name').value, price:document.getElementById('m-price').value, category:document.getElementById('m-cat').value, image:document.getElementById('m-image').value, ingredients:document.getElementById('m-ing').value, available: existingItem ? existingItem.available : true}; 
             const isEdit = existingItem !== undefined; showLoading(true); closeMenuModal(); 
-            try { await fetchPost({action:'saveMenu', item, isEdit}); if(isEdit){ storeData.menu[storeData.menu.findIndex(m=>m.id===id)]=item; } else storeData.menu.push(item); renderMenuAdmin(); showToast("সেভ হয়েছে!"); } catch(e){} showLoading(false); 
+            try { await fetchPost({action:'saveMenu', item, isEdit}); if(isEdit){ storeData.menu[storeData.menu.findIndex(m=>m.id===id)]=item; } else storeData.menu.push(item); renderMenuAdmin(); showToast("Saved!"); } catch(e){} showLoading(false); 
         }
         async function deleteMenu(id) { if(!confirm("Are you sure?")) return; showLoading(true); try { await fetchPost({action:'deleteMenu', id}); storeData.menu=storeData.menu.filter(m=>m.id!==id); renderMenuAdmin(); showToast("Deleted"); } catch(e){} showLoading(false); }
 
+        // --- OFFERS MANAGEMENT ---
         function renderOffersAdmin() {
             const grid = document.getElementById('admin-offers-grid');
-            if(storeData.offers.length===0){ grid.innerHTML='<p class="text-sm col-span-full text-gray-500 text-center py-10 bg-white border rounded-xl">কোনো অফার নেই</p>'; return; }
+            if(storeData.offers.length===0){ grid.innerHTML='<p class="text-sm col-span-full text-gray-500 text-center py-10 bg-white border rounded-xl">No offers</p>'; return; }
             grid.innerHTML = storeData.offers.map(o => `
                 <div class="bg-white border rounded-xl p-3 shadow-sm flex flex-col hover:border-brand/30 transition-colors">
                     <div class="flex items-start gap-3 mb-2 border-b pb-2">
                         <img src="${o.image}" class="w-16 h-16 rounded-lg object-contain bg-gray-50 border">
                         <div class="flex-1"><h4 class="font-bold text-sm line-clamp-2">${o.title}</h4><p class="text-[10px] text-gray-500 line-clamp-2 mt-1">${o.description}</p></div>
                     </div>
-                    <div class="flex justify-between items-end mt-auto pt-1"><p class="text-brand font-bold text-lg">৳ ${o.price}</p><div class="flex gap-2"><button onclick='editOffer(${JSON.stringify(o).replace(/'/g, "&#39;")})' class="text-blue-600 bg-blue-50 hover:bg-blue-100 p-1.5 rounded-md text-xs font-bold transition-colors border border-blue-100"><i class="fa-solid fa-pen"></i></button><button onclick="deleteOffer('${o.id}')" class="text-red-600 bg-red-50 hover:bg-red-100 p-1.5 rounded-md text-xs font-bold transition-colors border border-red-100"><i class="fa-solid fa-trash"></i></button></div></div>
+                    <div class="flex justify-between items-end mt-auto pt-1"><p class="text-brand font-bold text-lg">৳ ${Number(o.price).toLocaleString('en-US')}</p><div class="flex gap-2"><button onclick='editOffer(${JSON.stringify(o).replace(/'/g, "&#39;")})' class="text-blue-600 bg-blue-50 hover:bg-blue-100 p-1.5 rounded-md text-xs font-bold transition-colors border border-blue-100"><i class="fa-solid fa-pen"></i></button><button onclick="deleteOffer('${o.id}')" class="text-red-600 bg-red-50 hover:bg-red-100 p-1.5 rounded-md text-xs font-bold transition-colors border border-red-100"><i class="fa-solid fa-trash"></i></button></div></div>
                 </div>`).join('');
         }
         function openOfferModal() { document.getElementById('offer-form').reset(); document.getElementById('o-id').value = 'O-'+Date.now(); document.getElementById('offer-modal-title').textContent="Add Offer"; document.getElementById('offer-modal').style.display='flex'; }
@@ -761,20 +824,22 @@
         async function saveOfferItem(e) {
             e.preventDefault(); const id=document.getElementById('o-id').value; const isEdit = storeData.offers.find(m => m.id === id) !== undefined;
             const item={id, title:document.getElementById('o-title').value, price:document.getElementById('o-price').value, description:document.getElementById('o-desc').value, image:document.getElementById('o-image').value}; 
-            showLoading(true); closeOfferModal(); try { await fetchPost({action:'saveOffer', item, isEdit}); if(isEdit){ storeData.offers[storeData.offers.findIndex(m=>m.id===id)]=item; } else storeData.offers.push(item); renderOffersAdmin(); showToast("সেভ হয়েছে!"); } catch(e){} showLoading(false);
+            showLoading(true); closeOfferModal(); try { await fetchPost({action:'saveOffer', item, isEdit}); if(isEdit){ storeData.offers[storeData.offers.findIndex(m=>m.id===id)]=item; } else storeData.offers.push(item); renderOffersAdmin(); showToast("Saved!"); } catch(e){} showLoading(false);
         }
         async function deleteOffer(id) { if(!confirm("Are you sure?")) return; showLoading(true); try { await fetchPost({action:'deleteOffer', id}); storeData.offers=storeData.offers.filter(m=>m.id!==id); renderOffersAdmin(); showToast("Deleted"); } catch(e){} showLoading(false); }
 
+        // --- AREA MANAGEMENT ---
         function renderAreasAdmin() { 
-            if(storeData.areas.length === 0) { document.getElementById('areas-table').innerHTML = '<tr><td colspan="3" class="p-4 text-center text-xs text-gray-500">কোনো এরিয়া নেই</td></tr>'; return; }
-            document.getElementById('areas-table').innerHTML = storeData.areas.map(a => `<tr><td class="p-3 font-bold text-sm text-gray-800">${a.name}</td><td class="p-3 text-brand font-bold text-sm">৳ ${a.charge}</td><td class="p-3 text-right"><button onclick="editArea('${a.name}', '${a.charge}')" class="text-blue-600 bg-blue-50 hover:bg-blue-100 p-1.5 rounded mr-1"><i class="fa-solid fa-pen text-xs"></i></button> <button onclick="deleteArea('${a.name}')" class="text-red-600 bg-red-50 hover:bg-red-100 p-1.5 rounded"><i class="fa-solid fa-trash text-xs"></i></button></td></tr>`).join(''); 
+            if(storeData.areas.length === 0) { document.getElementById('areas-table').innerHTML = '<tr><td colspan=\"3\" class=\"p-4 text-center text-xs text-gray-500\">No areas</td></tr>'; return; }
+            document.getElementById('areas-table').innerHTML = storeData.areas.map(a => `<tr><td class="p-3 font-bold text-sm text-gray-800">${a.name}</td><td class="p-3 text-brand font-bold text-sm">৳ ${Number(a.charge).toLocaleString('en-US')}</td><td class="p-3 text-right"><button onclick="editArea('${a.name}', '${a.charge}')" class="text-blue-600 bg-blue-50 hover:bg-blue-100 p-1.5 rounded mr-1"><i class="fa-solid fa-pen text-xs"></i></button> <button onclick="deleteArea('${a.name}')" class="text-red-600 bg-red-50 hover:bg-red-100 p-1.5 rounded"><i class="fa-solid fa-trash text-xs"></i></button></td></tr>`).join(''); 
         }
         function openAreaModal() { document.getElementById('area-form').reset(); document.getElementById('area-name').readOnly = false; document.getElementById('area-modal-title').textContent="Add Area"; document.getElementById('area-submit-btn').textContent = "Save Area"; document.getElementById('area-submit-btn').classList.replace('bg-blue-600', 'bg-gray-900'); document.getElementById('area-modal').style.display='flex'; }
         function closeAreaModal() { document.getElementById('area-modal').style.display='none'; }
         function editArea(name, charge) { document.getElementById('area-name').value = name; document.getElementById('area-name').readOnly = true; document.getElementById('area-charge').value = charge; document.getElementById('area-modal-title').textContent = "Update Area Charge"; document.getElementById('area-submit-btn').textContent = "Update Area"; document.getElementById('area-submit-btn').classList.replace('bg-gray-900', 'bg-blue-600'); document.getElementById('area-modal').style.display='flex'; }
-        async function saveArea(e) { e.preventDefault(); const areaName=document.getElementById('area-name').value; const charge=document.getElementById('area-charge').value; showLoading(true); closeAreaModal(); try{ await fetchPost({action:'saveArea', areaName, charge}); const ex = storeData.areas.findIndex(a=>a.name===areaName); if(ex>-1) storeData.areas[ex].charge=charge; else storeData.areas.push({name:areaName, charge}); renderAreasAdmin(); showToast("সেভ হয়েছে!");}catch(e){} showLoading(false); }
+        async function saveArea(e) { e.preventDefault(); const areaName=document.getElementById('area-name').value; const charge=document.getElementById('area-charge').value; showLoading(true); closeAreaModal(); try{ await fetchPost({action:'saveArea', areaName, charge}); const ex = storeData.areas.findIndex(a=>a.name===areaName); if(ex>-1) storeData.areas[ex].charge=charge; else storeData.areas.push({name:areaName, charge}); renderAreasAdmin(); showToast("Saved!");}catch(e){} showLoading(false); }
         async function deleteArea(n) { if(!confirm("Are you sure?")) return; showLoading(true); try{ await fetchPost({action:'deleteArea', areaName:n}); storeData.areas=storeData.areas.filter(a=>a.name!==n); renderAreasAdmin(); showToast("Deleted"); }catch(e){} showLoading(false); }
 
+        // --- NOTIFICATIONS MANAGEMENT ---
         async function fetchAdminNotifs() {
             const list = document.getElementById('admin-notif-list'); list.innerHTML = '<div class="flex justify-center items-center h-full"><i class="fa-solid fa-spinner fa-spin text-2xl text-gray-400"></i></div>';
             try {
@@ -784,14 +849,19 @@
                         <div class="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition-shadow relative">
                             <span class="absolute top-3 right-3 bg-gray-100 text-[10px] px-2 py-0.5 rounded text-gray-600 border font-bold">To: ${n.target}</span>
                             <h4 class="font-bold text-sm text-gray-800 pr-16 mb-1">${n.title}</h4>
-                            <p class="text-xs text-gray-600 mb-3 bg-gray-50 p-2 rounded border">${n.message}</p>
+                            
+                            <!-- Expandable Message -->
+                            <div class="text-xs text-gray-600 mb-3 bg-gray-50 p-2 rounded border cursor-pointer hover:bg-gray-100 transition-colors" onclick="this.querySelector('p').classList.toggle('line-clamp-2');" title="Click to expand">
+                                <p class="line-clamp-2 whitespace-pre-wrap leading-relaxed">${n.message}</p>
+                            </div>
+
                             <div class="flex justify-between items-center pt-2">
                                 <span class="text-[10px] text-gray-400 font-medium"><i class="fa-regular fa-clock mr-1"></i>${formatEnglishDate(n.date)}</span>
                                 <div class="flex gap-2"><button onclick='editNotif(${JSON.stringify(n).replace(/'/g, "&#39;")})' class="text-blue-600 hover:bg-blue-50 px-2 py-1 rounded text-[11px] font-bold border border-transparent hover:border-blue-200 transition-colors"><i class="fa-solid fa-pen mr-1"></i> Edit</button><button onclick="deleteNotification('${n.id}')" class="text-red-600 hover:bg-red-50 px-2 py-1 rounded text-[11px] font-bold border border-transparent hover:border-red-200 transition-colors"><i class="fa-solid fa-trash mr-1"></i> Delete</button></div>
                             </div>
                         </div>
                     `).join('');
-                } else list.innerHTML = '<div class="text-center py-10 text-gray-500 text-sm">কোনো নোটিফিকেশন নেই</div>';
+                } else list.innerHTML = '<div class="text-center py-10 text-gray-500 text-sm">No notifications sent</div>';
             } catch(e) { list.innerHTML = '<div class="text-center py-10 text-red-500 text-sm">Error loading data</div>'; }
         }
 
@@ -806,10 +876,11 @@
         async function saveNotification(e) {
             e.preventDefault(); const id = document.getElementById('n-id').value; const isEdit = id !== ''; const targetType = document.getElementById('notif-target').value;
             const target = targetType === 'custom' ? document.getElementById('notif-custom-phone').value : 'All'; const title = document.getElementById('notif-title').value; const message = document.getElementById('notif-message').value;
-            if(targetType === 'custom' && !target) return showToast("নম্বর দিন", true); showLoading(true); closeNotifModal(); try { await fetchPost({ action: 'saveNotification', isEdit, id, target, title, message }); showToast(isEdit ? "আপডেট হয়েছে!" : "পাঠানো হয়েছে!"); fetchAdminNotifs(); } catch(e){} showLoading(false);
+            if(targetType === 'custom' && !target) return showToast("Enter Number", true); showLoading(true); closeNotifModal(); try { await fetchPost({ action: 'saveNotification', isEdit, id, target, title, message }); showToast(isEdit ? "Updated!" : "Sent!"); fetchAdminNotifs(); } catch(e){} showLoading(false);
         }
         async function deleteNotification(id) { if(!confirm("Are you sure?")) return; showLoading(true); try { await fetchPost({ action: 'deleteNotification', id }); showToast("Deleted!"); fetchAdminNotifs(); } catch(e){} showLoading(false); }
 
+        // --- SETTINGS ---
         function renderSettings() { 
             document.getElementById('set-is-open').value = storeData.settings.IsOpen || 'true';
             document.getElementById('set-admin-phone').value=storeData.settings.AdminPhone||''; 
@@ -820,7 +891,9 @@
             document.getElementById('set-promo-text').value=storeData.settings.PromoText||''; 
             document.getElementById('set-free-del').value=storeData.settings.FreeDeliveryThreshold||''; 
             document.getElementById('set-blocked').value=storeData.settings.BlockedUsers||''; 
+            document.getElementById('set-admin-pass').value=storeData.settings.AdminPassword||'test'; // Load Admin Password
             
+            // Show stringified version of Coupons
             let couponStr = "";
             if(storeData.settings.Coupons) {
                 if(typeof storeData.settings.Coupons === 'object') couponStr = JSON.stringify(storeData.settings.Coupons);
@@ -832,18 +905,20 @@
         async function saveSetting(k, id) { 
             let v = document.getElementById(id).value; 
             
+            // Validate JSON if saving Coupons
             if(k === 'Coupons' && v.trim() !== '') {
-                try { JSON.parse(v); } catch(e) { return showToast("ভুল কুপন ফরম্যাট! সঠিক JSON দিন।", true); }
+                try { JSON.parse(v); } catch(e) { return showToast("Invalid Coupon JSON format!", true); }
             }
             
             showLoading(true); 
             try{ 
                 await fetchPost({action:'saveSettings', key:k, value:v}); 
                 
+                // Update local storage representation
                 if(k === 'Coupons' && v.trim() !== '') storeData.settings[k] = JSON.parse(v);
                 else storeData.settings[k] = v;
                 
-                showToast("Saved!");
+                showToast("Saved Successfully!");
             } catch(e){} 
             showLoading(false); 
         }
