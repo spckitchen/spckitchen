@@ -10,25 +10,28 @@
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; }
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .tab-content.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; } 
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         #toast { pointer-events: none; }
+        .premium-shadow { box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .premium-shadow-hover:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.06); transform: translateY(-2px); }
     </style>
     <script>tailwind.config = { theme: { extend: { colors: { brand: { DEFAULT: '#ea580c', dark: '#c2410c' } } } } }</script>
 </head>
 <body class="h-screen flex overflow-hidden relative text-slate-800">
 
     <!-- ADMIN LOGIN MODAL -->
-    <div id="admin-login" class="fixed inset-0 bg-slate-900 z-[9999] flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm text-center border border-slate-100">
-            <div class="w-20 h-20 bg-brand/10 text-brand rounded-full flex items-center justify-center text-4xl mx-auto mb-4 shadow-inner"><i class="fa-solid fa-user-shield"></i></div>
-            <h2 class="text-2xl font-extrabold mb-6 text-slate-800">অ্যাডমিন লগিন</h2>
-            <input type="password" id="admin-pass" placeholder="পাসওয়ার্ড দিন..." class="w-full px-5 py-4 border border-slate-200 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand font-bold text-center text-lg bg-slate-50">
-            <button onclick="checkAdmin()" id="admin-login-btn" class="w-full bg-slate-900 text-white font-extrabold py-4 rounded-xl hover:bg-brand transition-colors shadow-lg">লগিন করুন</button>
+    <div id="admin-login" class="fixed inset-0 bg-slate-900/90 z-[9999] flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-[2rem] premium-shadow w-full max-w-sm text-center border border-slate-100 transform transition-all">
+            <div class="w-24 h-24 bg-gradient-to-tr from-brand/20 to-orange-100 text-brand rounded-full flex items-center justify-center text-5xl mx-auto mb-6 shadow-inner"><i class="fa-solid fa-user-shield"></i></div>
+            <h2 class="text-3xl font-black mb-2 text-slate-800 tracking-tight">স্বাগতম!</h2>
+            <p class="text-sm font-bold text-slate-500 mb-8">অ্যাডমিন প্যানেলে প্রবেশ করুন</p>
+            <input type="password" id="admin-pass" placeholder="পাসওয়ার্ড দিন..." class="w-full px-5 py-4 border-2 border-slate-100 rounded-2xl mb-6 outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 font-bold text-center text-lg bg-slate-50 transition-all shadow-sm">
+            <button onclick="checkAdmin()" id="admin-login-btn" class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl hover:bg-brand transition-all shadow-lg hover:shadow-brand/30">লগিন করুন <i class="fa-solid fa-arrow-right ml-2"></i></button>
         </div>
     </div>
 
@@ -36,121 +39,136 @@
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
     <!-- SIDEBAR -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-64 bg-slate-900 text-white flex flex-col transition-transform duration-300 z-50 shrink-0 shadow-2xl">
-        <div class="p-6 flex items-center justify-between border-b border-slate-800">
-            <div class="flex items-center gap-3 cursor-pointer hover:text-brand transition-colors" onclick="switchTab('dashboard')">
-                <div class="w-8 h-8 bg-brand rounded-lg flex justify-center items-center text-white shadow-lg"><i class="fa-solid fa-fire-burner"></i></div>
-                <h1 class="text-sm font-extrabold leading-tight">Sherpur<br>Cloud Kitchen</h1>
+    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-72 bg-slate-900 text-white flex flex-col transition-transform duration-300 z-50 shrink-0 shadow-2xl">
+        <div class="p-6 flex items-center justify-between border-b border-slate-800/80 bg-slate-900/50">
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="switchTab('dashboard')">
+                <div class="w-10 h-10 bg-gradient-to-br from-brand to-orange-400 rounded-xl flex justify-center items-center text-white shadow-lg group-hover:scale-105 transition-transform"><i class="fa-solid fa-fire-burner text-lg"></i></div>
+                <h1 class="text-sm font-black leading-tight tracking-wide">Sherpur<br><span class="text-brand font-extrabold">Cloud Kitchen</span></h1>
             </div>
             <button class="md:hidden text-slate-400 hover:text-white" onclick="toggleSidebar()"><i class="fa-solid fa-times text-xl"></i></button>
         </div>
         
         <nav id="nav-links" class="flex-1 px-4 py-6 space-y-2 overflow-y-auto text-sm custom-scroll font-bold">
-            <a href="#" onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl text-white bg-slate-800"><i class="fa-solid fa-chart-pie w-5"></i> ড্যাশবোর্ড</a>
-            <a href="#" onclick="switchTab('orders')" id="tab-btn-orders" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"><i class="fa-solid fa-clipboard-list w-5"></i> সকল অর্ডার <span id="pending-badge" class="ml-auto bg-brand text-[10px] font-extrabold px-2 py-0.5 rounded-md hidden text-white shadow-sm">0</span></a>
-            <a href="#" onclick="switchTab('menu')" id="tab-btn-menu" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"><i class="fa-solid fa-burger w-5"></i> মেনু কন্ট্রোল</a>
-            <a href="#" onclick="switchTab('offers')" id="tab-btn-offers" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"><i class="fa-solid fa-tags w-5"></i> স্পেশাল অফার</a>
-            <a href="#" onclick="switchTab('areas')" id="tab-btn-areas" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"><i class="fa-solid fa-map-location-dot w-5"></i> ডেলিভারি এরিয়া</a>
-            <a href="#" onclick="switchTab('customers')" id="tab-btn-customers" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"><i class="fa-solid fa-users w-5"></i> কাস্টমার লিস্ট</a>
-            <a href="#" onclick="switchTab('notifications')" id="tab-btn-notifications" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"><i class="fa-solid fa-bullhorn w-5"></i> নোটিফিকেশন</a>
-            <a href="#" onclick="switchTab('settings')" id="tab-btn-settings" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"><i class="fa-solid fa-gear w-5"></i> সেটিংস</a>
+            <a href="#" onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-white bg-brand/10 border border-brand/20 shadow-sm transition-all"><i class="fa-solid fa-chart-pie w-5 text-brand"></i> ড্যাশবোর্ড</a>
+            <a href="#" onclick="switchTab('orders')" id="tab-btn-orders" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-clipboard-list w-5"></i> সকল অর্ডার <span id="pending-badge" class="ml-auto bg-brand text-[10px] font-black px-2 py-0.5 rounded-md hidden text-white shadow-sm">0</span></a>
+            <a href="#" onclick="switchTab('menu')" id="tab-btn-menu" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-burger w-5"></i> মেনু কন্ট্রোল</a>
+            <a href="#" onclick="switchTab('offers')" id="tab-btn-offers" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-tags w-5"></i> স্পেশাল অফার</a>
+            <a href="#" onclick="switchTab('areas')" id="tab-btn-areas" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-map-location-dot w-5"></i> ডেলিভারি এরিয়া</a>
+            <a href="#" onclick="switchTab('customers')" id="tab-btn-customers" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-users w-5"></i> কাস্টমার লিস্ট</a>
+            <a href="#" onclick="switchTab('notifications')" id="tab-btn-notifications" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-bullhorn w-5"></i> নোটিফিকেশন</a>
+            <a href="#" onclick="switchTab('settings')" id="tab-btn-settings" class="flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-gear w-5"></i> সেটিংস</a>
         </nav>
-        <div class="p-4 border-t border-slate-800"><button onclick="location.reload()" class="w-full flex items-center justify-center gap-2 px-4 py-3 font-bold text-sm text-red-400 hover:text-red-300 hover:bg-slate-800 rounded-xl transition-colors"><i class="fa-solid fa-right-from-bracket"></i> লগআউট</button></div>
+        <div class="p-4 border-t border-slate-800 bg-slate-900/50"><button onclick="location.reload()" class="w-full flex items-center justify-center gap-2 px-4 py-3 font-black text-sm text-red-400 hover:text-white hover:bg-red-500/20 rounded-xl transition-all border border-transparent hover:border-red-500/30"><i class="fa-solid fa-right-from-bracket"></i> লগআউট</button></div>
     </aside>
 
-    <main class="flex-1 bg-slate-50 h-full overflow-y-auto custom-scroll relative flex flex-col w-full">
-        <header class="md:hidden bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-30">
+    <main class="flex-1 bg-[#f4f7fb] h-full overflow-y-auto custom-scroll relative flex flex-col w-full">
+        <header class="md:hidden bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-30 border-b border-slate-100">
             <div class="flex items-center gap-2 cursor-pointer hover:text-brand" onclick="switchTab('dashboard')">
-                <i class="fa-solid fa-fire-burner text-brand text-lg"></i>
-                <h1 class="text-base font-extrabold text-slate-800">অ্যাডমিন প্যানেল</h1>
+                <i class="fa-solid fa-fire-burner text-brand text-xl"></i>
+                <h1 class="text-base font-black text-slate-800">অ্যাডমিন প্যানেল</h1>
             </div>
-            <button onclick="toggleSidebar()" class="text-slate-800 focus:outline-none"><i class="fa-solid fa-bars text-xl"></i></button>
+            <button onclick="toggleSidebar()" class="text-slate-800 focus:outline-none bg-slate-50 w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center"><i class="fa-solid fa-bars"></i></button>
         </header>
 
-        <div id="loading-overlay" class="absolute inset-0 bg-white/80 z-[100] flex flex-col items-center justify-center hidden backdrop-blur-sm"><i class="fa-solid fa-circle-notch fa-spin text-5xl text-brand mb-3"></i><p class="font-bold text-slate-700 text-sm mt-3">অপেক্ষা করুন...</p></div>
+        <div id="loading-overlay" class="absolute inset-0 bg-white/80 z-[100] flex flex-col items-center justify-center hidden backdrop-blur-md"><i class="fa-solid fa-circle-notch fa-spin text-5xl text-brand mb-4 drop-shadow-md"></i><p class="font-black text-slate-700 text-sm mt-2 tracking-wide uppercase">অপেক্ষা করুন...</p></div>
 
-        <div class="p-4 md:p-8 max-w-7xl mx-auto pb-20 w-full flex-1">
+        <div class="p-4 md:p-8 max-w-7xl mx-auto pb-24 w-full flex-1">
             
             <!-- TAB: DASHBOARD -->
             <div id="tab-dashboard" class="tab-content active">
-                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
-                    <h2 class="text-2xl font-extrabold text-slate-800">ওভারভিউ (ড্যাশবোর্ড)</h2>
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-8">
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-800 tracking-tight">ড্যাশবোর্ড</h2>
+                        <p class="text-sm font-bold text-slate-500 mt-1">আপনার রেস্টুরেন্টের সার্বিক অবস্থা</p>
+                    </div>
                     
-                    <div class="flex flex-wrap items-center gap-2 bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
-                        <input type="date" id="db-start-date" class="px-2 py-1.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 outline-none focus:border-brand">
-                        <span class="text-slate-400 text-xs font-bold">হতে</span>
-                        <input type="date" id="db-end-date" class="px-2 py-1.5 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 outline-none focus:border-brand">
+                    <div class="flex flex-wrap items-center gap-2 bg-white p-2 rounded-2xl border border-slate-200 premium-shadow">
+                        <input type="date" id="db-start-date" class="px-3 py-2 border border-slate-100 bg-slate-50 rounded-xl text-xs font-bold text-slate-600 outline-none focus:border-brand transition-colors">
+                        <span class="text-slate-400 text-xs font-bold px-1">হতে</span>
+                        <input type="date" id="db-end-date" class="px-3 py-2 border border-slate-100 bg-slate-50 rounded-xl text-xs font-bold text-slate-600 outline-none focus:border-brand transition-colors">
                         
-                        <div class="flex gap-1 ml-2 border-l border-slate-200 pl-2">
-                            <button onclick="setDbFilter('today')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1.5 rounded-lg text-[10px] font-bold transition-colors">আজ</button>
-                            <button onclick="setDbFilter('7days')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1.5 rounded-lg text-[10px] font-bold transition-colors">৭ দিন</button>
-                            <button onclick="setDbFilter('month')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1.5 rounded-lg text-[10px] font-bold transition-colors">মাস</button>
+                        <div class="flex gap-1 ml-1 border-l border-slate-200 pl-2">
+                            <button onclick="setDbFilter('today')" class="bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-700 px-3 py-2 rounded-xl text-[10px] font-black transition-colors shadow-sm">আজ</button>
+                            <button onclick="setDbFilter('7days')" class="bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-700 px-3 py-2 rounded-xl text-[10px] font-black transition-colors shadow-sm">৭ দিন</button>
+                            <button onclick="setDbFilter('month')" class="bg-slate-50 hover:bg-slate-100 border border-slate-100 text-slate-700 px-3 py-2 rounded-xl text-[10px] font-black transition-colors shadow-sm">মাস</button>
                         </div>
                         
-                        <button onclick="applyDashboardFilter()" class="bg-slate-900 text-white hover:bg-brand px-4 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-colors ml-1"><i class="fa-solid fa-filter mr-1"></i> ফিল্টার</button>
-                        <button onclick="fetchDashboardData()" class="bg-slate-100 text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-colors"><i class="fa-solid fa-rotate-right"></i></button>
+                        <button onclick="applyDashboardFilter()" class="bg-slate-900 text-white hover:bg-brand px-5 py-2 rounded-xl text-xs font-black shadow-md transition-all hover:shadow-brand/30 ml-1"><i class="fa-solid fa-filter mr-1"></i> ফিল্টার</button>
+                        <button onclick="fetchDashboardData()" class="bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-100 px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition-colors"><i class="fa-solid fa-rotate-right"></i></button>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden"><div class="absolute right-0 top-0 w-1 h-full bg-indigo-500"></div><p class="text-slate-500 text-[10px] font-extrabold mb-1 uppercase tracking-wider">ডেলিভারিকৃত অর্ডার</p><h3 id="stat-orders-today-count" class="text-2xl font-extrabold text-slate-800">0</h3></div>
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden"><div class="absolute right-0 top-0 w-1 h-full bg-brand"></div><p class="text-slate-500 text-[10px] font-extrabold mb-1 uppercase tracking-wider">আজকের সেলস</p><h3 id="stat-sales-today" class="text-2xl font-extrabold text-brand">৳ 0</h3></div>
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden"><div class="absolute right-0 top-0 w-1 h-full bg-green-500"></div><p class="text-slate-500 text-[10px] font-extrabold mb-1 uppercase tracking-wider">চলতি মাসের সেলস</p><h3 id="stat-sales-month" class="text-2xl font-extrabold text-slate-800">৳ 0</h3></div>
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden"><div class="absolute right-0 top-0 w-1 h-full bg-purple-500"></div><p class="text-slate-500 text-[10px] font-extrabold mb-1 uppercase tracking-wider">মোট সেলস</p><h3 id="stat-sales-all" class="text-2xl font-extrabold text-slate-800">৳ 0</h3></div>
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden md:col-span-1 col-span-2"><div class="absolute right-0 top-0 w-1 h-full bg-blue-500"></div><p class="text-slate-500 text-[10px] font-extrabold mb-1 uppercase tracking-wider">মোট কাস্টমার</p><h3 id="stat-users" class="text-2xl font-extrabold text-slate-800">0</h3></div>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-5 mb-8">
+                    <div class="bg-white p-6 rounded-[1.5rem] premium-shadow premium-shadow-hover transition-all relative overflow-hidden group"><div class="absolute right-0 top-0 w-1.5 h-full bg-indigo-500 group-hover:w-2 transition-all"></div><div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center mb-3"><i class="fa-solid fa-box-open text-lg"></i></div><p class="text-slate-500 text-[10px] font-black mb-1 uppercase tracking-wider">ডেলিভারিকৃত অর্ডার</p><h3 id="stat-orders-today-count" class="text-3xl font-black text-slate-800">0</h3></div>
+                    <div class="bg-white p-6 rounded-[1.5rem] premium-shadow premium-shadow-hover transition-all relative overflow-hidden group"><div class="absolute right-0 top-0 w-1.5 h-full bg-brand group-hover:w-2 transition-all"></div><div class="w-10 h-10 rounded-full bg-orange-50 text-brand flex items-center justify-center mb-3"><i class="fa-solid fa-bolt text-lg"></i></div><p class="text-slate-500 text-[10px] font-black mb-1 uppercase tracking-wider">আজকের সেলস</p><h3 id="stat-sales-today" class="text-3xl font-black text-brand">৳ 0</h3></div>
+                    <div class="bg-white p-6 rounded-[1.5rem] premium-shadow premium-shadow-hover transition-all relative overflow-hidden group"><div class="absolute right-0 top-0 w-1.5 h-full bg-emerald-500 group-hover:w-2 transition-all"></div><div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mb-3"><i class="fa-solid fa-calendar-check text-lg"></i></div><p class="text-slate-500 text-[10px] font-black mb-1 uppercase tracking-wider">চলতি মাসের সেলস</p><h3 id="stat-sales-month" class="text-3xl font-black text-slate-800">৳ 0</h3></div>
+                    <div class="bg-white p-6 rounded-[1.5rem] premium-shadow premium-shadow-hover transition-all relative overflow-hidden group"><div class="absolute right-0 top-0 w-1.5 h-full bg-purple-500 group-hover:w-2 transition-all"></div><div class="w-10 h-10 rounded-full bg-purple-50 text-purple-500 flex items-center justify-center mb-3"><i class="fa-solid fa-sack-dollar text-lg"></i></div><p class="text-slate-500 text-[10px] font-black mb-1 uppercase tracking-wider">মোট সেলস</p><h3 id="stat-sales-all" class="text-3xl font-black text-slate-800">৳ 0</h3></div>
+                    <div class="bg-white p-6 rounded-[1.5rem] premium-shadow premium-shadow-hover transition-all relative overflow-hidden group md:col-span-1 col-span-2"><div class="absolute right-0 top-0 w-1.5 h-full bg-blue-500 group-hover:w-2 transition-all"></div><div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mb-3"><i class="fa-solid fa-users text-lg"></i></div><p class="text-slate-500 text-[10px] font-black mb-1 uppercase tracking-wider">মোট কাস্টমার</p><h3 id="stat-users" class="text-3xl font-black text-slate-800">0</h3></div>
                 </div>
 
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-6 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-                    <div class="flex-1"><p class="text-[10px] text-slate-500 font-extrabold mb-1 uppercase"><i class="fa-solid fa-arrow-trend-up text-green-500 mr-1"></i> সবচেয়ে বেশি বিক্রিত</p><p id="stat-best-item" class="text-sm font-bold text-slate-800">-</p></div>
-                    <div class="hidden md:block w-px h-10 bg-slate-200"></div>
-                    <div class="flex-1"><p class="text-[10px] text-slate-500 font-extrabold mb-1 uppercase"><i class="fa-solid fa-arrow-trend-down text-red-500 mr-1"></i> সবচেয়ে কম বিক্রিত</p><p id="stat-worst-item" class="text-sm font-bold text-slate-800">-</p></div>
+                <div class="bg-gradient-to-r from-white to-slate-50 p-6 rounded-[1.5rem] premium-shadow border border-slate-100 mb-8 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+                    <div class="flex-1 flex items-center gap-4"><div class="w-12 h-12 rounded-2xl bg-green-50 text-green-500 flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-arrow-trend-up"></i></div><div><p class="text-[10px] text-slate-500 font-black mb-1 uppercase tracking-wider">সবচেয়ে বেশি বিক্রিত</p><p id="stat-best-item" class="text-lg font-black text-slate-800">-</p></div></div>
+                    <div class="hidden md:block w-px h-12 bg-slate-200"></div>
+                    <div class="flex-1 flex items-center gap-4"><div class="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-arrow-trend-down"></i></div><div><p class="text-[10px] text-slate-500 font-black mb-1 uppercase tracking-wider">সবচেয়ে কম বিক্রিত</p><p id="stat-worst-item" class="text-lg font-black text-slate-800">-</p></div></div>
                 </div>
 
-                <h3 class="text-lg font-extrabold text-slate-800 mb-4 mt-8 border-b pb-2">সাম্প্রতিক অর্ডারসমূহ</h3>
+                <div class="flex items-center gap-3 mb-6 mt-10">
+                    <div class="w-8 h-8 rounded-lg bg-brand/10 text-brand flex items-center justify-center"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <h3 class="text-xl font-black text-slate-800 tracking-tight">সাম্প্রতিক অর্ডারসমূহ</h3>
+                </div>
                 <div class="space-y-4" id="recent-orders-list"></div>
             </div>
 
             <!-- TAB: ALL ORDERS -->
             <div id="tab-orders" class="tab-content">
-                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4">
-                    <h2 class="text-2xl font-extrabold text-slate-800">সকল অর্ডার</h2>
-                    <div class="flex gap-2 items-center">
-                        <button onclick="toggleOrderView()" class="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition-colors"><i class="fa-solid fa-list mr-1"></i> ভিউ পরিবর্তন</button>
-                        <button onclick="exportOrdersCSV()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition-colors"><i class="fa-solid fa-file-excel mr-1"></i> এক্সপোর্ট (CSV)</button>
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-800 tracking-tight">সকল অর্ডার</h2>
+                        <p class="text-sm font-bold text-slate-500 mt-1">অর্ডার ম্যানেজমেন্ট ও ফিল্টারিং</p>
+                    </div>
+                    <div class="flex gap-3 items-center">
+                        <button onclick="toggleOrderView()" class="bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl text-sm font-black premium-shadow hover:bg-slate-50 transition-all"><i class="fa-solid fa-list mr-2 text-brand"></i> ভিউ পরিবর্তন</button>
+                        <button onclick="exportOrdersCSV()" class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white px-5 py-2.5 rounded-xl text-sm font-black shadow-lg shadow-emerald-500/30 transition-all"><i class="fa-solid fa-file-excel mr-2"></i> এক্সপোর্ট (CSV)</button>
                     </div>
                 </div>
                 
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm mb-6">
+                <div class="bg-white p-5 rounded-[1.5rem] border border-slate-100 premium-shadow mb-8">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="relative md:col-span-2">
-                            <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                            <input type="text" id="order-search" oninput="filterOrders()" placeholder="অর্ডার আইডি, নাম বা ফোন নম্বর খুঁজুন..." class="w-full pl-11 pr-10 py-3 border border-slate-200 rounded-xl outline-none text-sm focus:border-brand focus:ring-2 focus:ring-brand/10 bg-slate-50 font-medium">
-                            <button onclick="document.getElementById('order-search').value=''; filterOrders();" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-red-500 transition-colors" title="Clear Search"><i class="fa-solid fa-times-circle text-lg"></i></button>
+                            <i class="fa-solid fa-search absolute left-5 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg"></i>
+                            <input type="text" id="order-search" oninput="filterOrders()" placeholder="অর্ডার আইডি, নাম বা ফোন নম্বর খুঁজুন..." class="w-full pl-12 pr-10 py-3.5 border-2 border-slate-100 rounded-xl outline-none text-sm focus:border-brand focus:ring-4 focus:ring-brand/10 bg-slate-50 font-bold transition-all">
+                            <button onclick="document.getElementById('order-search').value=''; filterOrders();" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-red-500 transition-colors" title="Clear Search"><i class="fa-solid fa-times-circle text-lg"></i></button>
                         </div>
-                        <select id="filter-status" onchange="filterOrders()" class="px-4 py-3 border border-slate-200 rounded-xl text-sm bg-slate-50 font-bold outline-none focus:border-brand focus:ring-2 focus:ring-brand/10">
-                            <option value="">সকল স্ট্যাটাস</option><option value="পেন্ডিং">পেন্ডিং</option><option value="খাবার তৈরি হচ্ছে">খাবার তৈরি হচ্ছে</option><option value="ডেলিভারি ম্যান পথে আছে">ডেলিভারি ম্যান পথে আছে</option><option value="সম্পূর্ণ হয়েছে">সম্পূর্ণ হয়েছে</option><option value="বাতিল">বাতিল</option>
-                        </select>
-                        <select id="filter-payment" onchange="filterOrders()" class="px-4 py-3 border border-slate-200 rounded-xl text-sm bg-slate-50 font-bold outline-none focus:border-brand focus:ring-2 focus:ring-brand/10">
-                            <option value="">সকল পেমেন্ট</option><option value="Online">অনলাইন</option><option value="Cash">ক্যাশ অন ডেলিভারি</option>
-                        </select>
+                        <div class="relative">
+                            <select id="filter-status" onchange="filterOrders()" class="w-full px-5 py-3.5 border-2 border-slate-100 rounded-xl text-sm bg-slate-50 font-black outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all appearance-none text-slate-700 cursor-pointer">
+                                <option value="">সকল স্ট্যাটাস</option><option value="পেন্ডিং">পেন্ডিং</option><option value="খাবার তৈরি হচ্ছে">খাবার তৈরি হচ্ছে</option><option value="ডেলিভারি ম্যান পথে আছে">ডেলিভারি ম্যান পথে আছে</option><option value="সম্পূর্ণ হয়েছে">সম্পূর্ণ হয়েছে</option><option value="বাতিল">বাতিল</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
+                        </div>
+                        <div class="relative">
+                            <select id="filter-payment" onchange="filterOrders()" class="w-full px-5 py-3.5 border-2 border-slate-100 rounded-xl text-sm bg-slate-50 font-black outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all appearance-none text-slate-700 cursor-pointer">
+                                <option value="">সকল পেমেন্ট</option><option value="Online">অনলাইন</option><option value="Cash">ক্যাশ অন ডেলিভারি</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
+                        </div>
                     </div>
                 </div>
 
                 <div id="orders-view-container">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="all-orders-grid"></div>
-                    <div class="hidden bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden" id="all-orders-table-wrapper">
+                    <div class="grid grid-cols-1 gap-5" id="all-orders-grid"></div>
+                    <div class="hidden bg-white border border-slate-100 rounded-[1.5rem] premium-shadow overflow-hidden" id="all-orders-table-wrapper">
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-sm whitespace-nowrap">
-                                <thead class="bg-slate-50 border-b border-slate-100 font-bold">
+                                <thead class="bg-slate-50/80 border-b border-slate-100 font-black text-slate-600 uppercase tracking-wider text-[11px]">
                                     <tr>
-                                        <th class="p-4 text-slate-600">অর্ডার আইডি ও সময়</th>
-                                        <th class="p-4 text-slate-600">কাস্টমার</th>
-                                        <th class="p-4 text-slate-600 w-1/3">খাবারের বিবরণ</th>
-                                        <th class="p-4 text-slate-600">মোট বিল</th>
-                                        <th class="p-4 text-slate-600 text-center">স্ট্যাটাস</th>
+                                        <th class="p-5">অর্ডার আইডি ও সময়</th>
+                                        <th class="p-5">কাস্টমার</th>
+                                        <th class="p-5 w-1/3">খাবারের বিবরণ</th>
+                                        <th class="p-5">মোট বিল</th>
+                                        <th class="p-5 text-center">অ্যাকশন/স্ট্যাটাস</th>
                                     </tr>
                                 </thead>
-                                <tbody id="all-orders-table" class="divide-y divide-slate-100"></tbody>
+                                <tbody id="all-orders-table" class="divide-y divide-slate-50/80"></tbody>
                             </table>
                         </div>
                     </div>
@@ -159,104 +177,155 @@
 
             <!-- TAB: MENU -->
             <div id="tab-menu" class="tab-content">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-extrabold text-slate-800">মেনু কন্ট্রোল</h2>
-                    <button onclick="openMenuModal()" class="bg-brand text-white px-5 py-2.5 text-sm rounded-xl font-bold shadow-lg shadow-brand/30 hover:bg-brand-dark transition-colors"><i class="fa-solid fa-plus mr-1"></i> নতুন আইটেম</button>
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-800 tracking-tight">মেনু কন্ট্রোল</h2>
+                        <p class="text-sm font-bold text-slate-500 mt-1">খাবারের আইটেম ম্যানেজ করুন</p>
+                    </div>
+                    <button onclick="openMenuModal()" class="bg-gradient-to-r from-brand to-orange-500 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-brand/30 hover:shadow-brand/50 hover:-translate-y-0.5 transition-all"><i class="fa-solid fa-plus mr-2"></i> নতুন আইটেম যোগ করুন</button>
                 </div>
                 
-                <div id="admin-category-tabs" class="flex overflow-x-auto gap-3 custom-scroll mb-6 pb-2"></div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="admin-menu-grid"></div>
+                <div id="admin-category-tabs" class="flex overflow-x-auto gap-3 custom-scroll mb-8 pb-3"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="admin-menu-grid"></div>
             </div>
 
             <!-- TAB: OFFERS -->
             <div id="tab-offers" class="tab-content">
-                <div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-extrabold text-slate-800">স্পেশাল অফার</h2><button onclick="openOfferModal()" class="bg-brand text-white px-5 py-2.5 text-sm rounded-xl font-bold shadow-lg shadow-brand/30 hover:bg-brand-dark transition-colors"><i class="fa-solid fa-plus mr-1"></i> অফার যোগ করুন</button></div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="admin-offers-grid"></div>
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-800 tracking-tight">স্পেশাল অফার</h2>
+                        <p class="text-sm font-bold text-slate-500 mt-1">কাস্টমারদের জন্য আকর্ষণীয় অফার</p>
+                    </div>
+                    <button onclick="openOfferModal()" class="bg-gradient-to-r from-brand to-orange-500 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-brand/30 hover:shadow-brand/50 hover:-translate-y-0.5 transition-all"><i class="fa-solid fa-plus mr-2"></i> অফার যোগ করুন</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="admin-offers-grid"></div>
             </div>
 
             <!-- TAB: AREAS -->
             <div id="tab-areas" class="tab-content">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-extrabold text-slate-800">ডেলিভারি এরিয়া</h2>
-                    <button onclick="openAreaModal()" class="bg-brand text-white px-5 py-2.5 text-sm rounded-xl font-bold shadow-lg shadow-brand/30 hover:bg-brand-dark transition-colors"><i class="fa-solid fa-plus mr-1"></i> এরিয়া যোগ করুন</button>
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-800 tracking-tight">ডেলিভারি এরিয়া</h2>
+                        <p class="text-sm font-bold text-slate-500 mt-1">সার্ভিস এরিয়া ও ডেলিভারি চার্জ সেটআপ</p>
+                    </div>
+                    <button onclick="openAreaModal()" class="bg-slate-900 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg hover:bg-brand transition-all"><i class="fa-solid fa-plus mr-2"></i> এরিয়া যোগ করুন</button>
                 </div>
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden"><table class="w-full text-left text-sm"><thead class="bg-slate-50 border-b border-slate-100 font-bold"><tr><th class="p-4 text-slate-600">এরিয়ার নাম</th><th class="p-4 text-slate-600">ডেলিভারি চার্জ</th><th class="p-4 text-right text-slate-600">অ্যাকশন</th></tr></thead><tbody id="areas-table" class="divide-y divide-slate-50"></tbody></table></div>
+                <div class="bg-white rounded-[1.5rem] premium-shadow border border-slate-100 overflow-hidden max-w-4xl">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50/80 border-b border-slate-100 font-black text-slate-600 uppercase tracking-wider text-[11px]">
+                            <tr><th class="p-5">এরিয়ার নাম</th><th class="p-5">ডেলিভারি চার্জ</th><th class="p-5 text-right">অ্যাকশন</th></tr>
+                        </thead>
+                        <tbody id="areas-table" class="divide-y divide-slate-50"></tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- TAB: CUSTOMERS -->
             <div id="tab-customers" class="tab-content">
-                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4">
-                    <h2 class="text-2xl font-extrabold text-slate-800">কাস্টমার লিস্ট</h2>
-                    <button onclick="exportCustomersCSV()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition-colors"><i class="fa-solid fa-file-excel mr-1"></i> এক্সপোর্ট (CSV)</button>
-                </div>
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[75vh]">
-                    <div class="p-4 border-b border-slate-100 bg-slate-50 relative">
-                        <i class="fa-solid fa-search absolute left-7 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="cust-search" oninput="renderCustomers()" placeholder="নাম, ফোন নম্বর, ঠিকানা বা খাবার দিয়ে খুঁজুন..." class="w-full pl-11 pr-10 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand bg-white font-medium">
-                        <button onclick="document.getElementById('cust-search').value=''; renderCustomers();" class="absolute right-6 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-red-500 transition-colors" title="Clear"><i class="fa-solid fa-times-circle text-lg"></i></button>
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-800 tracking-tight">কাস্টমার লিস্ট</h2>
+                        <p class="text-sm font-bold text-slate-500 mt-1">আপনার সকল কাস্টমার ডাটাবেস</p>
                     </div>
-                    <div id="customers-list" class="flex-1 overflow-y-auto custom-scroll p-4 bg-slate-50 space-y-6"></div>
+                    <button onclick="exportCustomersCSV()" class="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-5 py-2.5 rounded-xl text-sm font-black shadow-lg shadow-emerald-500/30 transition-all hover:-translate-y-0.5"><i class="fa-solid fa-file-excel mr-2"></i> এক্সপোর্ট (CSV)</button>
+                </div>
+                <div class="bg-white rounded-[1.5rem] premium-shadow border border-slate-100 overflow-hidden flex flex-col h-[75vh]">
+                    <div class="p-5 border-b border-slate-100 bg-slate-50/50 relative">
+                        <i class="fa-solid fa-search absolute left-8 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg"></i>
+                        <input type="text" id="cust-search" oninput="renderCustomers()" placeholder="নাম, ফোন নম্বর, ঠিকানা বা খাবার দিয়ে খুঁজুন..." class="w-full pl-12 pr-12 py-4 border-2 border-slate-100 rounded-xl text-sm outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 bg-white font-bold transition-all shadow-sm">
+                        <button onclick="document.getElementById('cust-search').value=''; renderCustomers();" class="absolute right-8 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-red-500 transition-colors bg-slate-100 w-8 h-8 rounded-lg flex items-center justify-center" title="Clear"><i class="fa-solid fa-times"></i></button>
+                    </div>
+                    <div id="customers-list" class="flex-1 overflow-y-auto custom-scroll p-6 bg-slate-50/30 space-y-8"></div>
                 </div>
             </div>
 
             <!-- TAB: NOTIFICATIONS -->
             <div id="tab-notifications" class="tab-content">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-extrabold text-slate-800">নোটিফিকেশন পাঠান</h2>
-                    <button onclick="openNotifModal()" class="bg-brand text-white px-5 py-2.5 text-sm rounded-xl font-bold shadow-lg shadow-brand/30 hover:bg-brand-dark transition-colors"><i class="fa-solid fa-paper-plane mr-1"></i> নতুন নোটিফিকেশন</button>
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-800 tracking-tight">নোটিফিকেশন</h2>
+                        <p class="text-sm font-bold text-slate-500 mt-1">কাস্টমারদের ইন-অ্যাপ মেসেজ পাঠান</p>
+                    </div>
+                    <button onclick="openNotifModal()" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all"><i class="fa-solid fa-paper-plane mr-2"></i> মেসেজ পাঠান</button>
                 </div>
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[70vh]">
-                    <h3 class="font-extrabold p-5 border-b border-slate-100 bg-slate-50 text-sm text-slate-800 flex justify-between items-center uppercase tracking-wide">ইতিহাস <button onclick="fetchAdminNotifs()" class="text-[10px] text-brand hover:underline font-bold bg-brand/10 px-2 py-1 rounded"><i class="fa-solid fa-rotate-right mr-1"></i> রিলোড</button></h3>
-                    <div id="admin-notif-list" class="p-5 space-y-4 overflow-y-auto custom-scroll flex-1 bg-slate-50"></div>
+                <div class="bg-white rounded-[1.5rem] premium-shadow border border-slate-100 overflow-hidden flex flex-col h-[70vh] max-w-5xl">
+                    <div class="p-5 border-b border-slate-100 bg-slate-50/80 flex justify-between items-center">
+                        <h3 class="font-black text-sm text-slate-700 uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-brand"></i> হিস্ট্রি</h3>
+                        <button onclick="fetchAdminNotifs()" class="text-[10px] text-slate-600 bg-white border border-slate-200 hover:border-brand hover:text-brand font-black px-3 py-1.5 rounded-lg shadow-sm transition-all"><i class="fa-solid fa-rotate-right mr-1"></i> রিলোড</button>
+                    </div>
+                    <div id="admin-notif-list" class="p-6 space-y-5 overflow-y-auto custom-scroll flex-1 bg-slate-50/30 grid grid-cols-1 md:grid-cols-2 gap-5 place-content-start"></div>
                 </div>
             </div>
 
             <!-- TAB: SETTINGS -->
             <div id="tab-settings" class="tab-content">
-                <h2 class="text-2xl font-extrabold text-slate-800 mb-6">সিস্টেম সেটিংস</h2>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-5">
-                        <h3 class="font-extrabold text-slate-800 border-b border-slate-100 pb-3 mb-4 uppercase tracking-wide text-sm"><i class="fa-solid fa-address-book text-brand mr-2"></i>যোগাযোগের নম্বর</h3>
+                <div class="mb-8">
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">সিস্টেম সেটিংস</h2>
+                    <p class="text-sm font-bold text-slate-500 mt-1">অ্যাপের মূল কনফিগারেশন</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10">
+                    
+                    <div class="bg-white p-7 rounded-[1.5rem] premium-shadow border border-slate-100 space-y-6 relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 w-2 h-full bg-orange-400"></div>
+                        <h3 class="font-black text-slate-800 border-b border-slate-100 pb-4 mb-4 uppercase tracking-widest text-sm flex items-center gap-2"><div class="w-8 h-8 bg-orange-50 text-brand rounded-lg flex items-center justify-center"><i class="fa-solid fa-store"></i></div> রেস্টুরেন্ট অবস্থা ও যোগাযোগ</h3>
                         
-                        <div class="bg-orange-50 p-4 rounded-xl border border-orange-100 mb-4">
-                            <label class="block text-sm font-extrabold text-slate-900 mb-2"><i class="fa-solid fa-store mr-1 text-brand"></i> রেস্টুরেন্ট স্ট্যাটাস</label>
-                            <div class="flex gap-2">
-                                <select id="set-is-open" class="flex-1 px-4 py-3 border border-orange-200 rounded-lg text-sm font-bold outline-none focus:border-brand bg-white">
-                                    <option value="true">খোলা (Open)</option>
-                                    <option value="false">বন্ধ (Closed)</option>
-                                </select>
-                                <button onclick="saveSetting('IsOpen', 'set-is-open')" class="bg-slate-900 text-white px-5 rounded-lg text-sm font-bold shadow-md">সেভ</button>
+                        <div class="bg-gradient-to-r from-orange-50 to-amber-50/30 p-5 rounded-2xl border border-orange-100/50 mb-4">
+                            <label class="block text-xs font-black text-slate-800 mb-2 uppercase tracking-wide">রেস্টুরেন্ট স্ট্যাটাস</label>
+                            <div class="flex gap-3">
+                                <div class="relative flex-1">
+                                    <select id="set-is-open" class="w-full px-4 py-3.5 border-2 border-orange-200/60 rounded-xl text-sm font-black outline-none focus:border-brand bg-white appearance-none cursor-pointer">
+                                        <option value="true">খোলা (Open)</option>
+                                        <option value="false">বন্ধ (Closed)</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-orange-400 pointer-events-none text-xs"></i>
+                                </div>
+                                <button onclick="saveSetting('IsOpen', 'set-is-open')" class="bg-slate-900 hover:bg-black text-white px-6 rounded-xl text-sm font-black shadow-md transition-colors">সেভ</button>
                             </div>
                         </div>
 
-                        <div><label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wide mb-1.5">কলিং নম্বর</label><div class="flex gap-2"><input type="tel" id="set-admin-phone" class="flex-1 px-4 py-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-brand font-medium"><button onclick="saveSetting('AdminPhone', 'set-admin-phone')" class="bg-slate-900 text-white px-5 rounded-lg text-sm font-bold">সেভ</button></div></div>
-                        <div><label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wide mb-1.5">হোয়াটসঅ্যাপ নম্বর</label><div class="flex gap-2"><input type="tel" id="set-whatsapp" class="flex-1 px-4 py-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-brand font-medium"><button onclick="saveSetting('WhatsAppNumber', 'set-whatsapp')" class="bg-slate-900 text-white px-5 rounded-lg text-sm font-bold">সেভ</button></div></div>
+                        <div class="space-y-4">
+                            <div><label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">কলিং নম্বর</label><div class="flex gap-2"><div class="relative flex-1"><i class="fa-solid fa-phone absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i><input type="tel" id="set-admin-phone" class="w-full pl-10 pr-4 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-brand font-bold transition-all"></div><button onclick="saveSetting('AdminPhone', 'set-admin-phone')" class="bg-slate-100 text-slate-700 hover:bg-slate-200 px-5 rounded-xl text-sm font-black transition-colors border border-slate-200">সেভ</button></div></div>
+                            <div><label class="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-1.5 pl-1">হোয়াটসঅ্যাপ নম্বর</label><div class="flex gap-2"><div class="relative flex-1"><i class="fa-brands fa-whatsapp absolute left-4 top-1/2 transform -translate-y-1/2 text-green-500"></i><input type="tel" id="set-whatsapp" class="w-full pl-10 pr-4 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-brand font-bold transition-all"></div><button onclick="saveSetting('WhatsAppNumber', 'set-whatsapp')" class="bg-slate-100 text-slate-700 hover:bg-slate-200 px-5 rounded-xl text-sm font-black transition-colors border border-slate-200">সেভ</button></div></div>
+                        </div>
                     </div>
                     
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-5">
-                        <h3 class="font-extrabold text-slate-800 border-b border-slate-100 pb-3 mb-4 uppercase tracking-wide text-sm"><i class="fa-solid fa-money-bill-transfer text-brand mr-2"></i>পেমেন্ট একাউন্ট</h3>
-                        <div><label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wide mb-1.5">বিকাশ (bKash) নম্বর</label><div class="flex gap-2"><input type="tel" id="set-bkash" class="flex-1 px-4 py-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-brand font-medium"><button onclick="saveSetting('BkashNumber', 'set-bkash')" class="bg-slate-900 text-white px-5 rounded-lg text-sm font-bold">সেভ</button></div></div>
-                        <div><label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wide mb-1.5">নগদ (Nagad) নম্বর</label><div class="flex gap-2"><input type="tel" id="set-nagad" class="flex-1 px-4 py-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-brand font-medium"><button onclick="saveSetting('NagadNumber', 'set-nagad')" class="bg-slate-900 text-white px-5 rounded-lg text-sm font-bold">সেভ</button></div></div>
-                        <div><label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wide mb-1.5">রকেট (Rocket) নম্বর</label><div class="flex gap-2"><input type="tel" id="set-rocket" class="flex-1 px-4 py-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-brand font-medium"><button onclick="saveSetting('RocketNumber', 'set-rocket')" class="bg-slate-900 text-white px-5 rounded-lg text-sm font-bold">সেভ</button></div></div>
+                    <div class="bg-white p-7 rounded-[1.5rem] premium-shadow border border-slate-100 space-y-6 relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 w-2 h-full bg-pink-500"></div>
+                        <h3 class="font-black text-slate-800 border-b border-slate-100 pb-4 mb-4 uppercase tracking-widest text-sm flex items-center gap-2"><div class="w-8 h-8 bg-pink-50 text-pink-500 rounded-lg flex items-center justify-center"><i class="fa-solid fa-wallet"></i></div> পেমেন্ট একাউন্ট নম্বর</h3>
+                        <div class="space-y-4">
+                            <div><label class="block text-[11px] font-black text-pink-600 uppercase tracking-widest mb-1.5 pl-1">বিকাশ (bKash) নম্বর</label><div class="flex gap-2"><input type="tel" id="set-bkash" class="flex-1 px-4 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-pink-400 font-bold transition-all"><button onclick="saveSetting('BkashNumber', 'set-bkash')" class="bg-pink-500 hover:bg-pink-600 text-white px-5 rounded-xl text-sm font-black shadow-md transition-colors">সেভ</button></div></div>
+                            <div><label class="block text-[11px] font-black text-orange-600 uppercase tracking-widest mb-1.5 pl-1">নগদ (Nagad) নম্বর</label><div class="flex gap-2"><input type="tel" id="set-nagad" class="flex-1 px-4 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-orange-400 font-bold transition-all"><button onclick="saveSetting('NagadNumber', 'set-nagad')" class="bg-orange-500 hover:bg-orange-600 text-white px-5 rounded-xl text-sm font-black shadow-md transition-colors">সেভ</button></div></div>
+                            <div><label class="block text-[11px] font-black text-purple-600 uppercase tracking-widest mb-1.5 pl-1">রকেট (Rocket) নম্বর</label><div class="flex gap-2"><input type="tel" id="set-rocket" class="flex-1 px-4 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-purple-400 font-bold transition-all"><button onclick="saveSetting('RocketNumber', 'set-rocket')" class="bg-purple-500 hover:bg-purple-600 text-white px-5 rounded-xl text-sm font-black shadow-md transition-colors">সেভ</button></div></div>
+                        </div>
                     </div>
 
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-2 space-y-5">
-                        <h3 class="font-extrabold text-slate-800 border-b border-slate-100 pb-3 mb-4 uppercase tracking-wide text-sm"><i class="fa-solid fa-gear text-brand mr-2"></i>সাধারণ ও সিকিউরিটি</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div><label class="block text-xs font-extrabold text-brand uppercase tracking-wide mb-1.5">অ্যাডমিন প্যানেল পাসওয়ার্ড</label><div class="flex gap-2"><input type="text" id="set-admin-pass" class="flex-1 px-4 py-3 border rounded-lg text-sm outline-none focus:border-brand border-brand/30 bg-brand/5 font-bold"><button onclick="saveSetting('AdminPassword', 'set-admin-pass')" class="bg-brand text-white px-5 rounded-lg text-sm font-bold shadow-md">সেভ</button></div></div>
-                            <div><label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wide mb-1.5">ফ্রি ডেলিভারি টার্গেট (৳)</label><div class="flex gap-2"><input type="number" id="set-free-del" class="flex-1 px-4 py-3 border border-slate-200 rounded-lg text-sm outline-none focus:border-brand font-medium"><button onclick="saveSetting('FreeDeliveryThreshold', 'set-free-del')" class="bg-slate-900 text-white px-5 rounded-lg text-sm font-bold">সেভ</button></div></div>
+                    <div class="bg-white p-7 rounded-[1.5rem] premium-shadow border border-slate-100 lg:col-span-2 space-y-6 relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-2 h-full bg-blue-500"></div>
+                        <h3 class="font-black text-slate-800 border-b border-slate-100 pb-4 mb-4 uppercase tracking-widest text-sm flex items-center gap-2"><div class="w-8 h-8 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center"><i class="fa-solid fa-gear"></i></div> সাধারণ ও সিকিউরিটি</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             
-                            <div class="md:col-span-2"><label class="block text-xs font-extrabold text-blue-600 uppercase tracking-wide mb-1.5"><i class="fa-brands fa-android mr-1"></i> অ্যাপ ডাউনলোড লিংক</label><div class="flex gap-2"><input type="url" id="set-app-link" placeholder="https://play.google.com/..." class="flex-1 px-4 py-3 border border-blue-200 bg-blue-50 rounded-lg text-sm outline-none focus:border-blue-500 font-medium"><button onclick="saveSetting('AppDownloadLink', 'set-app-link')" class="bg-blue-600 text-white px-5 rounded-lg text-sm font-bold shadow-md">লিংক সেভ করুন</button></div></div>
-
-                            <div class="md:col-span-2 grid grid-cols-2 gap-4 bg-green-50 border border-green-200 p-5 rounded-2xl">
-                                <div class="col-span-2"><p class="text-xs font-extrabold text-green-700 uppercase tracking-wide"><i class="fa-solid fa-award mr-1"></i> লয়ালটি পয়েন্ট সেটআপ</p></div>
-                                <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">ছাড় পেতে প্রয়োজনীয় পয়েন্ট</label><input type="number" id="set-pts-req" placeholder="যেমন: 100" class="w-full px-4 py-3 border border-green-200 rounded-lg text-sm outline-none focus:border-green-500 bg-white font-medium"></div>
-                                <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">ছাড়ের পরিমাণ (৳)</label><input type="number" id="set-pts-val" placeholder="যেমন: 50" class="w-full px-4 py-3 border border-green-200 rounded-lg text-sm outline-none focus:border-green-500 bg-white font-medium"></div>
-                                <div class="col-span-2"><button onclick="saveSetting('PointsPerTk', 'set-pts-req'); setTimeout(()=>saveSetting('PointsVal', 'set-pts-val'), 1000);" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-extrabold text-xs transition-colors shadow-md">পয়েন্ট সেটিংস সেভ করুন</button></div>
+                            <div class="space-y-6">
+                                <div><label class="block text-[11px] font-black text-brand uppercase tracking-widest mb-1.5 pl-1">অ্যাডমিন প্যানেল পাসওয়ার্ড</label><div class="flex gap-2"><div class="relative flex-1"><i class="fa-solid fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-brand/50"></i><input type="text" id="set-admin-pass" class="w-full pl-10 pr-4 py-3.5 border-2 rounded-xl text-sm outline-none focus:border-brand border-brand/20 bg-brand/5 font-black text-brand"></div><button onclick="saveSetting('AdminPassword', 'set-admin-pass')" class="bg-brand text-white hover:bg-brand-dark px-5 rounded-xl text-sm font-black shadow-md transition-colors">সেভ</button></div></div>
+                                
+                                <div><label class="block text-[11px] font-black text-slate-600 uppercase tracking-widest mb-1.5 pl-1">ফ্রি ডেলিভারি টার্গেট (৳)</label><div class="flex gap-2"><div class="relative flex-1"><i class="fa-solid fa-truck-fast absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i><input type="number" id="set-free-del" class="w-full pl-10 pr-4 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-brand font-bold transition-all"></div><button onclick="saveSetting('FreeDeliveryThreshold', 'set-free-del')" class="bg-slate-100 text-slate-700 hover:bg-slate-200 px-5 rounded-xl text-sm font-black transition-colors border border-slate-200">সেভ</button></div></div>
+                                
+                                <div><label class="block text-[11px] font-black text-red-600 uppercase tracking-widest mb-1.5 pl-1 flex items-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> ব্লক করা নম্বর (কমা দিয়ে লিখুন)</label><div class="flex gap-2"><input type="text" id="set-blocked" placeholder="017..., 018..." class="flex-1 px-4 py-3.5 border-2 border-red-100 rounded-xl text-sm bg-red-50/50 outline-none focus:border-red-400 font-bold text-red-800 transition-all"><button onclick="saveSetting('BlockedUsers', 'set-blocked')" class="bg-red-500 hover:bg-red-600 text-white px-5 rounded-xl text-sm font-black shadow-md transition-colors">আপডেট</button></div></div>
                             </div>
 
-                            <div class="md:col-span-2"><label class="block text-xs font-extrabold text-red-600 uppercase tracking-wide mb-1.5"><i class="fa-solid fa-shield-halved mr-1"></i> ব্লক করা নম্বর (কমা দিয়ে লিখুন)</label><div class="flex gap-2"><input type="text" id="set-blocked" placeholder="017..., 018..." class="flex-1 px-4 py-3 border border-red-200 rounded-lg text-sm bg-red-50 outline-none focus:border-red-500 font-medium"><button onclick="saveSetting('BlockedUsers', 'set-blocked')" class="bg-red-600 hover:bg-red-700 text-white px-5 rounded-lg text-sm font-bold shadow-md transition-colors">ব্লক করুন</button></div></div>
-                            <div class="md:col-span-2"><label class="block text-xs font-extrabold text-green-600 uppercase tracking-wide mb-1.5"><i class="fa-solid fa-ticket mr-1"></i> ডিসকাউন্ট কুপন (JSON Format)</label><div class="flex gap-2"><input type="text" id="set-coupons" placeholder='{"SAVE20": 20, "NEW50": 50}' class="flex-1 px-4 py-3 border border-green-200 rounded-lg text-sm bg-green-50 outline-none focus:border-green-500 font-medium"><button onclick="saveSetting('Coupons', 'set-coupons')" class="bg-green-600 hover:bg-green-700 text-white px-5 rounded-lg text-sm font-bold shadow-md transition-colors">সেভ</button></div></div>
+                            <div class="space-y-6">
+                                <div><label class="block text-[11px] font-black text-blue-600 uppercase tracking-widest mb-1.5 pl-1 flex items-center gap-1.5"><i class="fa-brands fa-android text-lg"></i> অ্যাপ ডাউনলোড লিংক</label><div class="flex gap-2"><input type="url" id="set-app-link" placeholder="https://play.google.com/..." class="flex-1 px-4 py-3.5 border-2 border-blue-100 bg-blue-50/50 rounded-xl text-sm outline-none focus:border-blue-500 font-bold text-blue-800 transition-all"><button onclick="saveSetting('AppDownloadLink', 'set-app-link')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 rounded-xl text-sm font-black shadow-md transition-colors">সেভ লিংক</button></div></div>
+
+                                <div class="bg-gradient-to-br from-emerald-50 to-green-50/50 border border-emerald-100/80 p-6 rounded-2xl premium-shadow">
+                                    <p class="text-xs font-black text-emerald-700 uppercase tracking-widest mb-4 flex items-center gap-2"><div class="w-6 h-6 rounded bg-emerald-200/50 text-emerald-700 flex items-center justify-center mr-2"><i class="fa-solid fa-award"></i></div> লয়ালটি পয়েন্ট সেটআপ</p>
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
+                                        <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5 pl-1">প্রয়োজনীয় পয়েন্ট</label><input type="number" id="set-pts-req" placeholder="100" class="w-full px-4 py-3 border-2 border-emerald-100 rounded-xl text-sm outline-none focus:border-emerald-400 bg-white font-bold"></div>
+                                        <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5 pl-1">ছাড়ের পরিমাণ (৳)</label><input type="number" id="set-pts-val" placeholder="50" class="w-full px-4 py-3 border-2 border-emerald-100 rounded-xl text-sm outline-none focus:border-emerald-400 bg-white font-bold"></div>
+                                    </div>
+                                    <button onclick="saveSetting('PointsPerTk', 'set-pts-req'); setTimeout(()=>saveSetting('PointsVal', 'set-pts-val'), 1000);" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-black text-xs transition-colors shadow-md">পয়েন্ট সেটিংস সেভ করুন</button>
+                                </div>
+
+                                <div><label class="block text-[11px] font-black text-green-600 uppercase tracking-widest mb-1.5 pl-1 flex items-center gap-1.5"><i class="fa-solid fa-ticket"></i> ডিসকাউন্ট কুপন (JSON)</label><div class="flex gap-2"><input type="text" id="set-coupons" placeholder='{"SAVE20": 20}' class="flex-1 px-4 py-3.5 border-2 border-green-100 rounded-xl text-sm bg-green-50/50 outline-none focus:border-green-400 font-mono text-xs font-bold text-green-800 transition-all"><button onclick="saveSetting('Coupons', 'set-coupons')" class="bg-green-600 hover:bg-green-700 text-white px-5 rounded-xl text-sm font-black shadow-md transition-colors">সেভ</button></div></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -264,153 +333,172 @@
         </div>
     </main>
 
-    <button onclick="toggleAdminOrderNotif()" class="fixed bottom-6 right-6 md:bottom-10 md:right-10 bg-white border border-slate-200 text-brand shadow-2xl w-14 h-14 rounded-full flex items-center justify-center z-[9000] hover:bg-brand hover:text-white hover:scale-105 transition-all">
-        <i class="fa-solid fa-bell text-2xl"></i>
-        <span id="new-order-badge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-extrabold h-6 w-6 flex items-center justify-center rounded-full border-2 border-white hidden shadow-sm">0</span>
+    <button onclick="toggleAdminOrderNotif()" class="fixed bottom-6 right-6 md:bottom-10 md:right-10 bg-white border border-slate-200 text-brand premium-shadow w-16 h-16 rounded-full flex items-center justify-center z-[9000] hover:bg-brand hover:text-white hover:scale-105 transition-all group">
+        <i class="fa-solid fa-bell text-2xl group-hover:animate-bounce"></i>
+        <span id="new-order-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[11px] font-black h-7 w-7 flex items-center justify-center rounded-full border-[3px] border-white hidden shadow-sm">0</span>
     </button>
 
-    <div id="admin-order-notif-panel" class="fixed right-0 top-0 h-full w-80 max-w-full bg-white shadow-2xl z-[10000] transform translate-x-full transition-transform duration-300 flex flex-col border-l border-slate-100">
-        <div class="p-5 bg-slate-900 text-white flex justify-between items-center shadow-md">
-            <h3 class="font-extrabold text-sm tracking-wide uppercase"><i class="fa-solid fa-bell text-brand mr-2 text-lg"></i> আজকের অর্ডার</h3>
-            <button onclick="toggleAdminOrderNotif()" class="text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center transition-colors"><i class="fa-solid fa-times"></i></button>
+    <div id="admin-order-notif-panel" class="fixed right-0 top-0 h-full w-80 max-w-full bg-slate-50 shadow-2xl z-[10000] transform translate-x-full transition-transform duration-300 flex flex-col border-l border-slate-200">
+        <div class="p-6 bg-slate-900 text-white flex justify-between items-center shadow-md relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-brand/20 to-transparent"></div>
+            <h3 class="font-black text-sm tracking-widest uppercase relative z-10 flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-solid fa-bell text-brand text-lg"></i></div> আজকের অর্ডার</h3>
+            <button onclick="toggleAdminOrderNotif()" class="relative z-10 text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors"><i class="fa-solid fa-times"></i></button>
         </div>
         <div id="admin-order-notif-list" class="flex-1 overflow-y-auto bg-slate-50 p-4 space-y-4 custom-scroll"></div>
     </div>
 
     <!-- CUSTOMER PROFILE MODAL -->
-    <div id="customer-modal" class="fixed inset-0 bg-slate-900/60 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-slate-50 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-[fadeIn_0.2s_ease-out] border border-slate-100">
-            <div class="p-5 border-b border-slate-200 flex justify-between items-start bg-white">
-                <div>
-                    <h2 id="cp-name" class="text-2xl font-extrabold text-slate-900 mb-1"></h2>
-                    <a id="cp-phone" href="#" class="text-sm text-blue-600 font-bold hover:underline bg-blue-50 px-2 py-1 rounded inline-flex items-center gap-1"><i class="fa-solid fa-phone"></i><span></span></a>
+    <div id="customer-modal" class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-slate-50 rounded-[2rem] shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-[fadeIn_0.3s_ease-out] border border-slate-200">
+            <div class="p-6 md:p-8 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white relative overflow-hidden gap-4">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-bl-full -z-0"></div>
+                <div class="relative z-10 flex gap-4 items-center">
+                    <div class="w-16 h-16 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-2xl border-2 border-indigo-100 shadow-sm"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <h2 id="cp-name" class="text-2xl font-black text-slate-900 mb-1 tracking-tight"></h2>
+                        <a id="cp-phone" href="#" class="text-sm text-blue-600 font-bold hover:underline bg-blue-50 border border-blue-100 px-3 py-1 rounded-lg inline-flex items-center gap-2 shadow-sm"><i class="fa-solid fa-phone"></i><span></span></a>
+                    </div>
                 </div>
-                <div class="flex flex-col items-end gap-3">
-                    <button onclick="closeCustomerModal()" class="text-slate-400 hover:text-red-500 bg-slate-100 hover:bg-red-50 w-8 h-8 rounded-full flex items-center justify-center transition-colors"><i class="fa-solid fa-times"></i></button>
-                    <div class="flex gap-2">
-                        <select id="cp-tag" onchange="saveCustomerTag()" class="text-xs border border-slate-200 rounded-lg px-3 py-1.5 outline-none bg-slate-50 font-bold text-slate-700 cursor-pointer focus:border-brand focus:ring-2 focus:ring-brand/10"><option value="">-- ট্যাগ সেট করুন --</option><option value="Regular">Regular (নিয়মিত)</option><option value="Good">Good (ভালো)</option><option value="Bad">Bad (খারাপ)</option></select>
-                        <button id="cp-block-btn" onclick="toggleCustomerBlock()" class="text-[10px] font-extrabold px-3 py-1.5 rounded-lg text-white bg-red-600 hover:bg-red-700 shadow-sm transition-colors uppercase tracking-wider">ব্লক</button>
+                <div class="flex flex-row sm:flex-col items-end gap-3 w-full sm:w-auto relative z-10">
+                    <button onclick="closeCustomerModal()" class="text-slate-400 hover:text-red-500 bg-slate-100 hover:bg-red-50 w-10 h-10 rounded-full flex items-center justify-center transition-colors absolute sm:static right-0 -top-16 sm:top-auto"><i class="fa-solid fa-times text-lg"></i></button>
+                    <div class="flex items-center gap-2 w-full sm:w-auto mt-4 sm:mt-0">
+                        <div class="relative flex-1 sm:flex-none">
+                            <select id="cp-tag" onchange="saveCustomerTag()" class="w-full text-xs border-2 border-slate-100 rounded-xl px-4 py-2.5 outline-none bg-slate-50 font-black text-slate-700 cursor-pointer focus:border-brand transition-all appearance-none"><option value="">-- ট্যাগ সেট করুন --</option><option value="Regular">Regular (নিয়মিত)</option><option value="Good">Good (ভালো)</option><option value="Bad">Bad (খারাপ)</option></select>
+                            <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
+                        </div>
+                        <button id="cp-block-btn" onclick="toggleCustomerBlock()" class="text-[10px] font-black px-4 py-2.5 rounded-xl text-white bg-red-500 hover:bg-red-600 shadow-sm transition-colors uppercase tracking-wider">ব্লক</button>
                     </div>
                 </div>
             </div>
-            <div class="grid grid-cols-4 divide-x divide-slate-100 border-b border-slate-200 bg-white">
-                <div class="p-4 text-center"><p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wide mb-1">মোট অর্ডার</p><p id="cp-total-orders" class="text-2xl font-extrabold text-slate-800">0</p></div>
-                <div class="p-4 text-center"><p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wide mb-1">ডেলিভারি সম্পন্ন</p><p id="cp-delivered" class="text-2xl font-extrabold text-green-600">0</p></div>
-                <div class="p-4 text-center"><p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wide mb-1">মোট খরচ</p><p id="cp-spent" class="text-2xl font-extrabold text-brand">0</p></div>
-                <div class="p-4 text-center cursor-pointer hover:bg-slate-50 transition-colors" onclick="promptPointsEdit()"><p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wide mb-1 flex justify-center items-center gap-1">পয়েন্ট <i class="fa-solid fa-pen text-blue-500"></i></p><p id="cp-points" class="text-2xl font-extrabold text-purple-600">0</p></div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-slate-50">
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 premium-shadow text-center"><div class="w-8 h-8 mx-auto bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-2"><i class="fa-solid fa-basket-shopping"></i></div><p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">মোট অর্ডার</p><p id="cp-total-orders" class="text-2xl font-black text-slate-800">0</p></div>
+                <div class="bg-white p-4 rounded-2xl border border-emerald-100 premium-shadow text-center relative overflow-hidden"><div class="absolute right-0 top-0 w-1 h-full bg-emerald-400"></div><div class="w-8 h-8 mx-auto bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-2"><i class="fa-solid fa-check-circle"></i></div><p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">ডেলিভারি সম্পন্ন</p><p id="cp-delivered" class="text-2xl font-black text-emerald-600">0</p></div>
+                <div class="bg-white p-4 rounded-2xl border border-orange-100 premium-shadow text-center relative overflow-hidden"><div class="absolute right-0 top-0 w-1 h-full bg-orange-400"></div><div class="w-8 h-8 mx-auto bg-orange-50 text-brand rounded-full flex items-center justify-center mb-2"><i class="fa-solid fa-sack-dollar"></i></div><p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">মোট খরচ</p><p id="cp-spent" class="text-2xl font-black text-brand">0</p></div>
+                <div class="bg-white p-4 rounded-2xl border border-purple-100 premium-shadow text-center cursor-pointer hover:bg-purple-50 transition-colors relative overflow-hidden group" onclick="promptPointsEdit()"><div class="absolute right-0 top-0 w-1 h-full bg-purple-400"></div><div class="w-8 h-8 mx-auto bg-purple-50 text-purple-500 rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform"><i class="fa-solid fa-award"></i></div><p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1 flex justify-center items-center gap-1.5">পয়েন্ট <i class="fa-solid fa-pen text-blue-400 text-[8px]"></i></p><p id="cp-points" class="text-2xl font-black text-purple-600">0</p></div>
             </div>
-            <div class="p-3 border-b border-slate-200 bg-slate-100 flex justify-end"><button onclick="deleteCustomerData()" class="text-xs text-red-500 font-bold hover:underline flex items-center gap-1"><i class="fa-solid fa-trash"></i> কাস্টমার ডেটা মুছুন</button></div>
-            <div id="cp-order-history" class="flex-1 overflow-y-auto p-5 space-y-4 custom-scroll bg-slate-50"></div>
+            
+            <div class="flex-1 overflow-y-auto p-5 space-y-4 custom-scroll bg-slate-100/50 relative">
+                <h3 class="font-black text-sm text-slate-700 mb-4 uppercase tracking-widest px-1 border-l-4 border-brand pl-3">অর্ডার হিস্ট্রি</h3>
+                <div id="cp-order-history" class="space-y-4"></div>
+            </div>
+            <div class="p-4 border-t border-slate-200 bg-white flex justify-end"><button onclick="deleteCustomerData()" class="text-xs text-red-500 font-black hover:bg-red-50 px-4 py-2 rounded-lg transition-colors flex items-center gap-2"><i class="fa-solid fa-trash"></i> কাস্টমার ডেটা মুছুন</button></div>
         </div>
     </div>
 
     <!-- MENU MODAL -->
-    <div id="menu-modal" class="fixed inset-0 bg-slate-900/60 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg flex flex-col animate-[fadeIn_0.2s_ease-out] border border-slate-100">
-            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-3xl"><h2 id="menu-modal-title" class="text-xl font-extrabold text-slate-800">আইটেম যোগ করুন</h2><button onclick="closeMenuModal()" class="text-slate-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors"><i class="fa-solid fa-times"></i></button></div>
-            <div class="p-6 overflow-y-auto">
-                <form id="menu-form" onsubmit="saveMenuItem(event)" class="space-y-4">
+    <div id="menu-modal" class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg flex flex-col animate-[fadeIn_0.3s_ease-out] border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50 relative"><div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand to-orange-400"></div><h2 id="menu-modal-title" class="text-xl font-black text-slate-800 tracking-tight">আইটেম যোগ করুন</h2><button onclick="closeMenuModal()" class="text-slate-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors"><i class="fa-solid fa-times text-lg"></i></button></div>
+            <div class="p-6 overflow-y-auto custom-scroll">
+                <form id="menu-form" onsubmit="saveMenuItem(event)" class="space-y-5">
                     <input type="hidden" id="m-id">
-                    <div><label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 block">খাবারের নাম</label><input type="text" id="m-name" required placeholder="যেমন: কাচ্চি বিরিয়ানি" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-bold"></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 block">দাম (৳)</label><input type="number" id="m-price" required placeholder="0" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-bold"></div>
+                    <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block pl-1">খাবারের নাম</label><input type="text" id="m-name" required placeholder="যেমন: কাচ্চি বিরিয়ানি" class="w-full px-5 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 font-bold transition-all"></div>
+                    <div class="grid grid-cols-2 gap-5">
+                        <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block pl-1">দাম (৳)</label><input type="number" id="m-price" required placeholder="0" class="w-full px-5 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 font-bold transition-all"></div>
                         <div>
-                            <label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 block">ক্যাটাগরি</label>
-                            <input list="category-options" id="m-cat" required placeholder="সিলেক্ট/টাইপ করুন" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-bold">
+                            <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block pl-1">ক্যাটাগরি</label>
+                            <input list="category-options" id="m-cat" required placeholder="সিলেক্ট/টাইপ করুন" class="w-full px-5 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 font-bold transition-all">
                             <datalist id="category-options"><option value="মেইন ডিশ"><option value="সাইড ডিশ"><option value="ফাস্ট ফুড"><option value="ডেজার্ট"><option value="কেইক"><option value="SPC কিচেন স্পেশাল"></datalist>
                         </div>
                     </div>
                     <div>
-                        <label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 flex justify-between"><span>ছবির লিংক (URL)</span> <span id="img-upload-status" class="text-brand"></span></label>
+                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 flex justify-between pl-1"><span>ছবির লিংক (URL)</span> <span id="img-upload-status" class="text-brand"></span></label>
                         <div class="flex gap-2">
-                            <input type="url" id="m-image" required placeholder="https://..." class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-medium">
-                            <label class="bg-slate-900 text-white px-4 py-3 rounded-xl cursor-pointer text-sm font-bold flex items-center justify-center hover:bg-slate-800 transition-colors shadow-sm" title="Upload Image"><i class="fa-solid fa-upload"></i><input type="file" accept="image/*" class="hidden" onchange="uploadImageToImgBB(this, 'm-image')"></label>
+                            <div class="relative flex-1"><i class="fa-solid fa-link absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i><input type="url" id="m-image" required placeholder="https://..." class="w-full pl-10 pr-4 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 font-bold transition-all"></div>
+                            <label class="bg-slate-800 text-white px-5 py-3.5 rounded-xl cursor-pointer text-sm font-black flex items-center justify-center hover:bg-black transition-colors shadow-md" title="Upload Image"><i class="fa-solid fa-cloud-arrow-up text-lg"></i><input type="file" accept="image/*" class="hidden" onchange="uploadImageToImgBB(this, 'm-image')"></label>
                         </div>
-                        <p class="text-[9px] text-slate-400 mt-1">ছবি আপলোড ব্যর্থ হলে সরাসরি ইমেজ লিংক পেস্ট করুন।</p>
+                        <p class="text-[10px] font-bold text-slate-400 mt-2 pl-1 bg-slate-50 p-2 rounded-lg"><i class="fa-solid fa-circle-info mr-1 text-blue-400"></i> ছবি আপলোড ব্যর্থ হলে সরাসরি ইমেজ লিংক পেস্ট করুন।</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="col-span-2"><label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 block">বিস্তারিত বিবরণ</label><textarea id="m-ing" required rows="2" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-medium"></textarea></div>
-                        <div class="col-span-2"><label class="text-[10px] font-extrabold text-green-600 uppercase tracking-wide mb-1.5 flex items-center gap-1"><i class="fa-solid fa-award"></i> কিনলে কত পয়েন্ট পাবে</label><input type="number" id="m-points" placeholder="যেমন: 10" class="w-full px-4 py-3 border border-green-200 bg-green-50 rounded-xl text-sm outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10 font-bold"></div>
+                    <div class="grid grid-cols-2 gap-5">
+                        <div class="col-span-2"><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block pl-1">বিস্তারিত বিবরণ</label><textarea id="m-ing" required rows="2" class="w-full px-5 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 font-bold transition-all custom-scroll"></textarea></div>
+                        <div class="col-span-2"><label class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 flex items-center gap-1.5 pl-1"><i class="fa-solid fa-award text-lg"></i> কিনলে কত পয়েন্ট পাবে</label><input type="number" id="m-points" placeholder="যেমন: 10" class="w-full px-5 py-3.5 border-2 border-emerald-100 bg-emerald-50/50 rounded-xl text-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 font-black text-emerald-700 transition-all"></div>
                     </div>
-                    <button type="submit" class="w-full bg-brand hover:bg-brand-dark text-white font-extrabold py-3.5 rounded-xl text-sm transition-colors mt-2 shadow-lg shadow-brand/30">সেভ করুন</button>
+                    <button type="submit" class="w-full bg-gradient-to-r from-brand to-orange-500 hover:from-brand-dark hover:to-brand text-white font-black py-4 rounded-xl text-sm transition-all mt-4 shadow-lg shadow-brand/30 hover:shadow-brand/50 uppercase tracking-wide">সেভ করুন</button>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- OFFER MODAL -->
-    <div id="offer-modal" class="fixed inset-0 bg-slate-900/60 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg flex flex-col animate-[fadeIn_0.2s_ease-out] border border-slate-100">
-            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-3xl"><h2 id="offer-modal-title" class="text-xl font-extrabold text-slate-800">অফার যোগ করুন</h2><button onclick="closeOfferModal()" class="text-slate-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors"><i class="fa-solid fa-times"></i></button></div>
-            <div class="p-6 overflow-y-auto">
-                <form id="offer-form" onsubmit="saveOfferItem(event)" class="space-y-4">
+    <div id="offer-modal" class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg flex flex-col animate-[fadeIn_0.3s_ease-out] border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50 relative"><div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div><h2 id="offer-modal-title" class="text-xl font-black text-slate-800 tracking-tight">অফার যোগ করুন</h2><button onclick="closeOfferModal()" class="text-slate-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors"><i class="fa-solid fa-times text-lg"></i></button></div>
+            <div class="p-6 overflow-y-auto custom-scroll">
+                <form id="offer-form" onsubmit="saveOfferItem(event)" class="space-y-5">
                     <input type="hidden" id="o-id">
-                    <div><label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 block">অফারের টাইটেল</label><input type="text" id="o-title" required class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-bold"></div>
-                    <div><label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 block">দাম (৳)</label><input type="number" id="o-price" required class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-bold"></div>
+                    <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block pl-1">অফারের টাইটেল</label><input type="text" id="o-title" required class="w-full px-5 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-400/10 font-bold transition-all"></div>
+                    <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block pl-1">দাম (৳)</label><input type="number" id="o-price" required class="w-full px-5 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-400/10 font-bold transition-all"></div>
                     <div>
-                        <label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 flex justify-between"><span>ছবির লিংক (URL)</span> <span id="img-upload-status-offer" class="text-brand"></span></label>
+                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 flex justify-between pl-1"><span>ছবির লিংক (URL)</span> <span id="img-upload-status-offer" class="text-purple-500"></span></label>
                         <div class="flex gap-2">
-                            <input type="url" id="o-image" required class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-medium">
-                            <label class="bg-slate-900 text-white px-4 py-3 rounded-xl cursor-pointer text-sm font-bold flex items-center justify-center hover:bg-slate-800 transition-colors shadow-sm"><i class="fa-solid fa-upload"></i><input type="file" accept="image/*" class="hidden" onchange="uploadImageToImgBB(this, 'o-image', 'img-upload-status-offer')"></label>
+                            <div class="relative flex-1"><i class="fa-solid fa-link absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i><input type="url" id="o-image" required class="w-full pl-10 pr-4 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-400/10 font-bold transition-all"></div>
+                            <label class="bg-slate-800 text-white px-5 py-3.5 rounded-xl cursor-pointer text-sm font-black flex items-center justify-center hover:bg-black transition-colors shadow-md"><i class="fa-solid fa-cloud-arrow-up text-lg"></i><input type="file" accept="image/*" class="hidden" onchange="uploadImageToImgBB(this, 'o-image', 'img-upload-status-offer')"></label>
                         </div>
                     </div>
-                    <div><label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 block">বিবরণ</label><textarea id="o-desc" required rows="3" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-medium"></textarea></div>
-                    <button type="submit" class="w-full bg-brand hover:bg-brand-dark text-white font-extrabold py-3.5 rounded-xl text-sm transition-colors mt-2 shadow-lg shadow-brand/30">অফার সেভ করুন</button>
+                    <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block pl-1">বিবরণ</label><textarea id="o-desc" required rows="3" class="w-full px-5 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-400/10 font-bold transition-all custom-scroll"></textarea></div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black py-4 rounded-xl text-sm transition-all mt-4 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 uppercase tracking-wide">অফার সেভ করুন</button>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- AREA MODAL -->
-    <div id="area-modal" class="fixed inset-0 bg-slate-900/60 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm flex flex-col animate-[fadeIn_0.2s_ease-out] border border-slate-100">
-            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-3xl"><h2 id="area-modal-title" class="text-xl font-extrabold text-slate-800">এরিয়া যোগ করুন</h2><button onclick="closeAreaModal()" class="text-slate-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors"><i class="fa-solid fa-times"></i></button></div>
+    <div id="area-modal" class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-sm flex flex-col animate-[fadeIn_0.3s_ease-out] border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50 relative"><div class="absolute top-0 left-0 w-full h-1 bg-slate-800"></div><h2 id="area-modal-title" class="text-xl font-black text-slate-800 tracking-tight">এরিয়া যোগ করুন</h2><button onclick="closeAreaModal()" class="text-slate-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors"><i class="fa-solid fa-times text-lg"></i></button></div>
             <div class="p-6">
-                <form id="area-form" onsubmit="saveArea(event)" class="space-y-4">
+                <form id="area-form" onsubmit="saveArea(event)" class="space-y-5">
                     <input type="hidden" id="area-old-name">
-                    <div><label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 block">এরিয়ার নাম</label><input type="text" id="area-name" required class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-bold"></div>
-                    <div><label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 block">ডেলিভারি চার্জ (৳)</label><input type="number" id="area-charge" required class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-bold"></div>
-                    <button type="submit" id="area-submit-btn" class="w-full bg-slate-900 text-white font-extrabold py-3.5 rounded-xl text-sm shadow-lg hover:bg-black transition-colors">এরিয়া সেভ করুন</button>
+                    <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block pl-1">এরিয়ার নাম</label><input type="text" id="area-name" required class="w-full px-5 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-slate-800 focus:ring-4 focus:ring-slate-800/10 font-bold transition-all"></div>
+                    <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block pl-1">ডেলিভারি চার্জ (৳)</label><input type="number" id="area-charge" required class="w-full px-5 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-slate-800 focus:ring-4 focus:ring-slate-800/10 font-bold transition-all"></div>
+                    <button type="submit" id="area-submit-btn" class="w-full bg-slate-900 text-white font-black py-4 rounded-xl text-sm shadow-lg hover:bg-black transition-all hover:shadow-xl mt-2 uppercase tracking-wide">এরিয়া সেভ করুন</button>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- NOTIFICATION MODAL -->
-    <div id="notif-modal" class="fixed inset-0 bg-slate-900/60 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md flex flex-col animate-[fadeIn_0.2s_ease-out] border border-slate-100">
-            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-3xl"><h2 id="notif-modal-title" class="text-xl font-extrabold text-slate-800">মেসেজ পাঠান</h2><button onclick="closeNotifModal()" class="text-slate-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors"><i class="fa-solid fa-times"></i></button></div>
+    <div id="notif-modal" class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md flex flex-col animate-[fadeIn_0.3s_ease-out] border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50 relative"><div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500"></div><h2 id="notif-modal-title" class="text-xl font-black text-slate-800 tracking-tight">মেসেজ পাঠান</h2><button onclick="closeNotifModal()" class="text-slate-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors"><i class="fa-solid fa-times text-lg"></i></button></div>
             <div class="p-6">
-                <form id="notif-form" onsubmit="saveNotification(event)" class="space-y-4">
+                <form id="notif-form" onsubmit="saveNotification(event)" class="space-y-5">
                     <input type="hidden" id="n-id">
-                    <div><label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 block">কাকে পাঠাবেন</label><select id="notif-target" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 bg-white font-bold"><option value="All">সকল ইউজার</option><option value="custom">নির্দিষ্ট ফোন নম্বর...</option></select></div>
-                    <input type="tel" id="notif-custom-phone" placeholder="ফোন নম্বর দিন (01...)" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm hidden outline-none focus:border-brand font-bold">
-                    <div><label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 block">টাইটেল (খাবারের হুবহু নাম দিলে ইউজার অর্ডার বাটন পাবে)</label><input type="text" id="notif-title" required placeholder="মেসেজ টাইটেল" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-bold"></div>
-                    <div><label class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wide mb-1.5 block">মেসেজের বিবরণ</label><textarea id="notif-message" required rows="3" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 font-medium"></textarea></div>
-                    <button type="submit" id="notif-submit-btn" class="w-full bg-brand hover:bg-brand-dark text-white font-extrabold py-3.5 rounded-xl text-sm shadow-lg shadow-brand/30 transition-colors">মেসেজ পাঠান</button>
+                    <div>
+                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block pl-1">কাকে পাঠাবেন</label>
+                        <div class="relative">
+                            <select id="notif-target" class="w-full px-5 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-bold transition-all appearance-none cursor-pointer"><option value="All">সকল ইউজার</option><option value="custom">নির্দিষ্ট ফোন নম্বর...</option></select>
+                            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
+                        </div>
+                    </div>
+                    <div id="notif-phone-wrapper" class="hidden relative"><i class="fa-solid fa-phone absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i><input type="tel" id="notif-custom-phone" placeholder="ফোন নম্বর দিন (01...)" class="w-full pl-10 pr-4 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-blue-500 font-bold transition-all"></div>
+                    <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block pl-1">টাইটেল <span class="normal-case tracking-normal font-bold text-slate-400">(খাবারের হুবহু নাম দিলে অর্ডার বাটন পাবে)</span></label><input type="text" id="notif-title" required placeholder="মেসেজ টাইটেল" class="w-full px-5 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-bold transition-all"></div>
+                    <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 block pl-1">মেসেজের বিবরণ</label><textarea id="notif-message" required rows="3" class="w-full px-5 py-3.5 border-2 border-slate-100 bg-slate-50 rounded-xl text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-bold transition-all custom-scroll"></textarea></div>
+                    <button type="submit" id="notif-submit-btn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black py-4 rounded-xl text-sm shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all mt-4 uppercase tracking-wide">মেসেজ পাঠান</button>
                 </form>
             </div>
         </div>
     </div>
     
     <!-- ORDER DETAILS STATUS MODAL (For Estimated Time) -->
-    <div id="status-modal" class="fixed inset-0 bg-slate-900/60 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xs flex flex-col p-6 text-center border border-slate-100">
-            <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fa-solid fa-clock-rotate-left"></i></div>
-            <h3 class="font-extrabold text-xl mb-1 text-slate-800">অর্ডার আপডেট</h3>
-            <p class="text-xs text-slate-500 mb-5 font-medium">আনুমানিক ডেলিভারি সময় সেট করুন</p>
+    <div id="status-modal" class="fixed inset-0 bg-slate-900/80 z-[9999] hidden items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-xs flex flex-col p-8 text-center border border-slate-100 animate-[fadeIn_0.2s_ease-out]">
+            <div class="w-20 h-20 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-5 shadow-inner border border-blue-100"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            <h3 class="font-black text-2xl mb-2 text-slate-800 tracking-tight">অর্ডার আপডেট</h3>
+            <p class="text-xs text-slate-500 mb-6 font-bold bg-slate-50 p-2 rounded-lg">আনুমানিক ডেলিভারি সময় সেট করুন</p>
             <input type="hidden" id="status-order-id">
             <input type="hidden" id="status-val">
-            <input type="text" id="status-est-time" placeholder="যেমন: 40-50 mins" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/10 mb-5 font-bold text-center">
+            <input type="text" id="status-est-time" placeholder="যেমন: 40-50 mins" class="w-full px-5 py-4 border-2 border-slate-100 bg-slate-50 rounded-xl text-lg outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 mb-6 font-black text-center transition-all">
             <div class="flex gap-3">
-                <button onclick="document.getElementById('status-modal').style.display='none'" class="flex-1 bg-slate-100 text-slate-600 hover:bg-slate-200 py-3 rounded-xl font-bold text-sm transition-colors">বাতিল</button>
-                <button onclick="confirmStatusUpdate()" class="flex-1 bg-brand hover:bg-brand-dark text-white py-3 rounded-xl font-bold text-sm shadow-md transition-colors">কনফার্ম</button>
+                <button onclick="document.getElementById('status-modal').style.display='none'" class="flex-1 bg-slate-100 text-slate-600 hover:bg-slate-200 py-3.5 rounded-xl font-black text-sm transition-colors border border-slate-200">বাতিল</button>
+                <button onclick="confirmStatusUpdate()" class="flex-1 bg-brand hover:bg-brand-dark text-white py-3.5 rounded-xl font-black text-sm shadow-lg shadow-brand/30 transition-all">কনফার্ম</button>
             </div>
         </div>
     </div>
 
     <!-- TOAST -->
-    <div id="toast" class="fixed top-5 md:top-10 left-1/2 transform -translate-x-1/2 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 z-[10000] transition-all duration-300 opacity-0 -translate-y-10 pointer-events-none text-sm font-bold"></div>
+    <div id="toast" class="fixed top-5 md:top-8 left-1/2 transform -translate-x-1/2 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center justify-center gap-3 z-[10000] transition-all duration-400 opacity-0 -translate-y-10 pointer-events-none text-sm font-black tracking-wide border border-white/20"></div>
 
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbx1iS5LzeMkdknCemQk7ihWCLqoeUWcgirTDBRJKahmyMo442W1EOi6fEwYSS9N25GE/exec';
@@ -423,7 +511,7 @@
         
         let dbStartDate = null;
         let dbEndDate = null;
-        let isOrderTableView = false; // Added to fix toggle bug
+        let isOrderTableView = false; 
         
         const fetchPost = async (data) => await fetch(scriptURL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) });
 
@@ -440,13 +528,24 @@
                 const res = await fetchPost({ action: 'adminLogin', password: pass }); const data = await res.json();
                 if(data.result === 'success') { document.getElementById('admin-login').style.display = 'none'; fetchDashboardData(); } else { alert("ভুল পাসওয়ার্ড!"); }
             } catch(e) { alert("কানেকশন সমস্যা!"); }
-            btn.innerHTML = 'লগিন করুন'; btn.disabled = false;
+            btn.innerHTML = 'লগিন করুন <i class="fa-solid fa-arrow-right ml-2"></i>'; btn.disabled = false;
         }
         
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('[id^="tab-btn-"]').forEach(el => { el.classList.remove('bg-slate-800', 'text-white'); el.classList.add('text-slate-400'); });
-            document.getElementById('tab-' + tabId).classList.add('active'); document.getElementById('tab-btn-' + tabId).classList.add('bg-slate-800', 'text-white');
+            document.querySelectorAll('[id^="tab-btn-"]').forEach(el => { 
+                el.classList.remove('bg-brand/10', 'text-white', 'border-brand/20'); 
+                el.classList.add('text-slate-400', 'border-transparent'); 
+                const icon = el.querySelector('i');
+                if(icon) icon.classList.remove('text-brand');
+            });
+            document.getElementById('tab-' + tabId).classList.add('active'); 
+            const activeBtn = document.getElementById('tab-btn-' + tabId);
+            activeBtn.classList.remove('text-slate-400', 'border-transparent');
+            activeBtn.classList.add('bg-brand/10', 'text-white', 'border-brand/20', 'border');
+            const activeIcon = activeBtn.querySelector('i');
+            if(activeIcon) activeIcon.classList.add('text-brand');
+
             if(!document.getElementById('sidebar').classList.contains('-translate-x-full') && window.innerWidth < 768) { toggleSidebar(); }
 
             if(tabId === 'menu' && storeData.menu.length === 0) fetchStoreData();
@@ -459,7 +558,7 @@
         }
 
         function showLoading(show) { document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none'; }
-        function showToast(msg, isError=false) { const toast = document.getElementById('toast'); toast.textContent = msg; toast.className = `fixed top-5 md:top-8 left-1/2 transform -translate-x-1/2 text-white px-6 py-4 rounded-xl shadow-2xl z-[10000] transition-all duration-300 opacity-100 translate-y-0 text-sm font-bold tracking-wide ${isError?'bg-red-600':'bg-emerald-600'}`; setTimeout(() => { toast.classList.remove('opacity-100', 'translate-y-0'); toast.classList.add('opacity-0', '-translate-y-10'); }, 3000); }
+        function showToast(msg, isError=false) { const toast = document.getElementById('toast'); toast.innerHTML = `${isError?'<i class="fa-solid fa-circle-exclamation"></i>':'<i class="fa-solid fa-circle-check"></i>'} ${msg}`; toast.className = `fixed top-5 md:top-8 left-1/2 transform -translate-x-1/2 text-white px-8 py-4 rounded-2xl shadow-2xl z-[10000] transition-all duration-400 opacity-100 translate-y-0 text-sm font-black tracking-wide border ${isError?'bg-red-600 border-red-500':'bg-slate-900 border-slate-700'}`; setTimeout(() => { toast.classList.remove('opacity-100', 'translate-y-0'); toast.classList.add('opacity-0', '-translate-y-10'); }, 3000); }
 
         function enableDragScroll() {
             setTimeout(() => {
@@ -488,21 +587,20 @@
             return d.toLocaleString('en-US', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' });
         }
 
-        // Added this function to format order details nicely
         function formatOrderDetails(detailsStr) {
             if(!detailsStr) return 'কোনো বিস্তারিত নেই';
             if(detailsStr.includes('[SPECIAL FOOD REQUEST]')) {
-                 return `<span class="text-brand font-bold"><i class="fa-solid fa-bell-concierge"></i> স্পেশাল রিকুয়েস্ট:</span> <span class="font-medium">${detailsStr.replace('[SPECIAL FOOD REQUEST]', '')}</span>`;
+                 return `<span class="text-brand font-black"><i class="fa-solid fa-bell-concierge"></i> স্পেশাল রিকুয়েস্ট:</span> <span class="font-bold">${detailsStr.replace('[SPECIAL FOOD REQUEST]', '')}</span>`;
             }
             
             let parts = detailsStr.split(' | Note:');
             let itemsPart = parts[0];
             let notePart = parts.length > 1 ? parts[1].trim() : '';
 
-            let itemTags = itemsPart.split(',').map(i => `<span class="inline-block bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs m-0.5 border border-slate-200 font-bold whitespace-nowrap"><i class="fa-solid fa-utensils text-brand mr-1"></i>${i.trim()}</span>`).join('');
+            let itemTags = itemsPart.split(',').map(i => `<span class="inline-block bg-white text-slate-800 px-2 py-1 rounded-lg text-xs m-0.5 border border-slate-200 font-bold whitespace-nowrap shadow-sm"><i class="fa-solid fa-utensils text-brand/70 mr-1.5 text-[10px]"></i>${i.trim()}</span>`).join('');
             
             if(notePart) {
-                itemTags += `<div class="mt-2 pt-2 border-t border-slate-200/50 text-xs"><span class="font-bold text-red-500">নোট:</span> ${notePart}</div>`;
+                itemTags += `<div class="mt-3 pt-3 border-t border-slate-200/50 text-xs"><span class="font-black text-red-500 bg-red-50 px-2 py-0.5 rounded mr-1">নোট:</span> <span class="font-bold text-slate-700">${notePart}</span></div>`;
             }
             return itemTags;
         }
@@ -682,26 +780,26 @@
             const list = document.getElementById('admin-order-notif-list'); const badge = document.getElementById('new-order-badge');
             let unreadCount = 0; let html = '';
 
-            if(todaysOrders.length === 0) { html = '<div class="h-full flex flex-col items-center justify-center text-slate-400 opacity-60 pt-10"><i class="fa-solid fa-box-open text-5xl mb-3"></i><p class="text-sm font-bold">আজ কোনো নতুন অর্ডার নেই</p></div>'; } 
+            if(todaysOrders.length === 0) { html = '<div class="h-full flex flex-col items-center justify-center text-slate-400 opacity-60 pt-10"><i class="fa-solid fa-box-open text-5xl mb-3"></i><p class="text-sm font-black mt-2">আজ কোনো নতুন অর্ডার নেই</p></div>'; } 
             else {
                 todaysOrders.forEach(o => {
                     const isUnread = !viewedOrders.includes(o.id); if(isUnread) unreadCount++;
                     html += `
-                    <div class="p-4 bg-white rounded-2xl border shadow-sm transition-all ${isUnread ? 'border-l-4 border-l-brand bg-orange-50/20' : 'border-slate-100'}">
-                        <div class="flex justify-between items-start mb-2 border-b border-slate-100 pb-2 cursor-pointer" onclick="viewOrderFromNotif('${o.id}')">
-                            <span class="font-extrabold text-xs text-slate-800">${o.id} <span class="${isUnread?'inline-block':'hidden'} bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded ml-1 tracking-wider shadow-sm uppercase">নতুন</span></span>
+                    <div class="p-5 bg-white rounded-2xl border transition-all ${isUnread ? 'border-l-4 border-l-brand premium-shadow' : 'border-slate-100 shadow-sm'}">
+                        <div class="flex justify-between items-start mb-3 border-b border-slate-50 pb-3 cursor-pointer" onclick="viewOrderFromNotif('${o.id}')">
+                            <span class="font-black text-sm text-slate-800">${o.id} <span class="${isUnread?'inline-block':'hidden'} bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded ml-1 tracking-wider shadow-sm uppercase">নতুন</span></span>
                             <div class="flex flex-col items-end">
-                                <span class="text-[9px] text-slate-500 font-bold mb-1"><i class="fa-regular fa-clock mr-1"></i>${formatEnglishDate(o.time, false)}</span>
-                                <span class="text-[8px] px-2 py-1 rounded border font-extrabold text-slate-700 bg-slate-50">${o.status || 'পেন্ডিং'}</span>
+                                <span class="text-[9px] text-slate-500 font-bold mb-1.5"><i class="fa-regular fa-clock mr-1"></i>${formatEnglishDate(o.time, false)}</span>
+                                <span class="text-[9px] px-2 py-1 rounded-md border font-black text-slate-700 bg-slate-50 uppercase tracking-widest">${o.status || 'পেন্ডিং'}</span>
                             </div>
                         </div>
-                        <p class="text-xs font-bold text-slate-800 flex items-center mb-2 cursor-pointer" onclick="viewOrderFromNotif('${o.id}')"><i class="fa-solid fa-user text-slate-400 mr-1.5 w-3"></i> ${o.name || 'Guest'}</p>
+                        <p class="text-xs font-black text-slate-800 flex items-center mb-3 cursor-pointer" onclick="viewOrderFromNotif('${o.id}')"><i class="fa-solid fa-user text-slate-400 mr-2"></i> ${o.name || 'Guest'}</p>
                         
-                        <div class="text-[10px] text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors" onclick="let el = this.querySelector('.order-text'); el.classList.toggle('line-clamp-2');" title="বিস্তারিত দেখতে ক্লিক করুন">
-                            <p class="font-bold text-slate-400 uppercase tracking-wide flex justify-between items-center mb-1.5"><span>আইটেম:</span><span class="text-brand flex items-center gap-1 bg-brand/10 px-1.5 py-0.5 rounded"><i class="fa-solid fa-expand text-[8px]"></i> ক্লিক</span></p>
-                            <p class="line-clamp-2 order-text whitespace-pre-wrap leading-relaxed font-medium">${o.details || 'No details'}</p>
+                        <div class="text-[10px] text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors" onclick="let el = this.querySelector('.order-text'); el.classList.toggle('line-clamp-2');" title="বিস্তারিত দেখতে ক্লিক করুন">
+                            <p class="font-black text-slate-400 uppercase tracking-widest flex justify-between items-center mb-2"><span>আইটেম:</span><span class="text-brand flex items-center gap-1 bg-brand/10 px-2 py-1 rounded-md"><i class="fa-solid fa-expand text-[8px]"></i> ক্লিক</span></p>
+                            <p class="line-clamp-2 order-text whitespace-pre-wrap leading-relaxed font-bold">${o.details || 'No details'}</p>
                         </div>
-                        <p class="text-xs text-brand font-extrabold mt-2 text-right">৳ ${Number(o.total||0).toLocaleString('en-US')}</p>
+                        <p class="text-sm text-brand font-black mt-3 text-right">৳ ${Number(o.total||0).toLocaleString('en-US')}</p>
                     </div>`;
                 });
             }
@@ -728,7 +826,7 @@
                 const res = await fetch(`${scriptURL}?action=getAllOrders`); const data = await res.json();
                 if(data.result === 'success') {
                     const freshOrders = data.data.filter(o => o && o.id);
-                    if(freshOrders.length > allOrders.length) { showToast("🔔 নতুন অর্ডার এসেছে!", false); try { new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play(); } catch(e) {} }
+                    if(freshOrders.length > allOrders.length) { showToast("নতুন অর্ডার এসেছে!"); try { new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play(); } catch(e) {} }
                     allOrders = freshOrders; allOrders.sort((a,b) => parseOrderTime(b.time) - parseOrderTime(a.time)); processCustomers(); cleanOldViewedOrders();
                     if(document.getElementById('tab-dashboard').classList.contains('active')) { renderDashboard(); }
                     if(document.getElementById('tab-orders').classList.contains('active')) renderOrders();
@@ -776,27 +874,56 @@
                 if(!container) return;
                 
                 if(validRecentOrders.length === 0) { 
-                    container.innerHTML = '<p class="text-sm text-slate-500 bg-white p-6 rounded-2xl border border-slate-100 text-center font-bold">সাম্প্রতিক কোনো অর্ডার নেই</p>'; 
+                    container.innerHTML = '<p class="text-sm text-slate-500 bg-white p-8 rounded-[1.5rem] border border-slate-100 text-center font-bold">সাম্প্রতিক কোনো অর্ডার নেই</p>'; 
                 } else {
                     container.innerHTML = validRecentOrders.slice(0, 8).map(o => {
                         const cInfo = customerMap[o.phone]; let tagHtml = '';
-                        if(cInfo && cInfo.tag === 'Good') tagHtml = '<span class="bg-green-100 text-green-700 px-1.5 py-0.5 rounded text-[9px] border border-green-200 ml-1">Good</span>';
-                        else if(cInfo && cInfo.tag === 'Bad') tagHtml = '<span class="bg-red-100 text-red-700 px-1.5 py-0.5 rounded text-[9px] border border-red-200 ml-1">Bad</span>';
-                        else if(cInfo && cInfo.tag === 'Regular') tagHtml = '<span class="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded text-[9px] border border-blue-200 ml-1">Reg</span>';
+                        if(cInfo && cInfo.tag === 'Good') tagHtml = '<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-md text-[9px] font-black border border-emerald-200 ml-1 shadow-sm uppercase"><i class="fa-solid fa-star text-[8px] mr-0.5"></i>Good</span>';
+                        else if(cInfo && cInfo.tag === 'Bad') tagHtml = '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-md text-[9px] font-black border border-red-200 ml-1 shadow-sm uppercase"><i class="fa-solid fa-thumbs-down text-[8px] mr-0.5"></i>Bad</span>';
+                        else if(cInfo && cInfo.tag === 'Regular') tagHtml = '<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-md text-[9px] font-black border border-blue-200 ml-1 shadow-sm uppercase"><i class="fa-solid fa-award text-[8px] mr-0.5"></i>Reg</span>';
+                        
+                        let borderLeftClass = "border-l-4 border-l-orange-400";
+                        if(o.status === 'খাবার তৈরি হচ্ছে') borderLeftClass = "border-l-4 border-l-blue-400";
+                        else if(o.status === 'ডেলিভারি ম্যান পথে আছে') borderLeftClass = "border-l-4 border-l-indigo-400";
+                        else if(o.status === 'সম্পূর্ণ হয়েছে' || o.status === 'ডেলিভারি সম্পন্ন হয়েছে') borderLeftClass = "border-l-4 border-l-emerald-400";
+                        else if(String(o.status||'').includes('বাতিল')) borderLeftClass = "border-l-4 border-l-red-400";
+
                         return `
-                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row justify-between md:items-center gap-4 hover:border-brand/30 transition-colors">
+                        <div class="bg-white p-5 md:p-6 rounded-[1.5rem] border border-slate-100 premium-shadow premium-shadow-hover transition-all duration-300 flex flex-col lg:flex-row justify-between lg:items-center gap-5 relative overflow-hidden ${borderLeftClass}">
+                            
                             <div class="flex-1">
-                                <div class="flex gap-2 items-center mb-2 border-b border-slate-50 pb-2"><span class="font-extrabold text-sm text-slate-800">${o.id}</span><span class="text-[10px] text-slate-500 bg-slate-50 px-2 py-0.5 rounded font-bold">${formatEnglishDate(o.time)}</span></div>
-                                <p class="text-xs text-slate-700 font-bold flex items-center mb-2">${o.name || 'Guest'} ${tagHtml} <a href="tel:${o.phone}" class="text-blue-500 hover:text-blue-700 ml-2 border-l pl-2 border-slate-200"><i class="fa-solid fa-phone"></i> ${o.phone}</a></p>
+                                <div class="flex flex-wrap items-center gap-3 mb-4 border-b border-slate-50 pb-3">
+                                    <span class="font-black text-sm text-slate-800 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm"><i class="fa-solid fa-hashtag text-brand mr-1"></i>${o.id}</span>
+                                    <span class="text-[10px] text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-xl font-black shadow-sm"><i class="fa-regular fa-clock mr-1 text-blue-500"></i>${formatEnglishDate(o.time)}</span>
+                                </div>
                                 
-                                <div class="text-[10px] text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 mt-2">
+                                <div class="flex flex-wrap items-center gap-3 mb-4">
+                                    <div class="flex items-center gap-2 bg-slate-50 border border-slate-100 px-3.5 py-2 rounded-xl shadow-sm">
+                                        <div class="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center text-[10px]"><i class="fa-solid fa-user"></i></div>
+                                        <span class="text-xs text-slate-800 font-black">${o.name || 'Guest'}</span>
+                                        ${tagHtml}
+                                    </div>
+                                    <a href="tel:${o.phone}" class="flex items-center gap-2 bg-green-50 border border-green-100 hover:bg-green-100 transition-colors px-3.5 py-2 rounded-xl text-xs font-black text-green-700 shadow-sm">
+                                        <i class="fa-solid fa-phone"></i> ${o.phone}
+                                    </a>
+                                </div>
+                                
+                                <div class="text-[11px] text-slate-700 bg-gradient-to-r from-orange-50/50 to-slate-50/50 p-4 rounded-xl border border-orange-100/50 shadow-sm relative overflow-hidden mt-2">
+                                    <div class="absolute left-0 top-0 w-1 h-full bg-brand/40"></div>
                                     ${formatOrderDetails(o.details)}
                                 </div>
                             </div>
-                            <div class="text-left md:text-right shrink-0 w-full md:w-48 bg-slate-50 md:bg-transparent p-3 md:p-0 rounded-xl flex flex-col items-end justify-center">
-                                <p class="text-brand font-extrabold text-base mb-2">৳ ${Number(o.total||0).toLocaleString('en-US')}</p>
-                                ${getStatusDropdown(o.id, o.status)}
-                                <button onclick="promptStatusUpdate('${o.id}')" class="mt-2 text-[10px] text-blue-600 hover:text-blue-800 underline font-bold transition-colors">আনুমানিক সময় সেট করুন</button>
+
+                            <div class="shrink-0 w-full lg:w-56 bg-slate-50/80 p-5 rounded-2xl border border-slate-100 flex flex-col items-center lg:items-end justify-center shadow-sm">
+                                <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">মোট বিল</p>
+                                <p class="text-brand font-black text-2xl mb-5">৳ ${Number(o.total||0).toLocaleString('en-US')}</p>
+                                
+                                <div class="w-full flex flex-col gap-3">
+                                    ${getStatusDropdown(o.id, o.status)}
+                                    <button onclick="promptStatusUpdate('${o.id}')" class="w-full bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wide transition-colors flex items-center justify-center gap-2 shadow-sm">
+                                        <i class="fa-solid fa-stopwatch text-blue-500"></i> ডেলিভারি সময়
+                                    </button>
+                                </div>
                             </div>
                         </div>`
                     }).join('');
@@ -815,7 +942,6 @@
         function getStatusDropdown(id, currentStatus) {
             const statuses = ['পেন্ডিং', 'খাবার তৈরি হচ্ছে', 'ডেলিভারি ম্যান পথে আছে', 'সম্পূর্ণ হয়েছে', 'বাতিল'];
             let mappedStatus = currentStatus || 'পেন্ডিং';
-            // Normalize old english statuses if any exist in DB
             if(mappedStatus === 'Pending') mappedStatus = 'পেন্ডিং';
             if(mappedStatus === 'Processing') mappedStatus = 'খাবার তৈরি হচ্ছে';
             if(mappedStatus === 'On the way') mappedStatus = 'ডেলিভারি ম্যান পথে আছে';
@@ -824,16 +950,19 @@
 
             let options = statuses.map(s => `<option value="${s}" ${s === mappedStatus ? 'selected' : ''}>${s}</option>`).join('');
             
-            // Generate different colors for dropdown based on status
-            let bgClass = "bg-slate-50 text-slate-800 border-slate-200";
-            if(mappedStatus === 'সম্পূর্ণ হয়েছে') bgClass = "bg-emerald-50 text-emerald-800 border-emerald-200";
-            if(mappedStatus === 'বাতিল') bgClass = "bg-red-50 text-red-800 border-red-200";
+            let bgClass = "bg-orange-50 text-orange-800 border-orange-200 focus:ring-orange-200"; 
+            if(mappedStatus === 'খাবার তৈরি হচ্ছে') bgClass = "bg-blue-50 text-blue-800 border-blue-200 focus:ring-blue-200";
+            if(mappedStatus === 'ডেলিভারি ম্যান পথে আছে') bgClass = "bg-indigo-50 text-indigo-800 border-indigo-200 focus:ring-indigo-200";
+            if(mappedStatus === 'সম্পূর্ণ হয়েছে') bgClass = "bg-emerald-50 text-emerald-800 border-emerald-200 focus:ring-emerald-200";
+            if(mappedStatus === 'বাতিল') bgClass = "bg-red-50 text-red-800 border-red-200 focus:ring-red-200";
 
-            return `<select onchange="updateStatus('${id}', this.value)" class="mt-1 w-full text-xs border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand/20 font-bold transition-colors cursor-pointer appearance-none ${bgClass}">
-                        ${options}
-                    </select>`;
+            return `<div class="relative w-full">
+                        <select onchange="updateStatus('${id}', this.value)" class="w-full text-xs border-2 rounded-xl px-4 py-3 outline-none focus:ring-4 font-black transition-all cursor-pointer appearance-none shadow-sm ${bgClass}">
+                            ${options}
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-[10px] pointer-events-none opacity-60"></i>
+                    </div>`;
         }
-
 
         // --- ORDERS MANAGEMENT ---
         function renderOrders() {
@@ -851,67 +980,87 @@
                 if(fPayment) filtered = filtered.filter(o => String(o.payment||'') && String(o.payment||'').includes(fPayment));
 
                 if(filtered.length === 0) { 
-                    const noDataHtml = '<div class="text-center py-10 col-span-full text-sm text-slate-500 bg-white border border-slate-100 rounded-2xl font-bold w-full"><i class="fa-solid fa-box-open text-3xl mb-3 block"></i> কোনো অর্ডার পাওয়া যায়নি</div>';
+                    const noDataHtml = '<div class="text-center py-16 col-span-full text-sm text-slate-500 bg-white border border-slate-100 rounded-[1.5rem] font-bold w-full"><i class="fa-solid fa-box-open text-5xl mb-4 text-slate-300 block"></i> কোনো অর্ডার পাওয়া যায়নি</div>';
                     gridContainer.innerHTML = noDataHtml; 
-                    tableContainer.innerHTML = `<tr><td colspan="5" class="p-8">${noDataHtml}</td></tr>`;
+                    tableContainer.innerHTML = `<tr><td colspan="5" class="p-10">${noDataHtml}</td></tr>`;
                     return; 
                 }
 
                 if(!isOrderTableView) {
-                    // Render Grid
                     gridContainer.innerHTML = filtered.map(o => {
                         const ratingNum = Math.max(0, parseInt(o.rating) || 0);
+                        const cInfo = customerMap[o.phone]; let tagHtml = '';
+                        if(cInfo && cInfo.tag === 'Good') tagHtml = '<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-md text-[9px] font-black border border-emerald-200 ml-1 shadow-sm uppercase"><i class="fa-solid fa-star text-[8px] mr-0.5"></i>Good</span>';
+                        else if(cInfo && cInfo.tag === 'Bad') tagHtml = '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-md text-[9px] font-black border border-red-200 ml-1 shadow-sm uppercase"><i class="fa-solid fa-thumbs-down text-[8px] mr-0.5"></i>Bad</span>';
+                        else if(cInfo && cInfo.tag === 'Regular') tagHtml = '<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-md text-[9px] font-black border border-blue-200 ml-1 shadow-sm uppercase"><i class="fa-solid fa-award text-[8px] mr-0.5"></i>Reg</span>';
+                        
+                        let borderLeftClass = "border-l-4 border-l-orange-400";
+                        if(o.status === 'খাবার তৈরি হচ্ছে') borderLeftClass = "border-l-4 border-l-blue-400";
+                        else if(o.status === 'ডেলিভারি ম্যান পথে আছে') borderLeftClass = "border-l-4 border-l-indigo-400";
+                        else if(o.status === 'সম্পূর্ণ হয়েছে' || o.status === 'ডেলিভারি সম্পন্ন হয়েছে') borderLeftClass = "border-l-4 border-l-emerald-400";
+                        else if(String(o.status||'').includes('বাতিল')) borderLeftClass = "border-l-4 border-l-red-400";
+
                         return `
-                        <div class="bg-white border border-slate-100 hover:border-brand/40 transition-colors rounded-2xl p-5 shadow-sm flex flex-col justify-between">
-                            <div>
-                                <div class="flex justify-between items-start mb-4 border-b border-slate-50 pb-3">
-                                    <div><span class="font-extrabold text-slate-800 text-sm">${o.id}</span><p class="text-[10px] text-slate-500 mt-1 font-bold"><i class="fa-regular fa-clock mr-1"></i>${formatEnglishDate(o.time)}</p></div>
-                                    <span class="px-2.5 py-1 rounded-lg text-[10px] border font-bold shadow-sm ${getStatusClass(o.status)}">${o.status || 'পেন্ডিং'}</span>
-                                </div>
-                                <div class="mb-4 space-y-2">
-                                    <p class="text-sm font-bold text-slate-800 flex items-start"><i class="fa-solid fa-user text-slate-400 mt-1 mr-2 w-3"></i> <span>${o.name || 'Guest'}</span></p>
-                                    <p class="text-xs text-slate-600 flex items-start"><i class="fa-solid fa-phone text-slate-400 mt-0.5 mr-2 w-3"></i> <a href="tel:${o.phone}" class="text-blue-600 hover:underline font-bold">${o.phone}</a></p>
-                                    <p class="text-xs text-slate-600 flex items-start"><i class="fa-solid fa-location-dot text-slate-400 mt-0.5 mr-2 w-3"></i> <span class="leading-relaxed font-medium">${o.address || ''}</span></p>
+                        <div class="bg-white p-5 md:p-6 rounded-[1.5rem] border border-slate-100 premium-shadow premium-shadow-hover transition-all duration-300 flex flex-col lg:flex-row justify-between lg:items-center gap-5 relative overflow-hidden ${borderLeftClass}">
+                            
+                            <div class="flex-1">
+                                <div class="flex flex-wrap items-center gap-3 mb-4 border-b border-slate-50 pb-3">
+                                    <span class="font-black text-sm text-slate-800 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm"><i class="fa-solid fa-hashtag text-brand mr-1"></i>${o.id}</span>
+                                    <span class="text-[10px] text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-xl font-black shadow-sm"><i class="fa-regular fa-clock mr-1 text-blue-500"></i>${formatEnglishDate(o.time)}</span>
                                 </div>
                                 
-                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 mb-4">
+                                <div class="flex flex-wrap items-center gap-3 mb-4">
+                                    <div class="flex items-center gap-2 bg-slate-50 border border-slate-100 px-3.5 py-2 rounded-xl shadow-sm">
+                                        <div class="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center text-[10px]"><i class="fa-solid fa-user"></i></div>
+                                        <span class="text-xs text-slate-800 font-black">${o.name || 'Guest'}</span>
+                                        ${tagHtml}
+                                    </div>
+                                    <a href="tel:${o.phone}" class="flex items-center gap-2 bg-green-50 border border-green-100 hover:bg-green-100 transition-colors px-3.5 py-2 rounded-xl text-xs font-black text-green-700 shadow-sm">
+                                        <i class="fa-solid fa-phone"></i> ${o.phone}
+                                    </a>
+                                </div>
+                                <div class="text-[10px] text-slate-600 mb-3 bg-slate-50 px-3 py-2 rounded-lg border border-slate-100 font-bold inline-flex items-center gap-2"><i class="fa-solid fa-location-dot text-slate-400"></i> ${o.address || 'ঠিকানা নেই'}</div>
+                                
+                                <div class="text-[11px] text-slate-700 bg-gradient-to-r from-orange-50/50 to-slate-50/50 p-4 rounded-xl border border-orange-100/50 shadow-sm relative overflow-hidden mt-1">
+                                    <div class="absolute left-0 top-0 w-1 h-full bg-brand/40"></div>
                                     ${formatOrderDetails(o.details)}
                                 </div>
                                 
-                                ${ ratingNum > 0 ? `<div class="bg-yellow-50/50 p-3 rounded-xl border border-yellow-100 mb-4"><p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider mb-1.5">রিভিউ</p><div class="text-yellow-500 text-xs mb-1">${'<i class="fa-solid fa-star"></i>'.repeat(ratingNum)}</div><p class="text-xs text-slate-600 italic font-medium">"${o.review || ''}"</p></div>` : '' }
+                                ${ ratingNum > 0 ? `<div class="bg-yellow-50/50 p-4 rounded-xl border border-yellow-200 mt-4 shadow-sm relative overflow-hidden"><div class="absolute left-0 top-0 w-1 h-full bg-yellow-400"></div><p class="text-[9px] font-black text-yellow-700 uppercase tracking-widest mb-1.5 flex items-center gap-1"><i class="fa-solid fa-star text-[10px]"></i> কাস্টমার রিভিউ</p><div class="text-yellow-500 text-xs mb-1.5">${'<i class="fa-solid fa-star"></i>'.repeat(ratingNum)}</div><p class="text-xs text-slate-700 italic font-bold">"${o.review || ''}"</p></div>` : '' }
                             </div>
-                            <div class="border-t border-slate-100 pt-4 flex flex-col sm:flex-row justify-between sm:items-end mt-auto gap-4">
-                                <div>
-                                    <p class="text-[10px] text-slate-500 uppercase font-extrabold tracking-wide flex items-center gap-1 mb-1.5"><i class="fa-solid ${String(o.payment||'').includes('Online')?'fa-building-columns':'fa-money-bill'} text-slate-400 mr-1"></i> ${o.payment || 'N/A'}</p>
-                                    <p class="text-xl font-extrabold text-brand leading-none">৳ ${Number(o.total||0).toLocaleString('en-US')}</p>
-                                </div>
-                                <div class="w-full sm:w-48 flex flex-col items-end">
+
+                            <div class="shrink-0 w-full lg:w-56 bg-slate-50/80 p-5 rounded-2xl border border-slate-100 flex flex-col items-center lg:items-end justify-center shadow-sm h-full">
+                                <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1 flex items-center gap-1.5"><i class="fa-solid ${String(o.payment||'').includes('Online')?'fa-building-columns text-indigo-400':'fa-money-bill text-emerald-400'}"></i> ${o.payment || 'N/A'}</p>
+                                <p class="text-brand font-black text-2xl mb-5">৳ ${Number(o.total||0).toLocaleString('en-US')}</p>
+                                
+                                <div class="w-full flex flex-col gap-3 mt-auto">
                                     ${getStatusDropdown(o.id, o.status)}
-                                    <button onclick="promptStatusUpdate('${o.id}')" class="mt-2 text-[10px] text-blue-600 hover:text-blue-800 underline font-bold transition-colors">আনুমানিক সময় সেট করুন</button>
+                                    <button onclick="promptStatusUpdate('${o.id}')" class="w-full bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wide transition-colors flex items-center justify-center gap-2 shadow-sm">
+                                        <i class="fa-solid fa-stopwatch text-blue-500"></i> ডেলিভারি সময়
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     `;}).join('');
                 } else {
-                    // Render Table
                     tableContainer.innerHTML = filtered.map(o => `
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="p-4 align-top">
-                                <span class="font-extrabold text-slate-800 block">${o.id}</span>
-                                <span class="text-[10px] text-slate-500 font-bold block mt-1">${formatEnglishDate(o.time)}</span>
+                        <tr class="hover:bg-slate-50/80 transition-colors group">
+                            <td class="p-5 align-top border-l-4 border-transparent group-hover:border-brand transition-colors">
+                                <span class="font-black text-slate-800 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 text-xs block mb-2 w-max shadow-sm">${o.id}</span>
+                                <span class="text-[10px] text-slate-500 font-bold block bg-white border border-slate-100 px-2 py-1 rounded w-max"><i class="fa-regular fa-clock mr-1"></i>${formatEnglishDate(o.time)}</span>
                             </td>
-                            <td class="p-4 align-top">
-                                <span class="font-bold text-slate-800 block">${o.name || 'Guest'}</span>
-                                <a href="tel:${o.phone}" class="text-xs text-blue-600 hover:underline block">${o.phone}</a>
+                            <td class="p-5 align-top">
+                                <span class="font-black text-slate-800 flex items-center gap-2 mb-1.5"><i class="fa-solid fa-user text-slate-400 text-[10px]"></i> ${o.name || 'Guest'}</span>
+                                <a href="tel:${o.phone}" class="text-xs text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1"><i class="fa-solid fa-phone text-[10px]"></i> ${o.phone}</a>
                             </td>
-                            <td class="p-4 align-top">
-                                <div class="bg-slate-50 p-2 rounded-lg text-xs">${formatOrderDetails(o.details)}</div>
+                            <td class="p-5 align-top">
+                                <div class="bg-gradient-to-r from-slate-50 to-white p-3 rounded-xl border border-slate-100 text-xs shadow-sm">${formatOrderDetails(o.details)}</div>
                             </td>
-                            <td class="p-4 align-top">
-                                <span class="font-extrabold text-brand text-base block">৳ ${Number(o.total||0).toLocaleString('en-US')}</span>
-                                <span class="text-[9px] text-slate-500 font-bold uppercase">${o.payment || 'COD'}</span>
+                            <td class="p-5 align-top">
+                                <span class="font-black text-brand text-lg block mb-1">৳ ${Number(o.total||0).toLocaleString('en-US')}</span>
+                                <span class="text-[9px] px-2 py-1 rounded bg-slate-100 text-slate-600 font-black uppercase tracking-widest border border-slate-200 shadow-sm">${o.payment || 'COD'}</span>
                             </td>
-                            <td class="p-4 align-top w-48">
+                            <td class="p-5 align-top w-56">
                                 ${getStatusDropdown(o.id, o.status)}
                             </td>
                         </tr>
@@ -1013,28 +1162,32 @@
                 });
 
                 for(let area in groupedCustomers) {
-                    html += `<div class="mb-6"><h3 class="font-extrabold text-slate-700 bg-white border border-slate-200 px-4 py-2 rounded-lg mb-3 inline-block uppercase tracking-wide text-xs shadow-sm"><i class="fa-solid fa-map-location-dot text-brand mr-2"></i> ${area}</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">`;
+                    html += `<div class="mb-8"><h3 class="font-black text-slate-700 bg-white border border-slate-200 px-5 py-2.5 rounded-xl mb-4 inline-flex items-center gap-2 uppercase tracking-widest text-xs premium-shadow"><div class="w-6 h-6 bg-brand/10 text-brand rounded flex items-center justify-center"><i class="fa-solid fa-map-location-dot"></i></div> ${area}</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">`;
                     
                     groupedCustomers[area].forEach(c => {
                         count++;
                         let tagBadge = '';
-                        if(c.tag === 'Good') tagBadge = '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded border border-green-200 ml-2 text-[9px] font-extrabold">Good</span>';
-                        if(c.tag === 'Bad') tagBadge = '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded border border-red-200 ml-2 text-[9px] font-extrabold">Bad</span>';
-                        if(c.tag === 'Regular') tagBadge = '<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded border border-blue-200 ml-2 text-[9px] font-extrabold">Reg</span>';
+                        if(c.tag === 'Good') tagBadge = '<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-md border border-emerald-200 text-[9px] font-black uppercase shadow-sm"><i class="fa-solid fa-star text-[8px] mr-1"></i>Good</span>';
+                        if(c.tag === 'Bad') tagBadge = '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-md border border-red-200 text-[9px] font-black uppercase shadow-sm"><i class="fa-solid fa-thumbs-down text-[8px] mr-1"></i>Bad</span>';
+                        if(c.tag === 'Regular') tagBadge = '<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-md border border-blue-200 text-[9px] font-black uppercase shadow-sm"><i class="fa-solid fa-award text-[8px] mr-1"></i>Reg</span>';
                         
-                        let blockBadge = c.blocked ? '<span class="bg-slate-800 text-white px-2 py-0.5 rounded ml-2 text-[9px] font-extrabold"><i class="fa-solid fa-lock"></i> Blocked</span>' : '';
+                        let blockBadge = c.blocked ? '<span class="bg-slate-800 text-white px-2 py-0.5 rounded-md text-[9px] font-black shadow-sm uppercase"><i class="fa-solid fa-lock text-[8px]"></i> Blocked</span>' : '';
 
                         html += `
-                            <div onclick="viewCustomer('${c.phone}')" class="p-5 bg-white border border-slate-100 rounded-2xl shadow-sm cursor-pointer transition-colors hover:border-brand/40">
-                                <div class="flex justify-between items-center mb-3"><h4 class="font-extrabold text-sm text-slate-800 line-clamp-1">${c.name || 'Guest'} ${blockBadge}</h4><span class="text-[10px] bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg font-bold text-slate-600">${c.totalOrders.toLocaleString('en-US')} অর্ডার</span></div>
-                                <p class="text-xs text-slate-500 font-bold flex items-center mb-1"><i class="fa-solid fa-phone mr-1.5 w-3 text-slate-400"></i> ${c.phone} ${tagBadge}</p>
-                                <p class="text-[10px] text-slate-400 font-medium line-clamp-1"><i class="fa-solid fa-home mr-1.5 w-3"></i> ${c.address || 'ঠিকানা নেই'}</p>
+                            <div onclick="viewCustomer('${c.phone}')" class="p-5 bg-white border border-slate-100 rounded-2xl premium-shadow premium-shadow-hover cursor-pointer relative overflow-hidden group">
+                                <div class="absolute right-0 top-0 w-1.5 h-full bg-slate-200 group-hover:bg-brand transition-colors"></div>
+                                <div class="flex justify-between items-start mb-4 border-b border-slate-50 pb-3">
+                                    <h4 class="font-black text-sm text-slate-800 line-clamp-1 flex-1 pr-2 flex flex-col gap-1.5"><span class="flex items-center gap-2"><div class="w-6 h-6 bg-indigo-50 text-indigo-500 rounded-md flex items-center justify-center text-[10px]"><i class="fa-solid fa-user"></i></div> ${c.name || 'Guest'}</span> <div class="flex gap-1">${tagBadge}${blockBadge}</div></h4>
+                                    <span class="text-[10px] bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-lg font-black text-slate-600 shadow-sm shrink-0">${c.totalOrders.toLocaleString('en-US')} অর্ডার</span>
+                                </div>
+                                <p class="text-xs text-slate-600 font-bold flex items-center mb-2"><i class="fa-solid fa-phone mr-2 text-blue-400 bg-blue-50 w-5 h-5 flex items-center justify-center rounded"></i> ${c.phone}</p>
+                                <p class="text-[10px] text-slate-500 font-bold line-clamp-1 flex items-center"><i class="fa-solid fa-location-dot mr-2 text-brand bg-brand/10 w-5 h-5 flex items-center justify-center rounded"></i> ${c.address || 'ঠিকানা নেই'}</p>
                             </div>`;
                     });
                     html += `</div></div>`;
                 }
 
-                if(count === 0) html = '<div class="p-10 text-center text-sm text-slate-500 col-span-full font-bold">কোনো কাস্টমার পাওয়া যায়নি</div>';
+                if(count === 0) html = '<div class="p-16 text-center text-slate-400 col-span-full font-black flex flex-col items-center"><i class="fa-solid fa-users-slash text-5xl mb-4 text-slate-300"></i> কোনো কাস্টমার পাওয়া যায়নি</div>';
                 list.innerHTML = html;
             } catch(e) { console.error('Customers render error:', e); }
         }
@@ -1048,19 +1201,26 @@
             document.getElementById('cp-points').textContent = (c.points || 0).toLocaleString('en-US');
             
             const btn = document.getElementById('cp-block-btn');
-            if(c.blocked) { btn.textContent = "আনব্লক"; btn.className = "text-[10px] font-extrabold px-3 py-1.5 rounded-lg text-white bg-slate-800 hover:bg-slate-900 shadow-sm transition-colors uppercase tracking-wider"; } 
-            else { btn.textContent = "ব্লক"; btn.className = "text-[10px] font-extrabold px-3 py-1.5 rounded-lg text-white bg-red-600 hover:bg-red-700 shadow-sm transition-colors uppercase tracking-wider"; }
+            if(c.blocked) { btn.textContent = "আনব্লক"; btn.className = "text-[10px] font-black px-4 py-2.5 rounded-xl text-white bg-slate-800 hover:bg-slate-900 shadow-sm transition-colors uppercase tracking-wider"; } 
+            else { btn.textContent = "ব্লক"; btn.className = "text-[10px] font-black px-4 py-2.5 rounded-xl text-white bg-red-500 hover:bg-red-600 shadow-sm transition-colors uppercase tracking-wider"; }
 
             document.getElementById('cp-order-history').innerHTML = c.orders.map(o => `
-                <div class="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm">
-                    <div class="flex justify-between items-start mb-3 border-b border-slate-50 pb-2"><span class="font-extrabold text-xs text-slate-800">${o.id}</span><span class="text-[9px] px-2 py-1 rounded border font-bold shadow-sm ${getStatusClass(o.status)}">${o.status || 'পেন্ডিং'}</span></div>
-                    <p class="text-[10px] text-slate-500 mb-3 font-bold"><i class="fa-regular fa-clock mr-1"></i>${formatEnglishDate(o.time)}</p>
+                <div class="bg-white border border-slate-100 p-5 rounded-[1.5rem] premium-shadow hover:border-brand/30 transition-colors">
+                    <div class="flex justify-between items-start mb-3 border-b border-slate-50 pb-3">
+                        <span class="font-black text-sm text-slate-800 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">${o.id}</span>
+                        <span class="text-[9px] px-2.5 py-1 rounded-md border font-black shadow-sm uppercase tracking-widest ${getStatusClass(o.status)}">${o.status || 'পেন্ডিং'}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mb-4 font-bold bg-white border border-slate-100 px-2 py-1 inline-block rounded-lg shadow-sm"><i class="fa-regular fa-clock mr-1 text-blue-400"></i>${formatEnglishDate(o.time)}</p>
                     
-                    <div class="bg-slate-50 p-2 rounded-xl mb-3 border border-slate-100">
+                    <div class="bg-slate-50 p-3 rounded-xl mb-4 border border-slate-100 relative overflow-hidden">
+                        <div class="absolute left-0 top-0 w-1 h-full bg-brand/30"></div>
                         ${formatOrderDetails(o.details)}
                     </div>
 
-                    <div class="flex justify-between items-end"><p class="text-[10px] text-slate-500 uppercase font-extrabold tracking-wide"><i class="fa-solid ${String(o.payment||'').includes('Online')?'fa-building-columns':'fa-money-bill'} text-slate-400 mr-1"></i> ${o.payment || 'N/A'}</p><p class="text-base font-extrabold text-brand">৳ ${Number(o.total||0).toLocaleString('en-US')}</p></div>
+                    <div class="flex justify-between items-end border-t border-slate-50 pt-3">
+                        <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest flex items-center gap-1.5"><div class="w-6 h-6 bg-slate-100 text-slate-500 rounded flex items-center justify-center"><i class="fa-solid ${String(o.payment||'').includes('Online')?'fa-building-columns':'fa-money-bill'}"></i></div> ${o.payment || 'N/A'}</p>
+                        <p class="text-xl font-black text-brand">৳ ${Number(o.total||0).toLocaleString('en-US')}</p>
+                    </div>
                 </div>
             `).join('');
         }
@@ -1106,7 +1266,7 @@
                 const tabsContainer = document.getElementById('admin-category-tabs');
                 
                 if(storeData.menu.length === 0){
-                    container.innerHTML = '<p class="text-sm text-slate-500 text-center py-10 bg-white border border-slate-100 rounded-2xl font-bold col-span-full">কোনো আইটেম পাওয়া যায়নি</p>';
+                    container.innerHTML = '<p class="text-sm text-slate-400 text-center py-16 bg-white border border-slate-100 rounded-[1.5rem] font-black col-span-full"><i class="fa-solid fa-burger text-5xl mb-4 text-slate-200 block"></i> কোনো আইটেম পাওয়া যায়নি</p>';
                     tabsContainer.innerHTML = '';
                     return;
                 }
@@ -1118,10 +1278,10 @@
                     grouped[cat].push(m);
                 });
 
-                let tabsHtml = `<button onclick="setAdminMenuCategory('All')" class="admin-cat-btn shrink-0 bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap shadow-sm" data-cat="All">সব আইটেম <span class="bg-white/20 px-1.5 py-0.5 rounded ml-1">${storeData.menu.length}</span></button>`;
+                let tabsHtml = `<button onclick="setAdminMenuCategory('All')" class="admin-cat-btn shrink-0 bg-slate-800 text-white px-6 py-3 rounded-xl text-xs font-black whitespace-nowrap shadow-md transition-all" data-cat="All">সব আইটেম <span class="bg-white/20 px-2 py-0.5 rounded-lg ml-2">${storeData.menu.length}</span></button>`;
                 for(let cat in grouped) {
                     if(cat === 'All') continue;
-                    tabsHtml += `<button onclick="setAdminMenuCategory('${cat}')" class="admin-cat-btn shrink-0 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-5 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap shadow-sm" data-cat="${cat}">${cat} <span class="bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded ml-1">${grouped[cat].length}</span></button>`;
+                    tabsHtml += `<button onclick="setAdminMenuCategory('${cat}')" class="admin-cat-btn shrink-0 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-6 py-3 rounded-xl text-xs font-black whitespace-nowrap premium-shadow transition-all" data-cat="${cat}">${cat} <span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded-lg ml-2 border border-slate-200">${grouped[cat].length}</span></button>`;
                 }
                 tabsContainer.innerHTML = tabsHtml;
                 enableDragScroll(); 
@@ -1134,9 +1294,9 @@
             activeAdminCategory = cat;
             document.querySelectorAll('.admin-cat-btn').forEach(btn => {
                 if(btn.dataset.cat === cat) {
-                    btn.className = "admin-cat-btn shrink-0 bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap shadow-sm";
+                    btn.className = "admin-cat-btn shrink-0 bg-slate-800 text-white px-6 py-3 rounded-xl text-xs font-black whitespace-nowrap shadow-md transition-all";
                 } else {
-                    btn.className = "admin-cat-btn shrink-0 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-5 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap shadow-sm";
+                    btn.className = "admin-cat-btn shrink-0 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-6 py-3 rounded-xl text-xs font-black whitespace-nowrap premium-shadow transition-all";
                 }
             });
             filterAdminMenuByCategory(cat);
@@ -1150,32 +1310,32 @@
             }
 
             if(itemsToRender.length === 0) {
-                 container.innerHTML = '<p class="text-sm text-slate-500 text-center py-10 bg-white border border-slate-100 rounded-2xl font-bold col-span-full">এই ক্যাটাগরিতে কোনো আইটেম নেই</p>';
+                 container.innerHTML = '<p class="text-sm text-slate-400 text-center py-16 bg-white border border-slate-100 rounded-[1.5rem] font-black col-span-full"><i class="fa-solid fa-burger text-5xl mb-4 text-slate-200 block"></i> এই ক্যাটাগরিতে কোনো আইটেম নেই</p>';
                  return;
             }
 
             container.innerHTML = itemsToRender.map(m => `
-                <div class="bg-white border border-slate-100 rounded-3xl shadow-sm flex flex-col hover:border-brand/40 transition-colors overflow-hidden ${m.available === false ? 'opacity-70 grayscale' : ''}">
-                    <div class="relative h-48 bg-slate-50 flex items-center justify-center p-3 border-b border-slate-100">
-                        <img src="${m.image}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjFmNWY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNjYmQ1ZTEiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4='" class="w-full h-full object-contain drop-shadow-sm">
-                        ${m.available === false ? '<span class="absolute inset-0 bg-slate-900/60 text-white text-[10px] font-extrabold flex items-center justify-center tracking-widest uppercase">স্টক আউট</span>' : ''}
+                <div class="bg-white border border-slate-100 rounded-[1.5rem] premium-shadow premium-shadow-hover flex flex-col transition-all overflow-hidden relative group ${m.available === false ? 'opacity-75 grayscale-[0.3]' : ''}">
+                    <div class="relative h-52 bg-slate-100 flex items-center justify-center p-4 border-b border-slate-100 overflow-hidden">
+                        <img src="${m.image}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjFmNWY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNjYmQ1ZTEiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4='" class="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-500">
+                        ${m.available === false ? '<span class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm text-white text-[11px] font-black flex items-center justify-center tracking-widest uppercase z-10">স্টক আউট</span>' : ''}
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur border border-white px-2.5 py-1 rounded-lg text-[9px] font-black text-slate-700 shadow-sm uppercase tracking-widest z-10">${m.category}</span>
                     </div>
                     <div class="p-5 flex-1 flex flex-col">
-                        <div class="flex flex-col gap-2 mb-3 border-b border-slate-50 pb-3">
-                            <h4 class="font-extrabold text-slate-800 text-base line-clamp-2 leading-tight flex-1 pr-2" title="${m.name}">${m.name}</h4>
-                            <div class="flex justify-between items-center w-full mt-1">
-                                <span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[9px] font-bold uppercase">${m.category}</span>
-                                <button onclick="toggleMenuStatus('${m.id}')" class="${m.available ? 'bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-200' : 'bg-red-100 text-red-700 border-red-200 hover:bg-red-200'} border px-3 py-1 rounded-lg text-[10px] font-extrabold shadow-sm active:scale-95 transition-colors uppercase tracking-wider">
-                                    ${m.available ? '<i class="fa-solid fa-check mr-1"></i> স্টকে আছে' : '<i class="fa-solid fa-xmark mr-1"></i> স্টক আউট'}
-                                </button>
-                            </div>
+                        <div class="flex justify-between items-start gap-3 mb-2">
+                            <h4 class="font-black text-slate-800 text-lg line-clamp-2 leading-tight flex-1" title="${m.name}">${m.name}</h4>
+                            <button onclick="toggleMenuStatus('${m.id}')" class="${m.available ? 'bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100' : 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'} border px-2 py-1.5 rounded-lg text-[9px] font-black shadow-sm active:scale-95 transition-all uppercase tracking-widest shrink-0" title="${m.available?'স্টক আউট করুন':'স্টক ইন করুন'}">
+                                ${m.available ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>'}
+                            </button>
                         </div>
-                        <p class="text-brand font-extrabold text-xl mb-3">৳ ${Number(m.price).toLocaleString('en-US')}</p>
-                        <p class="text-[11px] text-slate-500 line-clamp-2 mb-4 font-medium flex-1 leading-relaxed" title="${m.ingredients}">${m.ingredients || 'বিস্তারিত নেই'}</p>
+                        <p class="text-[11px] text-slate-500 line-clamp-2 mb-4 font-bold flex-1 leading-relaxed" title="${m.ingredients}">${m.ingredients || 'বিস্তারিত নেই'}</p>
                         
-                        <div class="flex gap-2 mt-auto pt-4 border-t border-slate-100">
-                            <button onclick='editMenu(${JSON.stringify(m).replace(/'/g, "&#39;")})' class="flex-1 bg-blue-50 text-blue-600 hover:bg-blue-100 py-2.5 rounded-xl text-xs font-extrabold transition-colors flex items-center justify-center gap-1.5"><i class="fa-solid fa-pen"></i> এডিট</button>
-                            <button onclick="deleteMenu('${m.id}')" class="flex-1 bg-red-50 text-red-600 hover:bg-red-100 py-2.5 rounded-xl text-xs font-extrabold transition-colors flex items-center justify-center gap-1.5"><i class="fa-solid fa-trash"></i> ডিলিট</button>
+                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-slate-50">
+                            <p class="text-brand font-black text-2xl">৳ ${Number(m.price).toLocaleString('en-US')}</p>
+                            <div class="flex gap-2">
+                                <button onclick='editMenu(${JSON.stringify(m).replace(/'/g, "&#39;")})' class="w-9 h-9 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 rounded-xl flex items-center justify-center font-bold transition-all border border-blue-100 shadow-sm"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="deleteMenu('${m.id}')" class="w-9 h-9 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 rounded-xl flex items-center justify-center font-bold transition-all border border-red-100 shadow-sm"><i class="fa-solid fa-trash"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1202,18 +1362,19 @@
         // --- OFFERS MANAGEMENT ---
         function renderOffersAdmin() {
             const grid = document.getElementById('admin-offers-grid');
-            if(storeData.offers.length===0){ grid.innerHTML='<p class="text-sm col-span-full text-slate-500 text-center py-10 bg-white border border-slate-100 rounded-2xl font-bold">কোনো অফার নেই</p>'; return; }
+            if(storeData.offers.length===0){ grid.innerHTML='<p class="text-sm col-span-full text-slate-400 text-center py-16 bg-white border border-slate-100 rounded-[1.5rem] font-black"><i class="fa-solid fa-tags text-5xl mb-4 text-slate-200 block"></i> কোনো অফার নেই</p>'; return; }
             grid.innerHTML = storeData.offers.map(o => `
-                <div class="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm flex flex-col hover:border-brand/40 transition-colors">
-                    <div class="flex items-start gap-4 mb-3 border-b border-slate-50 pb-3">
-                        <img src="${o.image}" class="w-20 h-20 rounded-2xl object-cover bg-slate-50 shadow-sm">
-                        <div class="flex-1 pt-1"><h4 class="font-extrabold text-sm line-clamp-2 text-slate-800 leading-tight mb-1">${o.title}</h4><p class="text-[10px] text-slate-500 line-clamp-2 font-medium">${o.description}</p></div>
+                <div class="bg-white border border-slate-100 rounded-[1.5rem] p-5 premium-shadow premium-shadow-hover flex flex-col transition-all overflow-hidden relative">
+                    <div class="absolute left-0 top-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+                    <div class="flex items-start gap-4 mb-4 border-b border-slate-50 pb-4 mt-2">
+                        <img src="${o.image}" class="w-24 h-24 rounded-2xl object-cover bg-slate-50 shadow-sm border border-slate-100">
+                        <div class="flex-1 pt-1"><h4 class="font-black text-base line-clamp-2 text-slate-800 leading-tight mb-1.5">${o.title}</h4><p class="text-[11px] text-slate-500 line-clamp-3 font-bold">${o.description}</p></div>
                     </div>
-                    <div class="flex justify-between items-end mt-auto pt-1">
-                        <p class="text-brand font-extrabold text-xl">৳ ${Number(o.price).toLocaleString('en-US')}</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <p class="text-purple-600 font-black text-2xl">৳ ${Number(o.price).toLocaleString('en-US')}</p>
                         <div class="flex gap-2">
-                            <button onclick='editOffer(${JSON.stringify(o).replace(/'/g, "&#39;")})' class="text-blue-600 bg-blue-50 hover:bg-blue-100 w-8 h-8 rounded-xl font-bold transition-colors flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteOffer('${o.id}')" class="text-red-600 bg-red-50 hover:bg-red-100 w-8 h-8 rounded-xl font-bold transition-colors flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick='editOffer(${JSON.stringify(o).replace(/'/g, "&#39;")})' class="w-10 h-10 bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-100 rounded-xl font-bold transition-all shadow-sm"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteOffer('${o.id}')" class="w-10 h-10 bg-red-50 text-red-600 hover:bg-red-100 border border-red-100 rounded-xl font-bold transition-all shadow-sm"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 </div>`).join('');
@@ -1230,20 +1391,20 @@
 
         // --- AREA MANAGEMENT ---
         function renderAreasAdmin() { 
-            if(storeData.areas.length === 0) { document.getElementById('areas-table').innerHTML = '<tr><td colspan=\"3\" class=\"p-6 text-center text-sm font-bold text-slate-500\">কোনো এরিয়া যোগ করা হয়নি</td></tr>'; return; }
+            if(storeData.areas.length === 0) { document.getElementById('areas-table').innerHTML = '<tr><td colspan=\"3\" class=\"p-10 text-center text-sm font-black text-slate-400\"><i class="fa-solid fa-map-location-dot text-4xl mb-3 block text-slate-200"></i> কোনো এরিয়া যোগ করা হয়নি</td></tr>'; return; }
             document.getElementById('areas-table').innerHTML = storeData.areas.map(a => `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="p-4 font-extrabold text-sm text-slate-800">${a.name}</td>
-                    <td class="p-4 text-brand font-extrabold text-sm">৳ ${Number(a.charge).toLocaleString('en-US')}</td>
-                    <td class="p-4 text-right">
-                        <button onclick="editArea('${a.name}', '${a.charge}')" class="text-blue-600 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg mr-1 transition-colors"><i class="fa-solid fa-pen text-xs"></i></button> 
-                        <button onclick="deleteArea('${a.name}')" class="text-red-600 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition-colors"><i class="fa-solid fa-trash text-xs"></i></button>
+                <tr class="hover:bg-slate-50/80 transition-colors group">
+                    <td class="p-5 font-black text-base text-slate-800 border-l-4 border-transparent group-hover:border-slate-800 transition-colors flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center border border-slate-200 shadow-sm"><i class="fa-solid fa-location-dot"></i></div> ${a.name}</td>
+                    <td class="p-5 text-brand font-black text-lg">৳ ${Number(a.charge).toLocaleString('en-US')}</td>
+                    <td class="p-5 text-right">
+                        <button onclick="editArea('${a.name}', '${a.charge}')" class="text-blue-600 bg-blue-50 hover:bg-blue-100 w-10 h-10 rounded-xl mr-2 transition-colors border border-blue-100 shadow-sm"><i class="fa-solid fa-pen"></i></button> 
+                        <button onclick="deleteArea('${a.name}')" class="text-red-600 bg-red-50 hover:bg-red-100 w-10 h-10 rounded-xl transition-colors border border-red-100 shadow-sm"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>`).join(''); 
         }
-        function openAreaModal() { document.getElementById('area-form').reset(); document.getElementById('area-old-name').value = ''; document.getElementById('area-name').readOnly = false; document.getElementById('area-modal-title').textContent="এরিয়া যোগ করুন"; document.getElementById('area-submit-btn').textContent = "এরিয়া সেভ করুন"; document.getElementById('area-submit-btn').classList.replace('bg-blue-600', 'bg-slate-900'); document.getElementById('area-modal').style.display='flex'; }
+        function openAreaModal() { document.getElementById('area-form').reset(); document.getElementById('area-old-name').value = ''; document.getElementById('area-name').readOnly = false; document.getElementById('area-modal-title').textContent="এরিয়া যোগ করুন"; document.getElementById('area-submit-btn').textContent = "এরিয়া সেভ করুন"; document.getElementById('area-submit-btn').className = 'w-full bg-slate-900 text-white font-black py-4 rounded-xl text-sm shadow-lg hover:bg-black transition-all hover:shadow-xl mt-2 uppercase tracking-wide'; document.getElementById('area-modal').style.display='flex'; }
         function closeAreaModal() { document.getElementById('area-modal').style.display='none'; }
-        function editArea(name, charge) { document.getElementById('area-name').value = name; document.getElementById('area-name').readOnly = false; document.getElementById('area-old-name').value = name; document.getElementById('area-charge').value = charge; document.getElementById('area-modal-title').textContent = "এরিয়া আপডেট করুন"; document.getElementById('area-submit-btn').textContent = "এরিয়া আপডেট করুন"; document.getElementById('area-submit-btn').classList.replace('bg-slate-900', 'bg-blue-600'); document.getElementById('area-modal').style.display='flex'; }
+        function editArea(name, charge) { document.getElementById('area-name').value = name; document.getElementById('area-name').readOnly = false; document.getElementById('area-old-name').value = name; document.getElementById('area-charge').value = charge; document.getElementById('area-modal-title').textContent = "এরিয়া আপডেট করুন"; document.getElementById('area-submit-btn').textContent = "এরিয়া আপডেট করুন"; document.getElementById('area-submit-btn').className = 'w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl text-sm shadow-lg hover:shadow-xl mt-2 uppercase tracking-wide transition-all'; document.getElementById('area-modal').style.display='flex'; }
         async function saveArea(e) { 
             e.preventDefault(); 
             const areaName=document.getElementById('area-name').value; 
@@ -1267,35 +1428,48 @@
 
         // --- NOTIFICATIONS MANAGEMENT ---
         async function fetchAdminNotifs() {
-            const list = document.getElementById('admin-notif-list'); list.innerHTML = '<div class="flex justify-center items-center h-full"><i class="fa-solid fa-spinner fa-spin text-3xl text-brand"></i></div>';
+            const list = document.getElementById('admin-notif-list'); list.innerHTML = '<div class="col-span-full flex justify-center items-center h-40"><i class="fa-solid fa-spinner fa-spin text-4xl text-blue-500"></i></div>';
             try {
                 const res = await fetch(`${scriptURL}?action=getAdminNotifications`); const data = await res.json();
                 if(data.result === 'success' && data.data && data.data.length > 0) {
                     list.innerHTML = data.data.map(n => `
-                        <div class="border border-slate-100 rounded-2xl p-5 bg-white shadow-sm hover:shadow-md transition-shadow relative">
-                            <span class="absolute top-4 right-4 bg-slate-50 text-[9px] px-2.5 py-1 rounded-lg text-slate-500 border border-slate-200 font-extrabold tracking-wide uppercase">To: ${n.target === 'All' ? 'সবাইকে' : n.target}</span>
-                            <h4 class="font-extrabold text-base text-slate-800 pr-20 mb-2 leading-tight">${n.title}</h4>
+                        <div class="border border-slate-100 border-l-4 border-l-blue-500 rounded-[1.5rem] p-6 bg-white premium-shadow premium-shadow-hover transition-all relative overflow-hidden group">
+                            <div class="absolute right-0 top-0 w-24 h-24 bg-blue-50 rounded-bl-full -z-0 opacity-50 group-hover:scale-110 transition-transform"></div>
+                            <span class="absolute top-5 right-5 bg-white px-3 py-1.5 rounded-lg text-blue-600 border border-blue-100 text-[9px] font-black tracking-widest uppercase shadow-sm z-10"><i class="fa-solid fa-paper-plane mr-1"></i> ${n.target === 'All' ? 'সবাইকে' : n.target}</span>
                             
-                            <div class="text-xs text-slate-600 mb-4 bg-slate-50 p-3 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors" onclick="this.querySelector('p').classList.toggle('line-clamp-2');" title="Click to expand">
-                                <p class="line-clamp-2 whitespace-pre-wrap leading-relaxed font-medium">${n.message}</p>
+                            <div class="relative z-10 pr-24 mb-3">
+                                <h4 class="font-black text-lg text-slate-800 leading-tight">${n.title}</h4>
+                            </div>
+                            
+                            <div class="text-xs text-slate-600 mb-5 bg-gradient-to-r from-slate-50 to-white p-4 rounded-xl border border-slate-100 cursor-pointer shadow-sm relative z-10" onclick="this.querySelector('p').classList.toggle('line-clamp-2');" title="Click to expand">
+                                <p class="line-clamp-2 whitespace-pre-wrap leading-relaxed font-bold">${n.message}</p>
                             </div>
 
-                            <div class="flex justify-between items-center pt-3 border-t border-slate-50">
-                                <span class="text-[10px] text-slate-400 font-bold"><i class="fa-regular fa-clock mr-1"></i>${formatEnglishDate(n.date)}</span>
-                                <div class="flex gap-2"><button onclick='editNotif(${JSON.stringify(n).replace(/'/g, "&#39;")})' class="text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg text-[10px] font-extrabold transition-colors uppercase tracking-wider"><i class="fa-solid fa-pen mr-1"></i> এডিট</button><button onclick="deleteNotification('${n.id}')" class="text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg text-[10px] font-extrabold transition-colors uppercase tracking-wider"><i class="fa-solid fa-trash mr-1"></i> ডিলিট</button></div>
+                            <div class="flex justify-between items-center pt-4 border-t border-slate-50 relative z-10">
+                                <span class="text-[10px] text-slate-400 font-bold bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100"><i class="fa-regular fa-clock mr-1 text-blue-400"></i>${formatEnglishDate(n.date)}</span>
+                                <div class="flex gap-2">
+                                    <button onclick='editNotif(${JSON.stringify(n).replace(/'/g, "&#39;")})' class="text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-100 w-9 h-9 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center"><i class="fa-solid fa-pen"></i></button>
+                                    <button onclick="deleteNotification('${n.id}')" class="text-red-600 bg-red-50 hover:bg-red-100 border border-red-100 w-9 h-9 rounded-xl font-bold transition-all shadow-sm flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
+                                </div>
                             </div>
                         </div>
                     `).join('');
-                } else list.innerHTML = '<div class="text-center py-10 text-slate-500 text-sm font-bold">কোনো নোটিফিকেশন পাঠানো হয়নি</div>';
-            } catch(e) { list.innerHTML = '<div class="text-center py-10 text-red-500 text-sm font-bold">ডেটা লোড করতে সমস্যা হয়েছে</div>'; }
+                } else list.innerHTML = '<div class="col-span-full text-center py-16 text-slate-400 text-sm font-black"><i class="fa-solid fa-comment-slash text-5xl mb-4 block text-slate-200"></i> কোনো নোটিফিকেশন পাঠানো হয়নি</div>';
+            } catch(e) { list.innerHTML = '<div class="col-span-full text-center py-10 text-red-500 text-sm font-bold">ডেটা লোড করতে সমস্যা হয়েছে</div>'; }
         }
 
-        document.getElementById('notif-target').addEventListener('change', function(e) { document.getElementById('notif-custom-phone').style.display = e.target.value === 'custom' ? 'block' : 'none'; });
-        function openNotifModal() { document.getElementById('notif-form').reset(); document.getElementById('n-id').value = ''; document.getElementById('notif-target').value = 'All'; document.getElementById('notif-custom-phone').style.display = 'none'; document.getElementById('notif-modal-title').textContent="মেসেজ পাঠান"; document.getElementById('notif-submit-btn').textContent = "মেসেজ পাঠান"; document.getElementById('notif-modal').style.display='flex'; }
+        document.getElementById('notif-target').addEventListener('change', function(e) { 
+            const wrapper = document.getElementById('notif-phone-wrapper');
+            const input = document.getElementById('notif-custom-phone');
+            if(e.target.value === 'custom') { wrapper.classList.remove('hidden'); input.required = true; } 
+            else { wrapper.classList.add('hidden'); input.required = false; }
+        });
+        
+        function openNotifModal() { document.getElementById('notif-form').reset(); document.getElementById('n-id').value = ''; document.getElementById('notif-target').value = 'All'; document.getElementById('notif-phone-wrapper').classList.add('hidden'); document.getElementById('notif-custom-phone').required = false; document.getElementById('notif-modal-title').textContent="মেসেজ পাঠান"; document.getElementById('notif-submit-btn').textContent = "মেসেজ পাঠান"; document.getElementById('notif-modal').style.display='flex'; }
         function closeNotifModal() { document.getElementById('notif-modal').style.display='none'; }
         function editNotif(n) {
             document.getElementById('n-id').value = n.id; document.getElementById('notif-title').value = n.title; document.getElementById('notif-message').value = n.message;
-            if(n.target === 'All' || n.target === 'all') { document.getElementById('notif-target').value = 'All'; document.getElementById('notif-custom-phone').style.display = 'none'; } else { document.getElementById('notif-target').value = 'custom'; document.getElementById('notif-custom-phone').value = n.target; document.getElementById('notif-custom-phone').style.display = 'block'; }
+            if(n.target === 'All' || n.target === 'all') { document.getElementById('notif-target').value = 'All'; document.getElementById('notif-phone-wrapper').classList.add('hidden'); document.getElementById('notif-custom-phone').required = false; } else { document.getElementById('notif-target').value = 'custom'; document.getElementById('notif-custom-phone').value = n.target; document.getElementById('notif-phone-wrapper').classList.remove('hidden'); document.getElementById('notif-custom-phone').required = true;}
             document.getElementById('notif-modal-title').textContent = "মেসেজ আপডেট করুন"; document.getElementById('notif-submit-btn').textContent = "মেসেজ আপডেট করুন"; document.getElementById('notif-modal').style.display='flex';
         }
         async function saveNotification(e) {
@@ -1344,4 +1518,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
