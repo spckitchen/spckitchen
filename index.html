@@ -458,7 +458,6 @@
             dummyCategories: ['সব', 'মেইন ডিশ', 'সাইড ডিশ', 'ফাস্ট ফুড', 'ডেজার্ট', 'কেইক', 'SPC কিচেন স্পেশাল', 'রিকুয়েষ্ট']
         };
 
-        // Reload Protection
         window.addEventListener('beforeunload', function (e) {
             const confirmationMessage = "আপনি কি পেজটি রিলোড করতে চান?";
             e.returnValue = confirmationMessage;
@@ -530,7 +529,6 @@
         const spamLogic = {
             checkLimit: (phone) => {
                 if(!phone) return { allowed: true };
-                // [FIXED] Split blocked strings exactly to prevent regex failure
                 const blockedUsers = String(state.settings.BlockedUsers || "").split(',').map(s => s.trim());
                 if(blockedUsers.includes(phone)) { return { allowed: false, msg: "আপনি এখন আর অনলাইনে অর্ডার দিতে পারবেন না। অনুগ্রহ করে কল দিয়ে যোগাযোগ করুন।" }; }
                 return { allowed: true };
@@ -581,7 +579,8 @@
                 const grouped = {}; state.menu.forEach(i => { const c = i.category || 'অন্যান্য'; if(!grouped[c]) grouped[c] = []; grouped[c].push(i); });
                 
                 let html = ''; const order = state.dummyCategories; 
-                const categoriesToRender = order.filter(c => grouped[c] && c !== 'সব' && c !== 'রিকুয়েষ্ট').concat(Object.keys(grouped).filter(c => !order.includes(c)));
+                // Removed 'অফার' from categories to render
+                const categoriesToRender = order.filter(c => grouped[c] && c !== 'সব' && c !== 'রিকুয়েষ্ট' && c !== 'অফার').concat(Object.keys(grouped).filter(c => !order.includes(c) && c !== 'অফার'));
 
                 categoriesToRender.forEach(cat => {
                     if(!grouped[cat] || grouped[cat].length === 0) return;
@@ -624,7 +623,8 @@
             },
             renderCategories: () => {
                 const catsFromApi = state.menu.map(i => i.category).filter(Boolean);
-                const combinedCats = [...new Set([...state.dummyCategories, ...catsFromApi])];
+                // Remove 'অফার' from filter icons
+                const combinedCats = [...new Set([...state.dummyCategories, ...catsFromApi])].filter(c => c !== 'অফার');
                 const iconMap = { 'সব':'fa-border-all', 'মেইন ডিশ':'fa-plate-wheat', 'সাইড ডিশ':'fa-bowl-rice', 'ফাস্ট ফুড':'fa-burger', 'ডেজার্ট':'fa-ice-cream', 'কেইক':'fa-cake-candles', 'SPC কিচেন স্পেশাল':'fa-crown', 'রিকুয়েষ্ট':'fa-bell-concierge' };
                 const fallbackIcons = ['fa-utensils', 'fa-bowl-food', 'fa-hotdog', 'fa-pizza-slice', 'fa-leaf'];
                 const getIcon = (cat) => { if(iconMap[cat]) return iconMap[cat]; let h=0; for(let i=0;i<cat.length;i++) h=cat.charCodeAt(i)+((h<<5)-h); return fallbackIcons[Math.abs(h)%fallbackIcons.length]; };
@@ -1009,7 +1009,11 @@
                             }
 
                             let estHtml = '';
-                            if(!isDone && !isCanceled) { estHtml = `<div class="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-3 py-2 rounded-lg text-xs font-bold flex justify-between items-center mb-4"><span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> আনুমানিক ডেলিভারি</span><span>${o.estimatedTime || '30-40 mins'}</span></div>`; }
+                            if(!isDone && !isCanceled) { 
+                                estHtml = `<div class="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-3 py-2 rounded-lg text-xs font-bold flex justify-between items-center mb-4"><span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> আনুমানিক ডেলিভারি</span><span>${o.estimatedTime || '30-40 mins'}</span></div>`; 
+                            } else if (isCanceled && o.estimatedTime) {
+                                estHtml = `<div class="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-3 py-2.5 rounded-lg text-xs font-bold flex flex-col gap-1 mb-4 border border-red-100 dark:border-red-800"><span class="flex items-center gap-1 uppercase tracking-widest text-[10px]"><i class="fa-solid fa-circle-info"></i> বাতিলের কারণ:</span><span class="text-sm">${o.estimatedTime}</span></div>`;
+                            }
 
                             return `<div class="card !p-5 shadow-sm border border-slate-100 dark:border-slate-700 dark:bg-slate-800 mb-4 fade-in">
                                 <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-50 dark:border-slate-700">
@@ -1052,7 +1056,6 @@
                 const itemsStr = details.split(' | Note:')[0].split(' | ')[0]; 
                 const items = itemsStr.split(', '); let addedCount = 0; let missingItems = false;
                 items.forEach(itemStr => {
-                    // [FIXED] Updated Regex to support parentheses inside food names safely
                     const match = itemStr.trim().match(/^(.*?)\s*\((\d+)\)$/);
                     if(match) {
                         const name = match[1].trim().toLowerCase(); const qty = parseInt(match[2]);
@@ -1145,7 +1148,6 @@
                         state.menu = data.data.menu || []; state.areas = data.data.areas || []; state.settings = { ...state.settings, ...data.data.settings }; state.reviews = data.data.reviews || [];
                         window.storeTagsData = data.data.tags || {};
                         
-                        // [FIXED] Pushing offers to menu temporarily so they don't get removed from cart on reload
                         const combined = data.data.offers || []; state.combinedOffers = combined;
                         if(combined.length) {
                             combined.forEach((offer, idx) => {
@@ -1187,7 +1189,7 @@
                             document.getElementById('trending-section').classList.remove('hidden');
                             document.getElementById('trending-container').innerHTML = popular.map(p => {
                                 const m = state.menu.find(x => (x.name||'').toLowerCase() === (p.name||'').toLowerCase());
-                                if(!m) return '';
+                                if(!m || m.category === 'অফার') return '';
                                 return `<div class="shrink-0 w-32">${menuLogic.buildCard(m)}</div>`;
                             }).join('');
                             utils.enableDragScroll();
