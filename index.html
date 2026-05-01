@@ -530,8 +530,9 @@
         const spamLogic = {
             checkLimit: (phone) => {
                 if(!phone) return { allowed: true };
-                const blockedStr = String(state.settings.BlockedUsers || "");
-                if(blockedStr.includes(phone)) { return { allowed: false, msg: "আপনি এখন আর অনলাইনে অর্ডার দিতে পারবেন না। অনুগ্রহ করে কল দিয়ে যোগাযোগ করুন।" }; }
+                // [FIXED] Split blocked strings exactly to prevent regex failure
+                const blockedUsers = String(state.settings.BlockedUsers || "").split(',').map(s => s.trim());
+                if(blockedUsers.includes(phone)) { return { allowed: false, msg: "আপনি এখন আর অনলাইনে অর্ডার দিতে পারবেন না। অনুগ্রহ করে কল দিয়ে যোগাযোগ করুন।" }; }
                 return { allowed: true };
             }
         };
@@ -1051,7 +1052,8 @@
                 const itemsStr = details.split(' | Note:')[0].split(' | ')[0]; 
                 const items = itemsStr.split(', '); let addedCount = 0; let missingItems = false;
                 items.forEach(itemStr => {
-                    const match = itemStr.match(/(.+?)\((\d+)\)/);
+                    // [FIXED] Updated Regex to support parentheses inside food names safely
+                    const match = itemStr.trim().match(/^(.*?)\s*\((\d+)\)$/);
                     if(match) {
                         const name = match[1].trim().toLowerCase(); const qty = parseInt(match[2]);
                         const menuItem = state.menu.find(m => m.name.trim().toLowerCase() === name);
@@ -1143,6 +1145,18 @@
                         state.menu = data.data.menu || []; state.areas = data.data.areas || []; state.settings = { ...state.settings, ...data.data.settings }; state.reviews = data.data.reviews || [];
                         window.storeTagsData = data.data.tags || {};
                         
+                        // [FIXED] Pushing offers to menu temporarily so they don't get removed from cart on reload
+                        const combined = data.data.offers || []; state.combinedOffers = combined;
+                        if(combined.length) {
+                            combined.forEach((offer, idx) => {
+                                const offerId = 'OFFER-'+idx;
+                                const mItemExists = state.menu.find(m => m.id === offerId);
+                                if(!mItemExists) {
+                                    state.menu.push({ id: offerId, name: offer.title, price: Number(offer.price) || 0, image: offer.image, category: 'অফার' });
+                                }
+                            });
+                        }
+
                         state.settings.IsOpen = String(state.settings.IsOpen);
                         const aOpts = '<option value="">-- এরিয়া নির্বাচন করুন --</option>' + state.areas.map(a => `<option value="${a.name}|${a.charge}">${a.name} (৳ ${a.charge})</option>`).join('');
                         document.getElementById('prof-area').innerHTML = aOpts; 
@@ -1151,7 +1165,6 @@
                         
                         menuLogic.init(); areaLogic.render(); cartLogic.updateAll(); profileLogic.init();
                         
-                        const combined = data.data.offers || []; state.combinedOffers = combined;
                         if(combined.length) { 
                             document.getElementById('offers-section').classList.remove('hidden'); 
                             document.getElementById('offers-container').innerHTML = combined.map((o, idx) => `
